@@ -41,4 +41,14 @@ public class AuthController {
 
         return baseReqVo;
     }
+    /**
+     * 统计 goods,order,product,user的数量
+     */
+//    @RequestMapping("dashboard")
+//    public BaseReqVo dashboard(){
+//        BaseReqVo baseReqVo = new BaseReqVo();
+//        baseReqVo.setErrmsg("成功");
+//        baseReqVo.setErrno(0);
+//
+//    }
 }
