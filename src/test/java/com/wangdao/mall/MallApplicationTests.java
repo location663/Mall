@@ -6,7 +6,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+<<<<<<< HEAD
 import java.util.HashMap;
+=======
+import java.util.UUID;
+>>>>>>> a1982c9efa3d55b8f62b8edd1ad4a72ca4afbe79
 
 @SpringBootTest
 class MallApplicationTests {
@@ -16,6 +20,7 @@ class MallApplicationTests {
 
     @Test
     void contextLoads() {
+
     }
 
     @Test

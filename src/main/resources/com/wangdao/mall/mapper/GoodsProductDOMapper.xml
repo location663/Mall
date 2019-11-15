@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.wangdao.mall.mapper.SearchHistoryDOMapper">
-  <resultMap id="BaseResultMap" type="com.wangdao.mall.bean.SearchHistoryDO">
+<mapper namespace="com.wangdao.mall.mapper.GoodsProductDOMapper">
+  <resultMap id="BaseResultMap" type="com.wangdao.mall.bean.GoodsProductDO">
     <id column="id" jdbcType="INTEGER" property="id" />
-    <result column="user_id" jdbcType="INTEGER" property="userId" />
-    <result column="keyword" jdbcType="VARCHAR" property="keyword" />
-    <result column="from" jdbcType="VARCHAR" property="from" />
+    <result column="goods_id" jdbcType="INTEGER" property="goodsId" />
+    <result column="specifications" jdbcType="VARCHAR" property="specifications" />
+    <result column="price" jdbcType="DECIMAL" property="price" />
+    <result column="number" jdbcType="INTEGER" property="number" />
+    <result column="url" jdbcType="VARCHAR" property="url" />
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="deleted" jdbcType="BIT" property="deleted" />
@@ -69,15 +71,15 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, keyword, `from`, add_time, update_time, deleted
+    id, goods_id, specifications, price, number, url, add_time, update_time, deleted
   </sql>
-  <select id="selectByExample" parameterType="com.wangdao.mall.bean.SearchHistoryDOExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.wangdao.mall.bean.GoodsProductDOExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
     </if>
     <include refid="Base_Column_List" />
-    from cskaoyan_mall_search_history
+    from cskaoyan_mall_goods_product
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
@@ -86,43 +88,51 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select
+    select 
     <include refid="Base_Column_List" />
-    from cskaoyan_mall_search_history
+    from cskaoyan_mall_goods_product
     where id = #{id,jdbcType=INTEGER}
   </select>
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
-    delete from cskaoyan_mall_search_history
+    delete from cskaoyan_mall_goods_product
     where id = #{id,jdbcType=INTEGER}
   </delete>
-  <delete id="deleteByExample" parameterType="com.wangdao.mall.bean.SearchHistoryDOExample">
-    delete from cskaoyan_mall_search_history
+  <delete id="deleteByExample" parameterType="com.wangdao.mall.bean.GoodsProductDOExample">
+    delete from cskaoyan_mall_goods_product
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.wangdao.mall.bean.SearchHistoryDO">
-    insert into cskaoyan_mall_search_history (id, user_id, keyword,
-      from, add_time, update_time,
-      deleted)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{keyword,jdbcType=VARCHAR},
-      #{from,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP},
-      #{deleted,jdbcType=BIT})
+  <insert id="insert" parameterType="com.wangdao.mall.bean.GoodsProductDO">
+    insert into cskaoyan_mall_goods_product (id, goods_id, specifications, 
+      price, number, url, 
+      add_time, update_time, deleted
+      )
+    values (#{id,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, #{specifications,jdbcType=VARCHAR}, 
+      #{price,jdbcType=DECIMAL}, #{number,jdbcType=INTEGER}, #{url,jdbcType=VARCHAR}, 
+      #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}
+      )
   </insert>
-  <insert id="insertSelective" parameterType="com.wangdao.mall.bean.SearchHistoryDO">
-    insert into cskaoyan_mall_search_history
+  <insert id="insertSelective" parameterType="com.wangdao.mall.bean.GoodsProductDO">
+    insert into cskaoyan_mall_goods_product
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
         id,
       </if>
-      <if test="userId != null">
-        user_id,
+      <if test="goodsId != null">
+        goods_id,
       </if>
-      <if test="keyword != null">
-        keyword,
+      <if test="specifications != null">
+        specifications,
       </if>
-      <if test="from != null">
-        from,
+      <if test="price != null">
+        price,
+      </if>
+      <if test="number != null">
+        number,
+      </if>
+      <if test="url != null">
+        url,
       </if>
       <if test="addTime != null">
         add_time,
@@ -138,14 +148,20 @@
       <if test="id != null">
         #{id,jdbcType=INTEGER},
       </if>
-      <if test="userId != null">
-        #{userId,jdbcType=INTEGER},
+      <if test="goodsId != null">
+        #{goodsId,jdbcType=INTEGER},
       </if>
-      <if test="keyword != null">
-        #{keyword,jdbcType=VARCHAR},
+      <if test="specifications != null">
+        #{specifications,jdbcType=VARCHAR},
       </if>
-      <if test="from != null">
-        #{from,jdbcType=VARCHAR},
+      <if test="price != null">
+        #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="number != null">
+        #{number,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        #{url,jdbcType=VARCHAR},
       </if>
       <if test="addTime != null">
         #{addTime,jdbcType=TIMESTAMP},
@@ -158,26 +174,32 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.wangdao.mall.bean.SearchHistoryDOExample" resultType="java.lang.Long">
-    select count(*) from cskaoyan_mall_search_history
+  <select id="countByExample" parameterType="com.wangdao.mall.bean.GoodsProductDOExample" resultType="java.lang.Long">
+    select count(*) from cskaoyan_mall_goods_product
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </select>
   <update id="updateByExampleSelective" parameterType="map">
-    update cskaoyan_mall_search_history
+    update cskaoyan_mall_goods_product
     <set>
       <if test="record.id != null">
         id = #{record.id,jdbcType=INTEGER},
       </if>
-      <if test="record.userId != null">
-        user_id = #{record.userId,jdbcType=INTEGER},
+      <if test="record.goodsId != null">
+        goods_id = #{record.goodsId,jdbcType=INTEGER},
       </if>
-      <if test="record.keyword != null">
-        keyword = #{record.keyword,jdbcType=VARCHAR},
+      <if test="record.specifications != null">
+        specifications = #{record.specifications,jdbcType=VARCHAR},
       </if>
-      <if test="record.from != null">
-        from = #{record.from,jdbcType=VARCHAR},
+      <if test="record.price != null">
+        price = #{record.price,jdbcType=DECIMAL},
+      </if>
+      <if test="record.number != null">
+        number = #{record.number,jdbcType=INTEGER},
+      </if>
+      <if test="record.url != null">
+        url = #{record.url,jdbcType=VARCHAR},
       </if>
       <if test="record.addTime != null">
         add_time = #{record.addTime,jdbcType=TIMESTAMP},
@@ -194,11 +216,13 @@
     </if>
   </update>
   <update id="updateByExample" parameterType="map">
-    update cskaoyan_mall_search_history
+    update cskaoyan_mall_goods_product
     set id = #{record.id,jdbcType=INTEGER},
-      user_id = #{record.userId,jdbcType=INTEGER},
-      keyword = #{record.keyword,jdbcType=VARCHAR},
-      from = #{record.from,jdbcType=VARCHAR},
+      goods_id = #{record.goodsId,jdbcType=INTEGER},
+      specifications = #{record.specifications,jdbcType=VARCHAR},
+      price = #{record.price,jdbcType=DECIMAL},
+      number = #{record.number,jdbcType=INTEGER},
+      url = #{record.url,jdbcType=VARCHAR},
       add_time = #{record.addTime,jdbcType=TIMESTAMP},
       update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       deleted = #{record.deleted,jdbcType=BIT}
@@ -206,17 +230,23 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.wangdao.mall.bean.SearchHistoryDO">
-    update cskaoyan_mall_search_history
+  <update id="updateByPrimaryKeySelective" parameterType="com.wangdao.mall.bean.GoodsProductDO">
+    update cskaoyan_mall_goods_product
     <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=INTEGER},
+      <if test="goodsId != null">
+        goods_id = #{goodsId,jdbcType=INTEGER},
       </if>
-      <if test="keyword != null">
-        keyword = #{keyword,jdbcType=VARCHAR},
+      <if test="specifications != null">
+        specifications = #{specifications,jdbcType=VARCHAR},
       </if>
-      <if test="from != null">
-        from = #{from,jdbcType=VARCHAR},
+      <if test="price != null">
+        price = #{price,jdbcType=DECIMAL},
+      </if>
+      <if test="number != null">
+        number = #{number,jdbcType=INTEGER},
+      </if>
+      <if test="url != null">
+        url = #{url,jdbcType=VARCHAR},
       </if>
       <if test="addTime != null">
         add_time = #{addTime,jdbcType=TIMESTAMP},
@@ -230,11 +260,13 @@
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.wangdao.mall.bean.SearchHistoryDO">
-    update cskaoyan_mall_search_history
-    set user_id = #{userId,jdbcType=INTEGER},
-      keyword = #{keyword,jdbcType=VARCHAR},
-      from = #{from,jdbcType=VARCHAR},
+  <update id="updateByPrimaryKey" parameterType="com.wangdao.mall.bean.GoodsProductDO">
+    update cskaoyan_mall_goods_product
+    set goods_id = #{goodsId,jdbcType=INTEGER},
+      specifications = #{specifications,jdbcType=VARCHAR},
+      price = #{price,jdbcType=DECIMAL},
+      number = #{number,jdbcType=INTEGER},
+      url = #{url,jdbcType=VARCHAR},
       add_time = #{addTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       deleted = #{deleted,jdbcType=BIT}
