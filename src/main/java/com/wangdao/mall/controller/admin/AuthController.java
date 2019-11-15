@@ -1,4 +1,4 @@
-package com.wangdao.mall.controller;
+package com.wangdao.mall.controller.admin;
 
 
 import com.wangdao.mall.bean.BaseReqVo;
@@ -21,6 +21,11 @@ public class AuthController {
         return baseReqVo;
     }
 
+    /**
+     *
+     * @param token
+     * @return
+     */
     @RequestMapping("info")
     public BaseReqVo info(String token){
         BaseReqVo baseReqVo = new BaseReqVo();
