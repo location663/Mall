@@ -13,11 +13,15 @@ import java.sql.SQLException;
 
 @MappedTypes(String[].class)
 public class String2ArrayTypeHandler implements TypeHandler<String[]> {
+
+
     /*输入映射*/
     @Override
     public void setParameter(PreparedStatement preparedStatement, int index, String[] strings, JdbcType jdbcType) throws SQLException {
         preparedStatement.setString(index,parseArray2String(strings));
     }
+
+
     /*输出映射*/
     @Override
     public String[] getResult(ResultSet resultSet, String columnName) throws SQLException {
@@ -41,7 +45,6 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
 
 
     private String parseArray2String(String[] strings) {
-
         ObjectMapper objectMapper = new ObjectMapper();
         try {
             String s = objectMapper.writeValueAsString(strings);
@@ -52,6 +55,7 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
         return null;
 
     }
+
     private String[] parseString2Array(String arrayString){
         /*String s = arrayString.replaceAll("\"", "").
                 replaceAll("\[","").

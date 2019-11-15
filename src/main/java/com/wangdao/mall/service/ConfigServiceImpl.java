@@ -65,7 +65,7 @@ public class ConfigServiceImpl implements ConfigService {
                 systemDOMapper.updateByPrimaryKeySelective(systemDO);
             }
         }
-        return new BaseReqVo("成功",0);
+        return new BaseReqVo(null,"成功",0);
     }
 
     /**
@@ -133,7 +133,7 @@ public class ConfigServiceImpl implements ConfigService {
                 systemDOMapper.updateByPrimaryKeySelective(systemDO);
             }
         }
-        return new BaseReqVo("成功",0);
+        return new BaseReqVo(null,"成功",0);
     }
 
     /**
@@ -192,7 +192,7 @@ public class ConfigServiceImpl implements ConfigService {
                 systemDOMapper.updateByPrimaryKeySelective(systemDO);
             }
         }
-        return new BaseReqVo("成功",0);
+        return new BaseReqVo(null,"成功",0);
     }
 
     /**
@@ -287,7 +287,7 @@ public class ConfigServiceImpl implements ConfigService {
                 systemDOMapper.updateByPrimaryKeySelective(systemDO);
             }
         }
-        return new BaseReqVo("成功",0);
+        return new BaseReqVo(null,"成功",0);
     }
 
 
