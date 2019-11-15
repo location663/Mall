@@ -15,4 +15,4 @@ logging:
         mall:
           mapper: debug
 mybatis:
-  type-handlers-package: com.cskaoyan.mall.handler
+  type-handlers-package: com.wangdao.mall.handler

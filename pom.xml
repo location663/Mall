@@ -60,6 +60,20 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+<<<<<<< HEAD
+
+=======
+>>>>>>> a1982c9efa3d55b8f62b8edd1ad4a72ca4afbe79
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <version>1.2.12</version>
+        </dependency>
+<<<<<<< HEAD
+
+
+=======
+>>>>>>> a1982c9efa3d55b8f62b8edd1ad4a72ca4afbe79
     </dependencies>
 
     <build>
