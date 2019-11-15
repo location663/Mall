@@ -11,8 +11,12 @@ pagehelper:
 logging:
   level:
     com:
+<<<<<<< HEAD
       wangdao:
+=======
+      wandao:
+>>>>>>> eb2c4f264a850a3fa6a0977b59a9631b60d0233c
         mall:
           mapper: debug
 mybatis:
-  type-handlers-package: com.cskaoyan.mall.handler
+  type-handlers-package: com.wangdao.mall.handler
