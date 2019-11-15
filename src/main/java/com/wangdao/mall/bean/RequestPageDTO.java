@@ -9,5 +9,5 @@ public class RequestPageDTO {
     private String sort;
     private String order;
     private Integer id;
-    private Integer name;
+    private String name;
 }

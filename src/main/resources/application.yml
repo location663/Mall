@@ -3,7 +3,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/cskaoyanmall?useSSL=true
+    url: jdbc:mysql://localhost:3306/cskaoyanmall?useSSL=true&characterEncoding=utf-8
     username: root
     password: 123456
 pagehelper:
@@ -11,7 +11,7 @@ pagehelper:
 logging:
   level:
     com:
-      cskaoyan:
+      wangdao:
         mall:
           mapper: debug
 mybatis:
