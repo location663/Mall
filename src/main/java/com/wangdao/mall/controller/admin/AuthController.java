@@ -3,16 +3,18 @@ package com.wangdao.mall.controller.admin;
 
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.InfoData;
+import com.wangdao.mall.service.DashboardService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 
 @RestController
-@RequestMapping("admin/auth")
+@RequestMapping("admin")
 public class AuthController {
 
-    @RequestMapping("login")
+    @RequestMapping("/auth/login")
     public BaseReqVo login(){
         BaseReqVo baseReqVo = new BaseReqVo();
         baseReqVo.setData("4b7d719e-53b7-4019-9677-6309b2445b45");
@@ -26,7 +28,7 @@ public class AuthController {
      * @param token
      * @return
      */
-    @RequestMapping("info")
+    @RequestMapping("/auth/info")
     public BaseReqVo info(String token){
         BaseReqVo baseReqVo = new BaseReqVo();
         InfoData data = new InfoData();
@@ -49,11 +51,14 @@ public class AuthController {
     /**
      * 统计 goods,order,product,user的数量
      */
-//    @RequestMapping("dashboard")
-//    public BaseReqVo dashboard(){
-//        BaseReqVo baseReqVo = new BaseReqVo();
-//        baseReqVo.setErrmsg("成功");
-//        baseReqVo.setErrno(0);
-//
-//    }
+    @Autowired
+    DashboardService dashboardService;
+    @RequestMapping("dashboard")
+    public BaseReqVo dashboard(){
+        BaseReqVo baseReqVo = new BaseReqVo();
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        baseReqVo.setData(dashboardService.countAll());
+        return baseReqVo;
+    }
 }
