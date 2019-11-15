@@ -1,4 +1,4 @@
-package com.wangdao.mall.controller;
+package com.wangdao.mall.controller.admin;
 
 
 import com.wangdao.mall.bean.BaseReqVo;
