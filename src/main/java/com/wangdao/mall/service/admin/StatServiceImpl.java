@@ -90,9 +90,7 @@ public class StatServiceImpl implements StatService {
         returnmap.put("rows",stateDos);
         return returnmap;
     }
-    /**
-     *
-     */
+
 //    @Autowired
 //
 //    @Override
@@ -121,4 +119,21 @@ public class StatServiceImpl implements StatService {
 //        returnmap.put("rows",stateDos);
 //        return returnmap;
 //    }
+
+    /**
+     * 订单统计，统计项为日期，订单数，下单用户数，订单总金额，客单价
+     * @return
+     */
+    @Override
+    public Map statOrder() {
+        String[] strings={"day","orders","customers","amount","pcr"};
+        List<OrderStatisticsDTO> orderStatisticsDTOS = orderDOMapper.selectForStatistics();
+        for (OrderStatisticsDTO orderStatisticsDTO : orderStatisticsDTOS) {
+            orderStatisticsDTO.setPcr(orderStatisticsDTO.getAmount()/orderStatisticsDTO.getCustomers());
+        }
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("rows", orderStatisticsDTOS);
+        map.put("columns", strings);
+        return map;
+    }
 }

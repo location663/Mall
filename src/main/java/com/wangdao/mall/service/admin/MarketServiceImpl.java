@@ -258,8 +258,9 @@ public class MarketServiceImpl implements MarketService{
         if (null != pageDTO.getOrderSn() && !pageDTO.getOrderSn().trim().equals("")){
             criteria.andOrderSnEqualTo(pageDTO.getOrderSn().trim());
         }
-        if (null != pageDTO.getOrderStatusArray() && !pageDTO.getOrderStatusArray().trim().equals("")){
-            criteria.andOrderSnEqualTo(pageDTO.getOrderStatusArray().trim());
+        if (null != pageDTO.getOrderStatusArray() ){
+//            criteria.andOrderSnEqualTo(pageDTO.getOrderStatusArray());
+            criteria.andOrderStatusIn(pageDTO.getOrderStatusArray());
         }
         orderDOExample.setOrderByClause(pageDTO.getSort() + " " + pageDTO.getOrder());
         List<OrderDO> orderDOList = orderDOMapper.selectByExample(orderDOExample);

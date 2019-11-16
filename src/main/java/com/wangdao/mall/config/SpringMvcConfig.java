@@ -29,10 +29,12 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     public ConfigurableConversionService ConversionService(){
         return configurableConversionService;
     }
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/wx/storage/admin/**").addResourceLocations("file:C:/projectStaticSources/");
     }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //registry.addInterceptor(new UserIntercepter()).addPathPatterns("/user/");
