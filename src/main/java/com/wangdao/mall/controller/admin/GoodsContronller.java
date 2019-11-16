@@ -65,6 +65,7 @@ public class GoodsContronller {
 
     /**
      * 商品介绍页获取全部类目categoryList
+     * (也是商品上架初始页)
      * @return
      */
     @RequestMapping("goods/catAndBrand")
@@ -98,4 +99,24 @@ public class GoodsContronller {
         BaseReqVo baseReqVo = goodsService.deleteComment(commentDO);
         return baseReqVo;
     }
+
+    /**
+     * 删除商品
+     * @return
+     */
+    @RequestMapping("goods/delete")
+    public BaseReqVo goodsDelete(GoodsDO goodsDO){
+
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+
+        int i=0;
+        i=goodsService.goodsDelete(goodsDO);
+
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+
+        return baseReqVo;
+    }
+
+
 }

@@ -1,9 +1,6 @@
 package com.wangdao.mall.service.admin;
 
-import com.wangdao.mall.bean.BrandDO;
-import com.wangdao.mall.bean.RegionVO;
-import com.wangdao.mall.bean.RequestPageDTO;
-import com.wangdao.mall.bean.StorageDO;
+import com.wangdao.mall.bean.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -19,4 +16,16 @@ public interface MarketService {
     BrandDO insertBrand(BrandDO brandDO);
 
     StorageDO insertStorage(MultipartFile file);
+
+    int deleteBrand(BrandDO brandDO);
+
+    List<CategoryDO> listCategory();
+
+    List<CategoryVO> listCategory1();
+
+    CategoryDO insertCategory(CategoryDO categoryDO);
+
+    int updateCategory(CategoryDO categoryDO);
+
+    int deleteCategory(CategoryDO categoryDO);
 }

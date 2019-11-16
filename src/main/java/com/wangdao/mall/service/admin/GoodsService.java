@@ -18,4 +18,7 @@ public interface GoodsService {
     BaseReqVo queryCommentList(Integer page, Integer limit, Integer userId, Integer valueId, String sort, String order);
 
     BaseReqVo deleteComment(CommentDO commentDO);
+
+    int goodsDelete(GoodsDO goodsDO);
+
 }
