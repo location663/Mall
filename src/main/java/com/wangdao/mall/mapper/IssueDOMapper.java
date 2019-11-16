@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.IssueDO;
 import com.wangdao.mall.bean.IssueDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface IssueDOMapper {
     long countByExample(IssueDOExample example);
@@ -27,4 +28,7 @@ public interface IssueDOMapper {
     int updateByPrimaryKeySelective(IssueDO record);
 
     int updateByPrimaryKey(IssueDO record);
+
+    @Select("select DISTINCT LAST_INSERT_ID() FROM cskaoyan_mall_issue")
+    int selectLastInsertId();
 }
