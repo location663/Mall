@@ -49,9 +49,9 @@ public class AdController {
     @RequestMapping("update")
     public BaseReqVo getAdList(@RequestBody AdDO adDO){
         BaseReqVo<Object> baseReqVo = new BaseReqVo();
-        //这是import java.sql.Date;不是java.util.Date!!!
+        //这是import java.sql.Date;不是java.util22222222.Date!!!
 //        adDO.setUpdateTime(new Date(System.currentTimeMillis()));
-        //发现用java.util.Date也没什么区别，是能正常修改数据库，但是请求报文和响应报文里updateTime的格式不对，
+        //发现用java.util22222222.Date也没什么区别，是能正常修改数据库，但是请求报文和响应报文里updateTime的格式不对，
         //"2018-01-31T16:00:00.000+0000"
         //"2019-11-15 08:00:19"
         adDO.setUpdateTime(new java.util.Date());

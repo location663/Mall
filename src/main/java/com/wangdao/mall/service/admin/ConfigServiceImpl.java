@@ -1,4 +1,4 @@
-package com.wangdao.mall.service;
+package com.wangdao.mall.service.admin;
 
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.SystemDO;
