@@ -14,10 +14,7 @@ import com.wangdao.mall.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class GoodsServiceImpl implements GoodsService {
@@ -245,5 +242,75 @@ public class GoodsServiceImpl implements GoodsService {
         return new BaseReqVo<>(null,"成功",0);
     }
 
+    /**
+     * 上架创建商品
+     * @param goodsCreateRequest 封装了request的四个json
+     * @return
+     */
+    @Override
+    public int goodsCreate(GoodsCreateRequest goodsCreateRequest) {
 
+        //取出四个json
+        GoodsDO goods = goodsCreateRequest.getGoods();
+        List<GoodsSpecificationDO> specifications = goodsCreateRequest.getSpecifications();
+        List<GoodsProductDO> products = goodsCreateRequest.getProducts();
+        List<GoodsAttributeDO> attributes = goodsCreateRequest.getAttributes();
+
+        //insert goods对象
+        goods.setAddTime(new Date());  //刚创建时需要添加add_time
+        goods.setDeleted(false);       //刚创建时需要添加delete为false
+        int insertGoodsNum = goodsDOMapper.insert(goods);
+
+
+        GoodsDOExample goodsDOExample = new GoodsDOExample();
+        goodsDOExample.createCriteria().andGoodsSnEqualTo(goods.getGoodsSn());
+        List<GoodsDO> goodsDOList = goodsDOMapper.selectByExample(goodsDOExample);//重新获取一个刚刚插入的goods对象，以便得到其goods_id
+        Integer goodsId=null;
+        for (GoodsDO goodsDO : goodsDOList) {
+            goodsId=goodsDO.getId();
+        }
+
+        //insert specification对象
+        int insertSpecificationNum=0;
+        for (GoodsSpecificationDO specification : specifications) {
+            specification.setGoodsId(goodsId);  //对应商品对象的表的id (goods_id)
+            specification.setAddTime(new Date());
+            specification.setDeleted(false);   //刚创建时需要添加delete为false
+            int insertSpecificationNum1 = goodsSpecificationDOMapper.insert(specification);
+            insertSpecificationNum=insertSpecificationNum+insertSpecificationNum1;
+        }
+
+
+        //insert product对象
+        int insertProductNum=0;
+        for (GoodsProductDO product : products) {
+            product.setGoodsId(goodsId);//对应商品对象的表的id (goods_id)
+            product.setAddTime(new Date());
+            product.setDeleted(false);    //刚创建时需要添加delete为false
+            int insertProductNum1 = goodsProductDOMapper.insert(product);
+            insertProductNum=insertProductNum+insertProductNum1;
+        }
+
+        //insert attribute对象
+        int insertAttributeNum=0;
+        for (GoodsAttributeDO attribute : attributes) {
+            attribute.setGoodsId(goodsId);//对应商品对象的表的id (goods_id)
+            attribute.setAddTime(new Date());
+            attribute.setDeleted(false);  //刚创建时需要添加delete为false
+            int insertAttributeNum1 = goodsAttributeDOMapper.insert(attribute);
+            insertAttributeNum=insertAttributeNum+insertAttributeNum1;
+        }
+
+        return insertGoodsNum;
+    }
+
+    /**
+     * 编辑更新商品
+     * @param goodsCreateRequest 封装了request的四个json
+     * @return
+     */
+    @Override
+    public int goodsUpdate(GoodsCreateRequest goodsCreateRequest) {
+        return 0;
+    }
 }

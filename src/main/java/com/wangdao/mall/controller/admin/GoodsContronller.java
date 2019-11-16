@@ -7,10 +7,8 @@
 
 package com.wangdao.mall.controller.admin;
 
-import com.wangdao.mall.bean.BaseReqVo;
-import com.wangdao.mall.bean.CommentDO;
+import com.wangdao.mall.bean.*;
 import com.wangdao.mall.service.admin.GoodsService;
-import com.wangdao.mall.bean.GoodsDO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -102,10 +100,11 @@ public class GoodsContronller {
 
     /**
      * 删除商品
+     * @param goodsDO
      * @return
      */
     @RequestMapping("goods/delete")
-    public BaseReqVo goodsDelete(GoodsDO goodsDO){
+    public BaseReqVo goodsDelete(@RequestBody GoodsDO goodsDO){
 
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
 
@@ -120,11 +119,38 @@ public class GoodsContronller {
 
     /**
      * 上架创建商品
+     * @param goodsCreateRequest  封装了request的四个json
      * @return
      */
     @RequestMapping("goods/create")
-    public BaseReqVo goodsCreate(){
+    public BaseReqVo goodsCreate(@RequestBody GoodsCreateRequest goodsCreateRequest){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
 
+        Integer i=0;
+        i=goodsService.goodsCreate(goodsCreateRequest);
+
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+
+        return baseReqVo;
+    }
+
+    /**
+     * 编辑更新商品
+     * @param goodsCreateRequest  封装了request的四个json
+     * @return
+     */
+    @RequestMapping("goods/update")
+    public BaseReqVo goodsUpdate(@RequestBody GoodsCreateRequest goodsCreateRequest){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+
+        int i=0;
+        i=goodsService.goodsUpdate(goodsCreateRequest);
+
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+
+        return baseReqVo;
     }
 
 
