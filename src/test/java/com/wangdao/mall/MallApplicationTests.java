@@ -6,11 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-<<<<<<< HEAD
-import java.util.HashMap;
-=======
-import java.util.UUID;
->>>>>>> a1982c9efa3d55b8f62b8edd1ad4a72ca4afbe79
+
+//import java.util.HashMap;
+//import java.util.UUID;
 
 @SpringBootTest
 class MallApplicationTests {
@@ -22,26 +20,26 @@ class MallApplicationTests {
     void contextLoads() {
 
     }
-
-    @Test
-    public void test1(){
-        Integer page=1;
-        Integer limit=20;
-        Integer goodsSn=110;
-        String name="魔";
-        String sort="add_time";
-        String order="desc";
-        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
-
-
-        HashMap<String, Object> map = goodsService.queryGoodsList(page,limit,goodsSn,name,sort, order);
-
-
-        baseReqVo.setData(map);
-        baseReqVo.setErrmsg("成功");
-        baseReqVo.setErrno(0);
-
-        //System.out.println(baseReqVo);
-    }
+//
+//    @Test
+//    public void test1(){
+//        Integer page=1;
+//        Integer limit=20;
+//        Integer goodsSn=110;
+//        String name="魔";
+//        String sort="add_time";
+//        String order="desc";
+//        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+//
+//
+//        HashMap<String, Object> map = goodsService.queryGoodsList(page,limit,goodsSn,name,sort, order);
+//
+//
+//        baseReqVo.setData(map);
+//        baseReqVo.setErrmsg("成功");
+//        baseReqVo.setErrno(0);
+//
+//        //System.out.println(baseReqVo);
+//    }
 
 }

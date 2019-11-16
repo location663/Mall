@@ -32,6 +32,16 @@ public class GoodsServiceImpl implements GoodsService {
     @Autowired
     BrandDOMapper brandDOMapper;
 
+    /**
+     * 商品列表
+     * @param page
+     * @param limit
+     * @param goodsSn
+     * @param name
+     * @param sort
+     * @param order
+     * @return
+     */
     @Override
     public HashMap<String, Object> queryGoodsList(Integer page, Integer limit,Integer goodsSn,String name, String sort, String order) {
         GoodsDOExample goodsDOExample = new GoodsDOExample();
@@ -62,6 +72,12 @@ public class GoodsServiceImpl implements GoodsService {
         return map;
     }
 
+
+    /**
+     * 商品编辑页的商品介绍
+     * @param id
+     * @return
+     */
     @Override
     public HashMap<String, Object> queryGoodsDetail(Integer id) {
         HashMap<String, Object> map1 = new HashMap<>();
@@ -73,6 +89,10 @@ public class GoodsServiceImpl implements GoodsService {
         return null;
     }
 
+    /**
+     * 商品介绍页获取全部类目categoryList
+     * @return
+     */
     @Override
     public HashMap<String, Object> queryGoodsCatAndBrandList() {
         HashMap<String, Object> map1 = new HashMap<>();
