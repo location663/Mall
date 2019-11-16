@@ -9,7 +9,6 @@ import java.util.Date;
 public class String2DateConverter implements Converter<String, Date> {
     @Override
     public Date convert(String s) {
-
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date parse = null;
         try {
@@ -17,7 +16,6 @@ public class String2DateConverter implements Converter<String, Date> {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-
         return parse;
     }
 }

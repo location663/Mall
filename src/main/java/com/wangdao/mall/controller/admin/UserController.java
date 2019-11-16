@@ -19,6 +19,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("admin")
 public class UserController {
+
     @Autowired
     UserService userService;
 

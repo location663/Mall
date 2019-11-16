@@ -44,6 +44,7 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
     }
 
 
+
     private String parseArray2String(String[] strings) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -53,14 +54,9 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
             e.printStackTrace();
         }
         return null;
-
     }
 
     private String[] parseString2Array(String arrayString){
-        /*String s = arrayString.replaceAll("\"", "").
-                replaceAll("\[","").
-                replaceAll("]","");
-        String[] split = s.split(",");*/
         ObjectMapper objectMapper = new ObjectMapper();
         String[] strings = new String[0];
         try {
@@ -70,4 +66,5 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
         }
         return strings;
     }
+
 }
