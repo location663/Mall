@@ -1,5 +1,6 @@
 package com.wangdao.mall.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,9 +13,9 @@ public class UserDO {
     private String password;
 
     private Byte gender;
-
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date lastLoginTime;
 
     private String lastLoginIp;
@@ -30,9 +31,9 @@ public class UserDO {
     private String weixinOpenid;
 
     private Byte status;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date addTime;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date updateTime;
 
     private Boolean deleted;

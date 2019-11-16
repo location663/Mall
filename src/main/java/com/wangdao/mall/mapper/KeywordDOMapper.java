@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.KeywordDO;
 import com.wangdao.mall.bean.KeywordDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface KeywordDOMapper {
     long countByExample(KeywordDOExample example);
@@ -27,4 +28,7 @@ public interface KeywordDOMapper {
     int updateByPrimaryKeySelective(KeywordDO record);
 
     int updateByPrimaryKey(KeywordDO record);
+
+    @Select("select DISTINCT LAST_INSERT_ID() FROM cskaoyan_mall_keyword")
+    int selectLastInsertId();
 }

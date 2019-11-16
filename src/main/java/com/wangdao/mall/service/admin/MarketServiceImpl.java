@@ -3,9 +3,7 @@ package com.wangdao.mall.service.admin;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wangdao.mall.bean.*;
-import com.wangdao.mall.mapper.BrandDOMapper;
-import com.wangdao.mall.mapper.CategoryDOMapper;
-import com.wangdao.mall.mapper.RegionDOMapper;
+import com.wangdao.mall.mapper.*;
 
 import com.wangdao.mall.service.util.StorageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +30,20 @@ public class MarketServiceImpl implements MarketService{
     @Autowired
     StorageUtils storageUtils;
 
+    @Autowired
+    OrderDOMapper orderDOMapper;
+
+    @Autowired
+    OrderGoodsDOMapper orderGoodsDOMapper;
+
+    @Autowired
+    UserDOMapper userDOMapper;
+
+    @Autowired
+    IssueDOMapper issueDOMapper;
+
+    @Autowired
+    KeywordDOMapper keywordDOMapper;
     /**
      * 商场管理，获得全部行政区域
      * @return
@@ -66,7 +78,7 @@ public class MarketServiceImpl implements MarketService{
         if (null != pageDTO.getId()) {
             criteria.andIdEqualTo(pageDTO.getId());
         }
-        if (null != pageDTO.getName()){
+        if (null != pageDTO.getName() && !pageDTO.getName().trim().equals("")){
             criteria.andNameLike("%" + pageDTO.getName() + "%");
         }
         brandDOExample.setOrderByClause(pageDTO.getSort() + " " + pageDTO.getOrder());
@@ -90,14 +102,11 @@ public class MarketServiceImpl implements MarketService{
      */
     @Override
     public BrandDO updateBrandById(BrandDO brandDO) {
-        BrandDOExample brandDOExample = new BrandDOExample();
-        brandDOExample.createCriteria().andIdEqualTo(brandDO.getId());
-        brandDOMapper.updateByExample(brandDO, brandDOExample);
-        BrandDOExample brandDOExample1 = new BrandDOExample();
-        brandDOExample1.createCriteria().andIdEqualTo(brandDO.getId());
-        List<BrandDO> brandDOS = brandDOMapper.selectByExample(brandDOExample1);
 
-        return brandDOS.get(0);
+        brandDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        int i = brandDOMapper.updateByPrimaryKey(brandDO);
+        BrandDO brandDO1 = brandDOMapper.selectByPrimaryKey(brandDO.getId());
+        return brandDO1;
     }
 
     /**
@@ -136,7 +145,7 @@ public class MarketServiceImpl implements MarketService{
     @Override
     public int deleteBrand(BrandDO brandDO) {
         brandDO.setDeleted(true);
-//        int i = brandDOMapper.deleteByPrimaryKey(brandDO.getId());
+        brandDO.setUpdateTime(new Date(System.currentTimeMillis()));
         int i = brandDOMapper.updateByPrimaryKey(brandDO);
         return i;
     }
@@ -226,8 +235,190 @@ public class MarketServiceImpl implements MarketService{
      */
     @Override
     public int deleteCategory(CategoryDO categoryDO) {
+        categoryDO.setUpdateTime(new Date(System.currentTimeMillis()));
         categoryDO.setDeleted(true);
         int i = categoryDOMapper.updateByPrimaryKey(categoryDO);
         return i;
+    }
+
+    /**
+     * 订单列表
+     * @param pageDTO
+     * @return
+     */
+    @Override
+    public Map listOrder(RequestPageDTO pageDTO) {
+        PageHelper.startPage(pageDTO.getPage(), pageDTO.getLimit());
+
+        OrderDOExample orderDOExample = new OrderDOExample();
+        OrderDOExample.Criteria criteria = orderDOExample.createCriteria().andDeletedEqualTo(false);
+        if (null != pageDTO.getUserId() ){
+            criteria.andUserIdEqualTo(pageDTO.getUserId());
+        }
+        if (null != pageDTO.getOrderSn() && !pageDTO.getOrderSn().trim().equals("")){
+            criteria.andOrderSnEqualTo(pageDTO.getOrderSn().trim());
+        }
+        if (null != pageDTO.getOrderStatusArray() && !pageDTO.getOrderStatusArray().trim().equals("")){
+            criteria.andOrderSnEqualTo(pageDTO.getOrderStatusArray().trim());
+        }
+        orderDOExample.setOrderByClause(pageDTO.getSort() + " " + pageDTO.getOrder());
+        List<OrderDO> orderDOList = orderDOMapper.selectByExample(orderDOExample);
+        PageInfo<OrderDO> orderDOPageInfo = new PageInfo<>(orderDOList);
+        long total = orderDOPageInfo.getTotal();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("items", orderDOList);
+        map.put("total", total);
+        return map;
+    }
+
+    /**
+     * 订单详情
+     * @param orderId
+     * @return
+     */
+    @Override
+    public Map<String, Object> detailOrder(Integer orderId) {
+        HashMap<String, Object> map = new HashMap<>();
+        OrderDO orderDO = orderDOMapper.selectByPrimaryKey(orderId);
+        OrderGoodsDOExample orderGoodsDOExample = new OrderGoodsDOExample();
+        orderGoodsDOExample.createCriteria().andOrderIdEqualTo(orderId);
+        List<OrderGoodsDO> orderGoodsDOS = orderGoodsDOMapper.selectByExample(orderGoodsDOExample);
+        UserDO userDO = userDOMapper.selectByPrimaryKey(orderDO.getUserId());
+        map.put("order", orderDO);
+        map.put("orderGoods", orderGoodsDOS.get(0));
+        map.put("user", userDO);
+        return map;
+    }
+
+    /**
+     * 通用问题列表
+     * @param pageDTO
+     * @return
+     */
+    @Override
+    public Map listIssue(RequestPageDTO pageDTO) {
+        PageHelper.startPage(pageDTO.getPage(), pageDTO.getLimit());
+
+        IssueDOExample issueDOExample = new IssueDOExample();
+        IssueDOExample.Criteria criteria = issueDOExample.createCriteria().andDeletedEqualTo(false);
+        if (null != pageDTO.getQuestion() && !pageDTO.getQuestion().trim().equals("")){
+            criteria.andQuestionLike("%" + pageDTO.getQuestion().trim() + "%");
+        }
+        List<IssueDO> issueDOS = issueDOMapper.selectByExample(issueDOExample);
+
+        PageInfo<IssueDO> issueDOPageInfo = new PageInfo<>();
+        long total = issueDOPageInfo.getTotal();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("items", issueDOS);
+        map.put("total", total);
+        return map;
+    }
+
+    /**
+     * 插入通用问题
+     * @param issueDO
+     * @return
+     */
+    @Override
+    public IssueDO insertIssue(IssueDO issueDO) {
+        issueDO.setAddTime(new Date(System.currentTimeMillis()));
+        issueDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        int i = issueDOMapper.insertSelective(issueDO);
+        int id = issueDOMapper.selectLastInsertId();
+        IssueDO issueDO1 = issueDOMapper.selectByPrimaryKey(id);
+        return issueDO1;
+    }
+
+    /**
+     * 更新通用问题
+     * @param issueDO
+     * @return
+     */
+    @Override
+    public IssueDO updateIssue(IssueDO issueDO) {
+        issueDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        issueDOMapper.updateByPrimaryKey(issueDO);
+        IssueDO issueDO1 = issueDOMapper.selectByPrimaryKey(issueDO.getId());
+        return issueDO1;
+    }
+
+    /**
+     * 删除通用问题
+     * @param issueDO
+     * @return
+     */
+    @Override
+    public int deleteIssue(IssueDO issueDO) {
+        issueDO.setDeleted(true);
+        issueDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        int res = issueDOMapper.updateByPrimaryKey(issueDO);
+        return res;
+    }
+
+    /**
+     * 关键词列表
+     * @param pageDTO
+     * @return
+     */
+    @Override
+    public Map listKeyword(RequestPageDTO pageDTO) {
+        PageHelper.startPage(pageDTO.getPage(), pageDTO.getLimit());
+
+        KeywordDOExample keywordDOExample = new KeywordDOExample();
+        KeywordDOExample.Criteria criteria = keywordDOExample.createCriteria().andDeletedEqualTo(false);
+        if (null != pageDTO.getKeyword() && !pageDTO.getKeyword().trim().equals("")){
+            criteria.andKeywordLike("%" + pageDTO.getKeyword().trim() + "%");
+        }
+        if (null != pageDTO.getUrl() && !pageDTO.getUrl().trim().equals("")){
+            criteria.andUrlLike("%" + pageDTO.getUrl().trim() + "%");
+        }
+        List<KeywordDO> keyDOS = keywordDOMapper.selectByExample(keywordDOExample);
+        PageInfo<IssueDO> issueDOPageInfo = new PageInfo<>();
+        long total = issueDOPageInfo.getTotal();
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("items", keyDOS);
+        map.put("total", total);
+        return map;
+    }
+
+    /**
+     * 插入关键词
+     * @param keywordDO
+     * @return
+     */
+    @Override
+    public KeywordDO insertKeyword(KeywordDO keywordDO) {
+        keywordDO.setAddTime(new Date(System.currentTimeMillis()));
+        keywordDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        int i = keywordDOMapper.insertSelective(keywordDO);
+        int id = keywordDOMapper.selectLastInsertId();
+        KeywordDO keywordDO1 = keywordDOMapper.selectByPrimaryKey(id);
+        return keywordDO1;
+    }
+
+    /**
+     * 删除关键词
+     * @param keywordDO
+     * @return
+     */
+    @Override
+    public int deleteKeyword(KeywordDO keywordDO) {
+        keywordDO.setDeleted(true);
+        keywordDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        int i = keywordDOMapper.updateByPrimaryKey(keywordDO);
+        return i;
+    }
+
+    /**
+     * 修改关键词
+     * @param keywordDO
+     * @return
+     */
+    @Override
+    public KeywordDO updateKeyword(KeywordDO keywordDO) {
+        keywordDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        keywordDOMapper.updateByPrimaryKey(keywordDO);
+        KeywordDO keywordDO1 = keywordDOMapper.selectByPrimaryKey(keywordDO.getId());
+        return keywordDO1;
     }
 }
