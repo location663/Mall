@@ -1,4 +1,4 @@
-package com.wangdao.mall.service;
+package com.wangdao.mall.service.admin;
 
 import com.wangdao.mall.bean.AdminDO;
 
@@ -14,4 +14,10 @@ public interface AdminService {
      List<AdminDO> createNewAdmin(AdminDO adminDO);
 
      AdminDO updateAdmin(AdminDO adminDO);
+
+     int deleteAdminByAdminDORecord(AdminDO adminDO);
+
+     Map<String, Object> selectAllLogList(String name,Integer page, Integer limit, String sort, String order);
+
+     Map<String, Object> selectAllRoleList(String name,Integer page, Integer limit, String sort, String order);
 }

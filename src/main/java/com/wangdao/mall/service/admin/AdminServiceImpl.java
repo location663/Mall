@@ -4,16 +4,15 @@
  * Date:
  * Time: 17:11
  **/
-package com.wangdao.mall.service;
+package com.wangdao.mall.service.admin;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wangdao.mall.bean.AdminDO;
-import com.wangdao.mall.bean.AdminDOExample;
-import com.wangdao.mall.bean.RoleDO;
-import com.wangdao.mall.bean.RoleDOExample;
+import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.AdminDOMapper;
+import com.wangdao.mall.mapper.LogDOMapper;
 import com.wangdao.mall.mapper.RoleDOMapper;
+import com.wangdao.mall.service.admin.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,13 +22,16 @@ import java.util.*;
 
 @Service
 @Transactional
-public class AdminServiceImpl implements AdminService{
+public class AdminServiceImpl implements AdminService {
 
     @Autowired
     AdminDOMapper adminDOMapper;
 
     @Autowired
     RoleDOMapper roleDOMapper;
+
+    @Autowired
+    LogDOMapper logDOMapper;
 
     @Override
     public Map selectAllAdmin(String username,Integer page,Integer limit,String sort,String order) {
@@ -66,6 +68,7 @@ public class AdminServiceImpl implements AdminService{
      * username校验  √
      * 数据库没有添加 add_time          √
      *              update_time 完成  √
+     * 新增 ： 判断用户名长度过短         √
      * @param adminDO
      * @return
      */
@@ -111,10 +114,51 @@ public class AdminServiceImpl implements AdminService{
 
         int update = adminDOMapper.updateByPrimaryKeySelective(adminDO);  // 选择更新 建议使用selective
         if (update != 0){
-            AdminDO adminDOAfterUpdate = adminDOMapper.selectByPrimaryKey(adminDO.getId());
+            AdminDO adminDOAfterUpdate  = adminDOMapper.selectByPrimaryKey(adminDO.getId());
             return adminDOAfterUpdate;
         }
         return null;
+    }
+
+    @Override
+    public int deleteAdminByAdminDORecord(AdminDO adminDO) {
+        adminDO.setDeleted(true);
+        int update = adminDOMapper.updateByPrimaryKeySelective(adminDO);
+        return update;
+    }
+
+    @Override
+    public Map<String, Object> selectAllLogList(String name,Integer page, Integer limit, String sort, String order) {
+        LogDOExample logDOExample = new LogDOExample();
+        PageHelper.startPage(page,limit);
+        if (name != null){
+            logDOExample.createCriteria().andAdminLike("%" + name + "%");
+        }
+        logDOExample.setOrderByClause(sort + " " + order);
+        List<LogDO> logDOList = logDOMapper.selectByExample(logDOExample);
+        PageInfo<LogDO> logDOPageInfo = new PageInfo<>(logDOList);
+        long total = logDOPageInfo.getTotal();
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", total);
+        map.put("items", logDOList);
+        return map;
+    }
+
+    @Override
+    public Map<String, Object> selectAllRoleList(String name,Integer page, Integer limit, String sort, String order) {
+        RoleDOExample roleDOExample = new RoleDOExample();
+        PageHelper.startPage(page,limit);
+        if (name != null){
+            roleDOExample.createCriteria().andNameLike("%" + name + "%");
+        }
+        roleDOExample.setOrderByClause(sort + " " + order);
+        List<RoleDO> roleDOList = roleDOMapper.selectByExample(roleDOExample);
+        PageInfo<RoleDO> roleDOPageInfo = new PageInfo<>(roleDOList);
+        long total = roleDOPageInfo.getTotal();
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", total);
+        map.put("items", roleDOList);
+        return map;
     }
 
 }

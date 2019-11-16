@@ -13,6 +13,7 @@ import java.util.UUID;
 
 @Component
 public class StorageUtils {
+
     @Autowired
     StorageDOMapper storageDOMapper;
 
@@ -27,10 +28,10 @@ public class StorageUtils {
     public StorageDO insertStorage(MultipartFile file, String realPath){
         StorageDO storageDO = new StorageDO();
         String originalFilename = file.getOriginalFilename();
-        String s1 = UUID.randomUUID().toString() + originalFilename;
+        String s1 = UUID.randomUUID().toString() + originalFilename;  // 拿源文件名字 .jpg 之前 拼接一个uuid
         String s = Integer.toHexString(s1.hashCode());
         String substring = originalFilename.substring(originalFilename.indexOf("."));
-        File file1 = new File(realPath, s + substring);
+        File file1 = new File(realPath, s + substring);  // s + substring(出去后缀的部分) 是
         try {
             file.transferTo(file1);
         } catch (IOException e) {

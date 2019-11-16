@@ -1,19 +1,18 @@
 package com.wangdao.mall;
 
 import com.wangdao.mall.bean.AdminDO;
-import com.wangdao.mall.service.AdminService;
+import com.wangdao.mall.service.admin.AdminService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.List;
 import java.util.Map;
 
 @SpringBootTest
 class MallApplicationTests {
 
-//    @Autowired
-//    AdminService adminService;
+    @Autowired
+    AdminService adminService;
 
 //    @Test
 //    void contextLoads() {
@@ -118,5 +117,31 @@ class MallApplicationTests {
 //        }
 //    }
 
+    /**
+     * 只是逻辑删除 在delected上置为true
+     */
+//    @Test
+//    public void mytest05(){
+//        AdminDO adminDO = new AdminDO();
+//        adminDO.setId(8);
+//        adminDO.setUsername("woxianghuo");
+//        Integer[] integers = {1};
+//        adminDO.setRoleIds(integers);
+//        int i = adminService.deleteAdminByAdminDORecord(adminDO);
+//        System.out.println(i);
+//    }
+
+
+//    @Test
+//    public void mytest06(){
+//        Map<String, Object> map = adminService.selectAllLogList(1, 20, "add_time", "desc");
+//        System.out.println(map);
+//    }
+
+//    @Test
+////    public void mytest01(){
+////        Map<String, Object> map = adminService.selectAllRoleList(1, 20, "add_time", "desc");
+////        System.out.println(map);
+////    }
 }
 

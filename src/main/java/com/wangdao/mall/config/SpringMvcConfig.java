@@ -20,19 +20,23 @@ public class SpringMvcConfig implements WebMvcConfigurer {
 
     @Autowired
     ConfigurableConversionService configurableConversionService;
+
     @PostConstruct
     public void addConverter(){
         configurableConversionService.addConverter(new String2DateConverter());
     }
+
     @Bean
     @Primary
     public ConfigurableConversionService ConversionService(){
         return configurableConversionService;
     }
+
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/wx/storage/admin/**").addResourceLocations("file:C:/projectStaticSources/");
     }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //registry.addInterceptor(new UserIntercepter()).addPathPatterns("/user/");
