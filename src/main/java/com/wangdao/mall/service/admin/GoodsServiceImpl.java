@@ -12,6 +12,7 @@ import com.github.pagehelper.PageInfo;
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.BrandDOMapper;
 import com.wangdao.mall.mapper.CategoryDOMapper;
+import com.wangdao.mall.mapper.CommentDOMapper;
 import com.wangdao.mall.mapper.GoodsDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class GoodsServiceImpl implements GoodsService {
@@ -31,6 +33,9 @@ public class GoodsServiceImpl implements GoodsService {
 
     @Autowired
     BrandDOMapper brandDOMapper;
+
+    @Autowired
+    CommentDOMapper commentDOMapper;
 
     @Override
     public HashMap<String, Object> queryGoodsList(Integer page, Integer limit,Integer goodsSn,String name, String sort, String order) {
@@ -130,4 +135,47 @@ public class GoodsServiceImpl implements GoodsService {
 
         return map1;
     }
+
+    /**
+     * 获取所有商品评论
+     * @return
+     */
+    @Override
+    public BaseReqVo queryCommentList(Integer page, Integer limit, Integer userId, Integer valueId, String sort, String order) {
+        CommentDOExample commentDOExample = new CommentDOExample();
+        PageHelper.startPage(page,limit);
+
+        if (userId!=null && valueId!=null){
+            commentDOExample.createCriteria().andUserIdEqualTo(userId).andValueIdEqualTo(valueId).andDeletedEqualTo(false);
+        }else if (userId==null && valueId!=null){
+            commentDOExample.createCriteria().andValueIdEqualTo(valueId).andDeletedEqualTo(false);
+        }else if (userId!=null && valueId==null){
+            commentDOExample.createCriteria().andUserIdEqualTo(userId).andDeletedEqualTo(false);
+        }
+        commentDOExample.createCriteria().andDeletedEqualTo(false);
+
+        commentDOExample.setOrderByClause(sort+" "+order);
+        List<CommentDO> commentDOList = commentDOMapper.selectByExample(commentDOExample);
+        PageInfo<CommentDO> commentDOPageInfo = new PageInfo<>(commentDOList);
+        long total = commentDOPageInfo.getTotal();
+        Map<String, Object> map = new HashMap<>();
+        map.put("total",total);
+        map.put("items",commentDOList);
+        return new BaseReqVo<>(map,"成功",0);
+    }
+
+    /**
+     * 删除单个商品评论
+     * @return
+     */
+    @Override
+    public BaseReqVo deleteComment(CommentDO commentDO) {
+        commentDO.setDeleted(true);
+        CommentDOExample commentDOExample = new CommentDOExample();
+        commentDOExample.createCriteria().andIdEqualTo(commentDO.getId());
+        commentDOMapper.updateByPrimaryKeySelective(commentDO);
+        return new BaseReqVo<>(null,"成功",0);
+    }
+
+
 }
