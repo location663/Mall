@@ -44,8 +44,6 @@ public class AuthController {
         baseReqVo.setData(data);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
-
-
         return baseReqVo;
     }
     /**

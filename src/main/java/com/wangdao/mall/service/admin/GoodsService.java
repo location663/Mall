@@ -13,4 +13,6 @@ public interface GoodsService {
 
     HashMap<String, Object> queryGoodsCatAndBrandList();
 
+    int goodsDelete(GoodsDO goodsDO);
+
 }

@@ -1,20 +1,13 @@
 package com.wangdao.mall;
 
-import com.wangdao.mall.bean.BaseReqVo;
-import com.wangdao.mall.service.admin.GoodsService;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-
-//import java.util.HashMap;
-//import java.util.UUID;
 
 @SpringBootTest
 class MallApplicationTests {
 
-    @Autowired
-    GoodsService goodsService;
+//    @Autowired
+//    GoodsService goodsService;
 
     @Test
     void contextLoads() {
@@ -42,4 +35,7 @@ class MallApplicationTests {
 //        //System.out.println(baseReqVo);
 //    }
 
+
+
 }
+

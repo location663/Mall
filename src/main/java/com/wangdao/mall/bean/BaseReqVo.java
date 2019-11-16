@@ -9,8 +9,8 @@ public class BaseReqVo<T> {
     int errno;
 
     public BaseReqVo() {
-
     }
+
 
     public BaseReqVo(T data, String errmsg, int errno) {
         this.data = data;
