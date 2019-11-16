@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.convert.support.ConfigurableConversionService;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +28,10 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     @Primary
     public ConfigurableConversionService ConversionService(){
         return configurableConversionService;
+    }
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/wx/storage/admin/**").addResourceLocations("file:C:/projectStaticSources/");
     }
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
