@@ -29,6 +29,6 @@ public interface BrandDOMapper {
 
     int updateByPrimaryKey(BrandDO record);
 
-    @Select("select LAST_INSERT_ID() from cskaoyan_mall_brand")
+    @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_brand")
     int selectLastInsertId();
 }

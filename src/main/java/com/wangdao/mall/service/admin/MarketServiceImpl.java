@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.BrandDOMapper;
+import com.wangdao.mall.mapper.CategoryDOMapper;
 import com.wangdao.mall.mapper.RegionDOMapper;
 
 import com.wangdao.mall.service.util.StorageUtils;
@@ -25,8 +26,8 @@ public class MarketServiceImpl implements MarketService{
     @Autowired
     BrandDOMapper brandDOMapper;
 
-    /*@Autowired
-    StorageDOMapper storageDOMapper;*/
+    @Autowired
+    CategoryDOMapper categoryDOMapper;
 
     @Autowired
     StorageUtils storageUtils;
@@ -61,7 +62,7 @@ public class MarketServiceImpl implements MarketService{
         PageHelper.startPage(pageDTO.getPage(), pageDTO.getLimit());
 
         BrandDOExample brandDOExample = new BrandDOExample();
-        BrandDOExample.Criteria criteria = brandDOExample.createCriteria();
+        BrandDOExample.Criteria criteria = brandDOExample.createCriteria().andDeletedEqualTo(false);
         if (null != pageDTO.getId()) {
             criteria.andIdEqualTo(pageDTO.getId());
         }
@@ -89,11 +90,9 @@ public class MarketServiceImpl implements MarketService{
      */
     @Override
     public BrandDO updateBrandById(BrandDO brandDO) {
-
         BrandDOExample brandDOExample = new BrandDOExample();
         brandDOExample.createCriteria().andIdEqualTo(brandDO.getId());
         brandDOMapper.updateByExample(brandDO, brandDOExample);
-
         BrandDOExample brandDOExample1 = new BrandDOExample();
         brandDOExample1.createCriteria().andIdEqualTo(brandDO.getId());
         List<BrandDO> brandDOS = brandDOMapper.selectByExample(brandDOExample1);
@@ -108,11 +107,9 @@ public class MarketServiceImpl implements MarketService{
      */
     @Override
     public BrandDO insertBrand(BrandDO brandDO) {
-
         brandDO.setAddTime(new Date(System.currentTimeMillis()));
         brandDO.setUpdateTime(new Date(System.currentTimeMillis()));
         brandDOMapper.insertSelective(brandDO);
-
         BrandDO brandDO1 = brandDOMapper.selectByPrimaryKey(brandDOMapper.selectLastInsertId());
 
         return brandDO1;
@@ -126,32 +123,22 @@ public class MarketServiceImpl implements MarketService{
     @Override
     public StorageDO insertStorage(MultipartFile file) {
         StorageDO storageDO = new StorageDO();
-        String realPath = "E:/develop/wangdao_codes/springboot/mall/target/classes/static/wx/storage/fetch/";
-
+        String realPath = "C:/projectStaticSources";
         StorageDO storageDO1 = storageUtils.insertStorage(file, realPath);
-        /*String originalFilename = file.getOriginalFilename();
-        String s1 = UUID.randomUUID().toString() + originalFilename;
-        String s = Integer.toHexString(s1.hashCode());
-        String substring = originalFilename.substring(originalFilename.indexOf("."));
-        File file1 = new File(realPath, s + substring);
-        try {
-            file.transferTo(file1);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        storageDO.setSize((int) file1.length());
-        storageDO.setAddTime(new Date(System.currentTimeMillis()));
-        storageDO.setUpdateTime(new Date(System.currentTimeMillis()));
-        storageDO.setType(file.getContentType());
-        storageDO.setName(file.getOriginalFilename());
-        storageDO.setUrl(realPath + s + substring);
-        storageDO.setKey(s+substring);
-
-        int i = storageDOMapper.insertSelective(storageDO);
-        int id = storageDOMapper.selectLastInsertStoragr();
-        StorageDO storageDO1 = storageDOMapper.selectByPrimaryKey(id);*/
-
         return storageDO1;
+    }
+
+    /**
+     * 删除商场商品
+     * @param brandDO
+     * @return
+     */
+    @Override
+    public int deleteBrand(BrandDO brandDO) {
+        brandDO.setDeleted(true);
+//        int i = brandDOMapper.deleteByPrimaryKey(brandDO.getId());
+        int i = brandDOMapper.updateByPrimaryKey(brandDO);
+        return i;
     }
 
     /**
@@ -176,8 +163,71 @@ public class MarketServiceImpl implements MarketService{
         }
 
         return regionVOS;
-
     }
 
+    /**
+     * 商品类目
+     * @return
+     */
+    @Override
+    public List<CategoryDO> listCategory() {
+        CategoryDOExample categoryDOExample = new CategoryDOExample();
+        categoryDOExample.createCriteria().andLevelEqualTo("L1").andDeletedEqualTo(false);
+        List<CategoryDO> categoryDOList = categoryDOMapper.selectByExample(categoryDOExample);
+        return categoryDOList;
+    }
 
+    /**
+     * 一级商品类目
+     * @return
+     */
+    @Override
+    public List<CategoryVO> listCategory1() {
+        CategoryDOExample categoryDOExample = new CategoryDOExample();
+        categoryDOExample.createCriteria().andLevelEqualTo("L1").andDeletedEqualTo(false);
+        List<CategoryDO> categoryDOList = categoryDOMapper.selectByExample(categoryDOExample);
+        ArrayList<CategoryVO> categoryVOS = new ArrayList<>();
+        for (CategoryDO categoryDO : categoryDOList) {
+            CategoryVO categoryVO = new CategoryVO(categoryDO.getId(), categoryDO.getName());
+            categoryVOS.add(categoryVO);
+        }
+        return categoryVOS;
+    }
+
+    /**
+     * 插入商品
+     * @param categoryDO
+     * @return
+     */
+    @Override
+    public CategoryDO insertCategory(CategoryDO categoryDO) {
+        categoryDO.setAddTime(new Date(System.currentTimeMillis()));
+        categoryDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        int i = categoryDOMapper.insertSelective(categoryDO);
+        return categoryDO;
+    }
+
+    /**
+     * 更新商品
+     * @param categoryDO
+     * @return
+     */
+    @Override
+    public int updateCategory(CategoryDO categoryDO) {
+        categoryDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        int i1 = categoryDOMapper.updateByPrimaryKey(categoryDO);
+        return i1;
+    }
+
+    /**
+     * 删除商品
+     * @param categoryDO
+     * @return
+     */
+    @Override
+    public int deleteCategory(CategoryDO categoryDO) {
+        categoryDO.setDeleted(true);
+        int i = categoryDOMapper.updateByPrimaryKey(categoryDO);
+        return i;
+    }
 }

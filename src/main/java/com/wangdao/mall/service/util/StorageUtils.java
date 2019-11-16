@@ -41,9 +41,8 @@ public class StorageUtils {
         storageDO.setUpdateTime(new Date(System.currentTimeMillis()));
         storageDO.setType(file.getContentType());
         storageDO.setName(file.getOriginalFilename());
-        String substring1 = realPath.substring(realPath.indexOf("wx/"));
-        String url = "http://localhost:8080/" + substring1;
-        storageDO.setUrl(url + s + substring);
+        String url = "http://localhost:8080/wx/storage/admin/" + s + substring;
+        storageDO.setUrl(url);
         storageDO.setKey(s+substring);
 
         int i = storageDOMapper.insertSelective(storageDO);
