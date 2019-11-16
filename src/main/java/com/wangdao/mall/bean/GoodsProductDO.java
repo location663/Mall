@@ -10,7 +10,8 @@ public class GoodsProductDO {
 
     private Integer goodsId;
 
-    private String specifications;
+    //商品规格值列表，数据表里注释说“采用JSON数组格式”
+    private String[] specifications;
 
     private BigDecimal price;
 
@@ -40,12 +41,12 @@ public class GoodsProductDO {
         this.goodsId = goodsId;
     }
 
-    public String getSpecifications() {
+    public String[] getSpecifications() {
         return specifications;
     }
 
-    public void setSpecifications(String specifications) {
-        this.specifications = specifications == null ? null : specifications.trim();
+    public void setSpecifications(String[] specifications) {
+        this.specifications = specifications;
     }
 
     public BigDecimal getPrice() {

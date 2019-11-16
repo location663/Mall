@@ -1,6 +1,7 @@
 package com.wangdao.mall.service.admin;
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.CommentDO;
+import com.wangdao.mall.bean.GoodsCreateRequest;
 import com.wangdao.mall.bean.GoodsDO;
 
 import java.util.HashMap;
@@ -21,4 +22,7 @@ public interface GoodsService {
 
     int goodsDelete(GoodsDO goodsDO);
 
+    int goodsCreate(GoodsCreateRequest goodsCreateRequest);
+
+    int goodsUpdate(GoodsCreateRequest goodsCreateRequest);
 }

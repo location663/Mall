@@ -20,10 +20,12 @@ public class SpringMvcConfig implements WebMvcConfigurer {
 
     @Autowired
     ConfigurableConversionService configurableConversionService;
+
     @PostConstruct
     public void addConverter(){
         configurableConversionService.addConverter(new String2DateConverter());
     }
+
     @Bean
     @Primary
     public ConfigurableConversionService ConversionService(){
