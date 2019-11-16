@@ -22,4 +22,12 @@ public class RequestPageDTO {
         this.id = id;
         this.name = name;
     }
+
+    private Integer userId;
+    private String orderSn;
+    private String orderStatusArray;
+    private String question;
+    private String keyword;
+    private String url;
+
 }
