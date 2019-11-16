@@ -18,6 +18,10 @@ public class MarketController {
     @Autowired
     MarketService marketService;
 
+    /**
+     * 商场列表
+     * @return
+     */
     @RequestMapping("region/list")
     public BaseReqVo region(){
         List<RegionVO> regionVOS = marketService.selectRegions();
@@ -25,6 +29,11 @@ public class MarketController {
         return baseReqVo;
     }
 
+    /**
+     * 品牌列表及模糊查询
+     * @param pageDTO
+     * @return
+     */
     @RequestMapping("brand/list")
     public BaseReqVo brandList(RequestPageDTO pageDTO){
         Map<String, Object> stringObjectMap = marketService.selectBrand(pageDTO);
@@ -32,6 +41,11 @@ public class MarketController {
         return baseReqVo;
     }
 
+    /**
+     * 商场更新
+     * @param brandDO
+     * @return
+     */
     @RequestMapping("brand/update")
     public BaseReqVo brandUpdate(@RequestBody BrandDO brandDO){
         BrandDO brandDO1 = marketService.updateBrandById(brandDO);
@@ -39,6 +53,11 @@ public class MarketController {
         return baseReqVo;
     }
 
+    /**
+     * 新建商场商品
+     * @param brandDO
+     * @return
+     */
     @RequestMapping("brand/create")
     public BaseReqVo brandCreate(@RequestBody BrandDO brandDO){
 
@@ -47,6 +66,7 @@ public class MarketController {
         BaseReqVo baseReqVo = new BaseReqVo(brandDO1, "成功", 0);
         return baseReqVo;
     }
+
 
     @RequestMapping("storage/create")
     public BaseReqVo insertStorage(MultipartFile file){

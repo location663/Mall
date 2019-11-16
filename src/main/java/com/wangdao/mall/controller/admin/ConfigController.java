@@ -1,7 +1,7 @@
 package com.wangdao.mall.controller.admin;
 
 import com.wangdao.mall.bean.BaseReqVo;
-import com.wangdao.mall.service.ConfigService;
+import com.wangdao.mall.service.admin.ConfigService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

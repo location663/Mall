@@ -5,14 +5,13 @@ import com.github.pagehelper.PageInfo;
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.BrandDOMapper;
 import com.wangdao.mall.mapper.RegionDOMapper;
-import com.wangdao.mall.mapper.StorageDOMapper;
+
+import com.wangdao.mall.service.util.StorageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 import java.sql.Date;
 
@@ -26,8 +25,11 @@ public class MarketServiceImpl implements MarketService{
     @Autowired
     BrandDOMapper brandDOMapper;
 
+    /*@Autowired
+    StorageDOMapper storageDOMapper;*/
+
     @Autowired
-    StorageDOMapper storageDOMapper;
+    StorageUtils storageUtils;
 
     /**
      * 商场管理，获得全部行政区域
@@ -126,8 +128,8 @@ public class MarketServiceImpl implements MarketService{
         StorageDO storageDO = new StorageDO();
         String realPath = "E:/develop/wangdao_codes/springboot/mall/target/classes/static/wx/storage/fetch/";
 
-
-        String originalFilename = file.getOriginalFilename();
+        StorageDO storageDO1 = storageUtils.insertStorage(file, realPath);
+        /*String originalFilename = file.getOriginalFilename();
         String s1 = UUID.randomUUID().toString() + originalFilename;
         String s = Integer.toHexString(s1.hashCode());
         String substring = originalFilename.substring(originalFilename.indexOf("."));
@@ -145,12 +147,9 @@ public class MarketServiceImpl implements MarketService{
         storageDO.setUrl(realPath + s + substring);
         storageDO.setKey(s+substring);
 
-
         int i = storageDOMapper.insertSelective(storageDO);
-
         int id = storageDOMapper.selectLastInsertStoragr();
-
-        StorageDO storageDO1 = storageDOMapper.selectByPrimaryKey(id);
+        StorageDO storageDO1 = storageDOMapper.selectByPrimaryKey(id);*/
 
         return storageDO1;
     }

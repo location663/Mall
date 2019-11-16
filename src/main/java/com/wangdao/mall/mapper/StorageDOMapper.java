@@ -29,6 +29,6 @@ public interface StorageDOMapper {
 
     int updateByPrimaryKey(StorageDO record);
 
-    @Select("select LAST_INSERT_ID() from cskaoyan_mall_storage")
-    int selectLastInsertStoragr();
+    @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_storage")
+    int selectLastInsertStoragre();
 }
