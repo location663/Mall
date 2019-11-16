@@ -17,7 +17,7 @@ public class CommentDO {
 
     private Boolean hasPicture;
 
-    private String picUrls;
+    private String[] picUrls;
 
     private Short star;
 
@@ -30,7 +30,7 @@ public class CommentDO {
     public CommentDO() {
     }
 
-    public CommentDO(Integer id, Integer valueId, Byte type, String content, Integer userId, Boolean hasPicture, String picUrls, Short star, Date addTime, Date updateTime, Boolean deleted) {
+    public CommentDO(Integer id, Integer valueId, Byte type, String content, Integer userId, Boolean hasPicture, String[] picUrls, Short star, Date addTime, Date updateTime, Boolean deleted) {
         this.id = id;
         this.valueId = valueId;
         this.type = type;
@@ -92,12 +92,12 @@ public class CommentDO {
         this.hasPicture = hasPicture;
     }
 
-    public String getPicUrls() {
+    public String[] getPicUrls() {
         return picUrls;
     }
 
-    public void setPicUrls(String picUrls) {
-        this.picUrls = picUrls == null ? null : picUrls.trim();
+    public void setPicUrls(String[] picUrls) {
+        this.picUrls = picUrls;
     }
 
     public Short getStar() {

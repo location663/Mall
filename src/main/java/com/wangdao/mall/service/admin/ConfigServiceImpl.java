@@ -225,7 +225,14 @@ public class ConfigServiceImpl implements ConfigService {
                 map.put("litemall_wx_catlog_list", systemDO.getKeyValue());
             }
             if ("cskaoyan_mall_wx_share".equals(systemDO.getKeyName())){
-                map.put("litemall_wx_share", systemDO.getKeyValue());
+                String keyValue = systemDO.getKeyValue();
+                if ("false".equals(keyValue)){
+                    map.put("litemall_wx_share", false);
+                }
+                if ("true".equals(keyValue)){
+                    map.put("litemall_wx_share", true);
+                }
+//                map.put("litemall_wx_share", systemDO.getKeyValue());
             }
             if ("cskaoyan_mall_wx_index_brand".equals(systemDO.getKeyName())){
                 map.put("litemall_wx_index_brand", systemDO.getKeyValue());
@@ -271,7 +278,12 @@ public class ConfigServiceImpl implements ConfigService {
                 systemDOMapper.updateByPrimaryKeySelective(systemDO);
             }
             if ("cskaoyan_mall_wx_share".equals(systemDO.getKeyName())){
-                systemDO.setKeyValue((String) map.get("litemall_wx_share"));
+                if ((boolean)map.get("litemall_wx_share") == false){
+                    systemDO.setKeyValue("false");
+                }
+                if ((boolean)map.get("litemall_wx_share") == true){
+                    systemDO.setKeyValue("true");
+                }
                 systemDOMapper.updateByPrimaryKeySelective(systemDO);
             }
             if ("cskaoyan_mall_wx_index_brand".equals(systemDO.getKeyName())){
