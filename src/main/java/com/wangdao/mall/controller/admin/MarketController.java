@@ -72,8 +72,7 @@ public class MarketController {
      * @return
      */
     @RequestMapping("storage/create")
-    public BaseReqVo insertStorage(MultipartFile file, HttpSession session){
-        String realPath = session.getServletContext().getRealPath("");
+    public BaseReqVo insertStorage(MultipartFile file){
         StorageDO storageDO = marketService.insertStorage(file);
         BaseReqVo baseReqVo = new BaseReqVo(storageDO, "成功", 0);
         return baseReqVo;
