@@ -62,7 +62,7 @@ public class GoodsContronller {
     }
 
     /**
-     * 商品介绍页获取全部类目categoryList
+     * 商品介绍页获取全部分类和品牌商categoryList
      * (也是商品上架初始页)
      * @return
      */
@@ -144,7 +144,7 @@ public class GoodsContronller {
     public BaseReqVo goodsUpdate(@RequestBody GoodsCreateRequest goodsCreateRequest){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
 
-        int i=0;
+        Integer i=0;
         i=goodsService.goodsUpdate(goodsCreateRequest);
 
         baseReqVo.setErrmsg("成功");

@@ -83,7 +83,7 @@ public class GoodsServiceImpl implements GoodsService {
 
 
     /**
-     * 商品编辑页的商品介绍
+     * 商品编辑页的商品介绍显示
      * @param id
      * @return
      */
@@ -106,7 +106,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         //获取attributes
         GoodsAttributeDOExample goodsAttributeDOExample = new GoodsAttributeDOExample();
-        goodsAttributeDOExample.createCriteria().andGoodsIdEqualTo(id);
+        goodsAttributeDOExample.createCriteria().andGoodsIdEqualTo(id).andDeletedEqualTo(false);//只获取该商品的attributes表里delete属性为fales的attribute
         List<GoodsAttributeDO> attributes = goodsAttributeDOMapper.selectByExample(goodsAttributeDOExample);
         map.put("attributes",attributes);
 
@@ -114,7 +114,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         //获取specifications
         GoodsSpecificationDOExample goodsSpecificationDOExample = new GoodsSpecificationDOExample();
-        goodsSpecificationDOExample.createCriteria().andGoodsIdEqualTo(id);
+        goodsSpecificationDOExample.createCriteria().andGoodsIdEqualTo(id).andDeletedEqualTo(false);//只获取该商品的specifications表里delete属性为fales的specification
         List<GoodsSpecificationDO> specifications = goodsSpecificationDOMapper.selectByExample(goodsSpecificationDOExample);
         map.put("specifications",specifications);
 
@@ -122,7 +122,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         //获取products
         GoodsProductDOExample goodsProductDOExample = new GoodsProductDOExample();
-        goodsProductDOExample.createCriteria().andGoodsIdEqualTo(id);
+        goodsProductDOExample.createCriteria().andGoodsIdEqualTo(id).andDeletedEqualTo(false);//只获取该商品的products表里delete属性为fales的product
         List<GoodsProductDO> products = goodsProductDOMapper.selectByExample(goodsProductDOExample);
         map.put("products",products);
 
@@ -131,7 +131,7 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
     /**
-     * 商品介绍页获取全部类目categoryList
+     * 商品介绍页获取全部分类和品牌商categoryList
      * @return
      */
     @Override
@@ -145,14 +145,14 @@ public class GoodsServiceImpl implements GoodsService {
         List<Object> categoryList = new ArrayList<>();
 
         //查出所有父类list
-        categoryDOExample1.createCriteria().andPidEqualTo(0).andDeletedEqualTo(false);
+        categoryDOExample1.createCriteria().andPidEqualTo(0).andDeletedEqualTo(false);//只获取分类category数据表中delete属性为false的分类
         List<CategoryDO> categoryDOList1 = categoryDOMapper.selectByExample(categoryDOExample1);
         for (CategoryDO categoryDO : categoryDOList1) {
             HashMap<String, Object> map2 = new HashMap<>();
 
             //查询某父类目下所有子类list
             CategoryDOExample categoryDOExample =new CategoryDOExample();
-            categoryDOExample.createCriteria().andPidEqualTo(categoryDO.getId()).andDeletedEqualTo(false);
+            categoryDOExample.createCriteria().andPidEqualTo(categoryDO.getId()).andDeletedEqualTo(false);//只获取分类category数据表中delete属性为false的分类
             List<CategoryDO> categoryDOList = categoryDOMapper.selectByExample(categoryDOExample);
 
             //子类封装进children的List
@@ -176,7 +176,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         //封装brandList
         BrandDOExample brandDOExample = new BrandDOExample();
-        brandDOExample.createCriteria().andDeletedEqualTo(false);
+        brandDOExample.createCriteria().andDeletedEqualTo(false);//只获取品牌brandList数据表中delete属性为false的品牌
         List<BrandDO> brandDOList = brandDOMapper.selectByExample(brandDOExample);
         List<Object> brandList = new ArrayList<>();
         for (BrandDO brandDO : brandDOList) {
@@ -192,7 +192,7 @@ public class GoodsServiceImpl implements GoodsService {
 
 
     /**
-     * 删除商品
+     * 删除商品  改进
      * @return
      */
     @Override
@@ -300,17 +300,51 @@ public class GoodsServiceImpl implements GoodsService {
             int insertAttributeNum1 = goodsAttributeDOMapper.insert(attribute);
             insertAttributeNum=insertAttributeNum+insertAttributeNum1;
         }
-
         return insertGoodsNum;
     }
 
     /**
-     * 编辑更新商品
+     * 编辑更新商品  改进
      * @param goodsCreateRequest 封装了request的四个json
      * @return
      */
     @Override
     public int goodsUpdate(GoodsCreateRequest goodsCreateRequest) {
-        return 0;
+        //取出四个json
+        GoodsDO goods = goodsCreateRequest.getGoods();
+        List<GoodsSpecificationDO> specifications = goodsCreateRequest.getSpecifications();
+        List<GoodsProductDO> products = goodsCreateRequest.getProducts();
+        List<GoodsAttributeDO> attributes = goodsCreateRequest.getAttributes();
+
+        //update goods对象
+        goods.setUpdateTime(new Date());  //编辑商品时需要更新update_time
+        int updateGoodsNum = goodsDOMapper.updateByPrimaryKey(goods);
+
+
+        //update specification对象
+        int updateSpecificationNum=0;
+        for (GoodsSpecificationDO specification : specifications) {
+            specification.setUpdateTime(new Date());  //编辑商品specification对象时需要更新update_time
+            int updateSpecificationNum1 = goodsSpecificationDOMapper.updateByPrimaryKey(specification);
+            updateSpecificationNum=updateSpecificationNum+updateSpecificationNum1;
+        }
+
+
+        //update product对象
+        int updateProductNum=0;
+        for (GoodsProductDO product : products) {
+            product.setUpdateTime(new Date());  //编辑商品product对象时需要更新update_time
+            int updateProductNum1 = goodsProductDOMapper.updateByPrimaryKey(product);
+            updateProductNum=updateProductNum+updateProductNum1;
+        }
+
+        //update attribute对象
+        int updateAttributeNum=0;
+        for (GoodsAttributeDO attribute : attributes) {
+            attribute.setUpdateTime(new Date());  //编辑商品attribute对象时需要更新update_time
+            int updateAttributeNum1 = goodsAttributeDOMapper.updateByPrimaryKey(attribute);
+            updateAttributeNum=updateAttributeNum+updateAttributeNum1;
+        }
+        return updateGoodsNum;
     }
 }
