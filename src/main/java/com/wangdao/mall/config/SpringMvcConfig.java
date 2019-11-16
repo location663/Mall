@@ -28,8 +28,6 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     public ConfigurableConversionService ConversionService(){
         return configurableConversionService;
     }
-
-
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         //registry.addInterceptor(new UserIntercepter()).addPathPatterns("/user/");

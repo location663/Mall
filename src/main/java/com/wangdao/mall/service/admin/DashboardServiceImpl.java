@@ -4,7 +4,7 @@
  * Date:2019/11/15
  * Time:16:23
  **/
-package com.wangdao.mall.service;
+package com.wangdao.mall.service.admin;
 
 import com.wangdao.mall.bean.GoodsDOExample;
 import com.wangdao.mall.bean.GoodsProductDOExample;
