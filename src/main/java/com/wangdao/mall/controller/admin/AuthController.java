@@ -3,7 +3,7 @@ package com.wangdao.mall.controller.admin;
 
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.InfoData;
-import com.wangdao.mall.service.DashboardService;
+import com.wangdao.mall.service.admin.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,7 +44,6 @@ public class AuthController {
         baseReqVo.setData(data);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
-
         return baseReqVo;
     }
     /**

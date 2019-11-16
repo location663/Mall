@@ -8,9 +8,8 @@ package com.wangdao.mall.controller.admin;
 
 
 import com.wangdao.mall.bean.BaseReqVo;
-import com.wangdao.mall.service.UserService;
+import com.wangdao.mall.service.admin.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

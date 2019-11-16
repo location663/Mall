@@ -1,9 +1,3 @@
-/**
- * Created by IntelliJ IDEA
- * User: DB
- * Date:
- * Time: 20:52
- **/
 package com.wangdao.mall.bean;
 
 import lombok.Data;

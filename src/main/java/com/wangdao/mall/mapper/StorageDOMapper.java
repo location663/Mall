@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.StorageDO;
 import com.wangdao.mall.bean.StorageDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface StorageDOMapper {
     long countByExample(StorageDOExample example);
@@ -27,4 +28,7 @@ public interface StorageDOMapper {
     int updateByPrimaryKeySelective(StorageDO record);
 
     int updateByPrimaryKey(StorageDO record);
+
+    @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_storage")
+    int selectLastInsertStoragre();
 }

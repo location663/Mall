@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.AdDO;
 import com.wangdao.mall.bean.AdDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface AdDOMapper {
     long countByExample(AdDOExample example);
@@ -27,4 +28,8 @@ public interface AdDOMapper {
     int updateByPrimaryKeySelective(AdDO record);
 
     int updateByPrimaryKey(AdDO record);
+
+    //新增一个方法
+    @Select("select last_insert_id() from cskaoyan_mall_ad")
+    int selectLastInsertId();
 }

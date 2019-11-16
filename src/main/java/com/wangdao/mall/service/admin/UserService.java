@@ -1,4 +1,4 @@
-package com.wangdao.mall.service;
+package com.wangdao.mall.service.admin;
 
 import java.util.Map;
 
