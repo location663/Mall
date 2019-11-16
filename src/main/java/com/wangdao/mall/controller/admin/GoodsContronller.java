@@ -118,5 +118,14 @@ public class GoodsContronller {
         return baseReqVo;
     }
 
+    /**
+     * 上架创建商品
+     * @return
+     */
+    @RequestMapping("goods/create")
+    public BaseReqVo goodsCreate(){
+
+    }
+
 
 }
