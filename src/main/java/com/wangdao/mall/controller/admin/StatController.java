@@ -21,20 +21,25 @@ public class StatController {
     StatService statService;
     @RequestMapping("user")
     public BaseReqVo statUser(){
-        Map returnmap=statService.statUser();
+        Map returnmap = statService.statUser();
         BaseReqVo baseReqVo = new BaseReqVo(returnmap,"成功",0);
         return baseReqVo;
     }
     @RequestMapping("goods")
     public BaseReqVo statGoods(){
-        Map returnmap=statService.statGoods();
+        Map returnmap = statService.statGoods();
         BaseReqVo baseReqVo = new BaseReqVo(returnmap,"成功",0);
         return baseReqVo;
     }
-//    @RequestMapping("order")
-//    public BaseReqVo statOrder(){
-//        Map returnmap=statService.statOrder();
-//        BaseReqVo baseReqVo = new BaseReqVo(returnmap,"成功",0);
-//        return baseReqVo;
-//    }
+
+    /**
+     * 订单统计，统计项为日期，订单数，下单用户数，订单总金额，客单价
+     * @return
+     */
+    @RequestMapping("order")
+    public BaseReqVo statOrder(){
+        Map returnmap=statService.statOrder();
+        BaseReqVo baseReqVo = new BaseReqVo(returnmap,"成功",0);
+        return baseReqVo;
+    }
 }

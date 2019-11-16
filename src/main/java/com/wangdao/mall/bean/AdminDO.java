@@ -24,12 +24,12 @@ public class AdminDO {
 
     private Boolean deleted;
 
-    private String roleIds;
+    private Integer[] roleIds;
 
     public AdminDO() {
     }
 
-    public AdminDO(Integer id, String username, String password, String lastLoginIp, Date lastLoginTime, String avatar, Date addTime, Date updateTime, Boolean deleted, String roleIds) {
+    public AdminDO(Integer id, String username, String password, String lastLoginIp, Date lastLoginTime, String avatar, Date addTime, Date updateTime, Boolean deleted, Integer[] roleIds) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -114,11 +114,11 @@ public class AdminDO {
         this.deleted = deleted;
     }
 
-    public String getRoleIds() {
+    public Integer[] getRoleIds() {
         return roleIds;
     }
 
-    public void setRoleIds(String roleIds) {
-        this.roleIds = roleIds == null ? null : roleIds.trim();
+    public void setRoleIds(Integer[] roleIds) {
+        this.roleIds = roleIds == null ? null : roleIds;
     }
 }
