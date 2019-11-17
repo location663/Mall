@@ -18,7 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 
 /**
- * 商品管理
+ * 商品管理模块
  */
 @RestController
 @RequestMapping("admin")
