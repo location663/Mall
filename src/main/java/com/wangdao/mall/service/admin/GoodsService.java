@@ -10,13 +10,13 @@ import java.util.List;
 public interface GoodsService {
 
 
-    HashMap<String, Object> queryGoodsList(Integer page, Integer limit, Integer goodsSn,String name,String sort, String order);
+    HashMap<String, Object> queryGoodsList(Integer page, Integer limit, Integer goodsSnInt,String name,String sort, String order);
 
     HashMap<String, Object> queryGoodsDetail(Integer id);
 
     HashMap<String, Object> queryGoodsCatAndBrandList();
 
-    BaseReqVo queryCommentList(Integer page, Integer limit, Integer userId, Integer valueId, String sort, String order);
+    HashMap<String, Object> queryCommentList(Integer page, Integer limit, Integer userIdInt, Integer valueIdInt, String sort, String order);
 
     BaseReqVo deleteComment(CommentDO commentDO);
 

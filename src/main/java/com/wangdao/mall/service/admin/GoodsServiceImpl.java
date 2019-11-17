@@ -41,29 +41,31 @@ public class GoodsServiceImpl implements GoodsService {
     GoodsProductDOMapper goodsProductDOMapper;
 
 
-    
+
     /**
      * 商品列表
      * @param page
      * @param limit
-     * @param goodsSn
+     * @param goodsSnInt
      * @param name
      * @param sort
      * @param order
      * @return
      */
     @Override
-    public HashMap<String, Object> queryGoodsList(Integer page, Integer limit,Integer goodsSn,String name, String sort, String order) {
+    public HashMap<String, Object> queryGoodsList(Integer page, Integer limit,Integer goodsSnInt,String name, String sort, String order) {
         GoodsDOExample goodsDOExample = new GoodsDOExample();
         HashMap<String, Object> map = new HashMap<>();
-
+        Integer goodsSn=null;
+        goodsSn=goodsSnInt;
         PageHelper.startPage(page,limit);
+
 
         if (goodsSn!=null && name!=null){
             goodsDOExample.createCriteria().andDeletedEqualTo(false).andGoodsSnLike("%"+ goodsSn +"%").andNameLike("%"+ name +"%");
         }else if (goodsSn==null && name!=null){
             goodsDOExample.createCriteria().andDeletedEqualTo(false).andNameLike("%"+ name +"%");
-        }else if (goodsSn!=null && name==null){
+        }else if (goodsSn!=null ){
             goodsDOExample.createCriteria().andDeletedEqualTo(false).andGoodsSnLike("%"+ goodsSn +"%");
         }
             goodsDOExample.createCriteria().andDeletedEqualTo(false);
@@ -85,7 +87,7 @@ public class GoodsServiceImpl implements GoodsService {
 
 
     /**
-     * 商品编辑页的商品介绍显示
+     * 商品编辑页的商品介绍显示   (查看商品详情待改进)
      * @param id
      * @return
      */
@@ -94,8 +96,14 @@ public class GoodsServiceImpl implements GoodsService {
         HashMap<String, Object> map = new HashMap<>();
 
 
-        //获取"categoryIds": [1013001, 1013002],
-        GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(id);  //通过goods_id获取一个GoodsDO对象
+        //获取"categoryIds": [1013001, 1013002]
+
+        GoodsDOExample goodsDOExample = new GoodsDOExample();
+        goodsDOExample.createCriteria().andIdEqualTo(id);
+        List<GoodsDO> goodsDOList = goodsDOMapper.selectByExampleWithBLOBs(goodsDOExample);
+        GoodsDO goodsDO =goodsDOList.get(0);
+        //GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(id);  //通过goods_id获取一个GoodsDO对象
+
 
         CategoryDO categoryDO = categoryDOMapper.selectByPrimaryKey(goodsDO.getCategoryId());// 通过Category_id获取CategoryDO对象
 
@@ -197,7 +205,7 @@ public class GoodsServiceImpl implements GoodsService {
 
 
     /**
-     * 删除商品  待改进
+     * 删除商品  待改进(需不需要连带删除绑定了goods_id的商品规格，参数，库存这三个表对应的数据)
      * @return
      */
     @Override
@@ -207,13 +215,23 @@ public class GoodsServiceImpl implements GoodsService {
     }
 
 
-
     /**
      * 获取所有商品评论
+     * @param page
+     * @param limit
+     * @param userIdInt
+     * @param valueIdInt
+     * @param sort
+     * @param order
      * @return
      */
     @Override
-    public BaseReqVo queryCommentList(Integer page, Integer limit, Integer userId, Integer valueId, String sort, String order) {
+    public HashMap<String, Object> queryCommentList(Integer page, Integer limit, Integer userIdInt, Integer valueIdInt, String sort, String order) {
+        Integer userId=null;
+        userId=userIdInt;
+        Integer valueId =null;
+        valueId=valueIdInt;
+
         CommentDOExample commentDOExample = new CommentDOExample();
         PageHelper.startPage(page,limit);
 
@@ -221,7 +239,7 @@ public class GoodsServiceImpl implements GoodsService {
             commentDOExample.createCriteria().andUserIdEqualTo(userId).andValueIdEqualTo(valueId).andDeletedEqualTo(false);
         }else if (userId==null && valueId!=null){
             commentDOExample.createCriteria().andValueIdEqualTo(valueId).andDeletedEqualTo(false);
-        }else if (userId!=null && valueId==null){
+        }else if (userId!=null){
             commentDOExample.createCriteria().andUserIdEqualTo(userId).andDeletedEqualTo(false);
         }
         commentDOExample.createCriteria().andDeletedEqualTo(false);
@@ -230,10 +248,10 @@ public class GoodsServiceImpl implements GoodsService {
         List<CommentDO> commentDOList = commentDOMapper.selectByExample(commentDOExample);
         PageInfo<CommentDO> commentDOPageInfo = new PageInfo<>(commentDOList);
         long total = commentDOPageInfo.getTotal();
-        Map<String, Object> map = new HashMap<>();
+        HashMap<String, Object> map = new HashMap<>();
         map.put("total",total);
         map.put("items",commentDOList);
-        return new BaseReqVo<>(map,"成功",0);
+        return map;
     }
 
 
