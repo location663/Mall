@@ -12,7 +12,7 @@ import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.AdminDOMapper;
 import com.wangdao.mall.mapper.LogDOMapper;
 import com.wangdao.mall.mapper.RoleDOMapper;
-import com.wangdao.mall.service.admin.AdminService;
+import com.wangdao.mall.mapper.StorageDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,13 +33,18 @@ public class AdminServiceImpl implements AdminService {
     @Autowired
     LogDOMapper logDOMapper;
 
+    @Autowired
+    StorageDOMapper storageDOMapper;
+
     @Override
     public Map selectAllAdmin(String username,Integer page,Integer limit,String sort,String order) {
         AdminDOExample adminDOExample = new AdminDOExample();
         PageHelper.startPage(page,limit);
+        AdminDOExample.Criteria criteria = adminDOExample.createCriteria();
         if (username != null){
-            adminDOExample.createCriteria().andUsernameLike("%" + username + "%");
+            criteria.andUsernameLike("%" + username + "%");
         }
+        criteria.andDeletedEqualTo(false);
         adminDOExample.setOrderByClause(sort + " " + order);
         List<AdminDO> adminDOList = adminDOMapper.selectByExample(adminDOExample);
         PageInfo<AdminDO> userPageInfo = new PageInfo<>(adminDOList);
@@ -54,6 +59,7 @@ public class AdminServiceImpl implements AdminService {
     public List<Map> selectAllAdminRole() {
         List<Map> list = new ArrayList<>();
         RoleDOExample roleDOExample = new RoleDOExample();
+        roleDOExample.createCriteria().andDeletedEqualTo(false);
         List<RoleDO> roleDOS = roleDOMapper.selectByExample(roleDOExample);
         for (RoleDO roleDO : roleDOS) {
             HashMap<String, Object> map = new HashMap<>();
@@ -73,8 +79,9 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public List<AdminDO> createNewAdmin(AdminDO adminDO) {
+    public AdminDO createNewAdmin(AdminDO adminDO) {
         AdminDOExample adminDOExampleForCheckUsername = new AdminDOExample();  // 作username重名校验
+        adminDOExampleForCheckUsername.createCriteria().andDeletedEqualTo(false);
         List<AdminDO> adminDOListForCheckUsername = adminDOMapper.selectByExample(adminDOExampleForCheckUsername);
         for (AdminDO aDo : adminDOListForCheckUsername) {
             if (adminDO.getUsername().equals(aDo.getUsername())){
@@ -85,10 +92,11 @@ public class AdminServiceImpl implements AdminService {
         adminDO.setAddTime(new Date(System.currentTimeMillis()));
         int i = adminDOMapper.insertSelective(adminDO);      // 做 “增” 的操作
         AdminDOExample adminDOExample = new AdminDOExample();
-        adminDOExample.createCriteria().andUsernameEqualTo(adminDO.getUsername()).andPasswordEqualTo(adminDO.getPassword());
+        adminDOExample.createCriteria().andUsernameEqualTo(adminDO.getUsername()).andPasswordEqualTo(adminDO.getPassword()).andDeletedEqualTo(false);
         if (i != 0){
-            List<AdminDO> adminDOList = adminDOMapper.selectByExample(adminDOExample);
-            return adminDOList;
+            int id = adminDOMapper.selectLastInsertAdminId();
+            AdminDO adminDOAfterCreate = adminDOMapper.selectByPrimaryKey(id);
+            return adminDOAfterCreate;
         }
         return null;
     }
@@ -105,6 +113,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AdminDO updateAdmin(AdminDO adminDO) {
         AdminDOExample adminDOExampleForCheckUsername = new AdminDOExample();  // 作username重名校验
+        adminDOExampleForCheckUsername.createCriteria().andDeletedEqualTo(false);
         List<AdminDO> adminDOListForCheckUsername = adminDOMapper.selectByExample(adminDOExampleForCheckUsername);
         for (AdminDO aDo : adminDOListForCheckUsername) {
             if (adminDO.getUsername().equals(aDo.getUsername()) && adminDO.getId() != aDo.getId()){
@@ -121,7 +130,7 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public int deleteAdminByAdminDORecord(AdminDO adminDO) {
+    public int deleteAdmin(AdminDO adminDO) {
         adminDO.setDeleted(true);
         int update = adminDOMapper.updateByPrimaryKeySelective(adminDO);
         return update;
@@ -130,10 +139,12 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Map<String, Object> selectAllLogList(String name,Integer page, Integer limit, String sort, String order) {
         LogDOExample logDOExample = new LogDOExample();
+        LogDOExample.Criteria criteria = logDOExample.createCriteria();
         PageHelper.startPage(page,limit);
         if (name != null){
-            logDOExample.createCriteria().andAdminLike("%" + name + "%");
+            criteria.andAdminLike("%" + name + "%");
         }
+        criteria.andDeletedEqualTo(false);
         logDOExample.setOrderByClause(sort + " " + order);
         List<LogDO> logDOList = logDOMapper.selectByExample(logDOExample);
         PageInfo<LogDO> logDOPageInfo = new PageInfo<>(logDOList);
@@ -147,10 +158,12 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public Map<String, Object> selectAllRoleList(String name,Integer page, Integer limit, String sort, String order) {
         RoleDOExample roleDOExample = new RoleDOExample();
+        RoleDOExample.Criteria criteria = roleDOExample.createCriteria();
         PageHelper.startPage(page,limit);
         if (name != null){
-            roleDOExample.createCriteria().andNameLike("%" + name + "%");
+            criteria.andNameLike("%" + name + "%");
         }
+        criteria.andDeletedEqualTo(false);
         roleDOExample.setOrderByClause(sort + " " + order);
         List<RoleDO> roleDOList = roleDOMapper.selectByExample(roleDOExample);
         PageInfo<RoleDO> roleDOPageInfo = new PageInfo<>(roleDOList);
@@ -160,5 +173,103 @@ public class AdminServiceImpl implements AdminService {
         map.put("items", roleDOList);
         return map;
     }
+
+    /**
+     * 数据库中的 name 已经是 unique
+     * @param roleDO
+     * @return
+     */
+    @Override
+    public RoleDO createNewRole(RoleDO roleDO) {
+        RoleDOExample roleDOExample = new RoleDOExample();
+        roleDOExample.createCriteria();
+        List<RoleDO> roleDOListForCheckName = roleDOMapper.selectByExample(roleDOExample);
+        for (RoleDO aDo : roleDOListForCheckName) {
+            if (roleDO.getName().equals(aDo.getName())){
+                return null;
+            }
+        }
+        roleDO.setAddTime(new Date(System.currentTimeMillis()));
+        roleDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        int insertResult = roleDOMapper.insertSelective(roleDO);
+        int idLastInsert = roleDOMapper.selectLastInsertRoleId();
+        RoleDO roleDOAfterInsert = roleDOMapper.selectByPrimaryKey(idLastInsert);
+        return roleDOAfterInsert;
+    }
+
+    @Override
+    public RoleDO updateRole(RoleDO roleDO) {
+        RoleDOExample roleDOExample = new RoleDOExample();
+        List<RoleDO> roleDOList = roleDOMapper.selectByExample(roleDOExample);
+        for (RoleDO aDo : roleDOList) {
+            if (roleDO.getName().equals(aDo.getName()) && roleDO.getId() != aDo.getId()){
+                return null;
+            }
+        }
+
+        int update = roleDOMapper.updateByPrimaryKeySelective(roleDO);
+        if (update != 0){
+            RoleDO roleDOAfterUpdate = roleDOMapper.selectByPrimaryKey(roleDO.getId());
+            return roleDOAfterUpdate;
+        }
+        return null;
+    }
+
+    @Override
+    public int deleteRole(RoleDO roleDO) {
+        roleDO.setDeleted(true);
+        int update = roleDOMapper.updateByPrimaryKeySelective(roleDO);
+        return update;
+    }
+
+    /**
+     *  还有问题
+     * @param name
+     * @param key
+     * @param page
+     * @param limit
+     * @param sort
+     * @param order
+     * @return
+     */
+    @Override
+    public Map<String, Object> selectAllStorageList(String name, String key, Integer page, Integer limit, String sort, String order) {
+        StorageDOExample storageDOExample = new StorageDOExample();
+        PageHelper.startPage(page,limit);
+        StorageDOExample.Criteria criteria = storageDOExample.createCriteria();
+        criteria.andDeletedEqualTo(false);
+        if (name != null){                                                          // 有问题
+            criteria.andNameLike("%" + name + "%");
+        }
+        if (key != null){
+            criteria.andKeyLike("%" + key + "%");
+        }
+        storageDOExample.setOrderByClause(sort + " " + order);
+        List<StorageDO> storageDOList = storageDOMapper.selectByExample(storageDOExample);
+        PageInfo<StorageDO> storageDOPageInfo = new PageInfo<>(storageDOList);
+        long total = storageDOPageInfo.getTotal();
+        Map<String, Object> map = new HashMap<>();
+        map.put("total", total);
+        map.put("items", storageDOList);
+        return map;
+    }
+
+    @Override
+    public int deleteStorage(StorageDO storageDO) {
+        storageDO.setDeleted(true);
+        int update = storageDOMapper.updateByPrimaryKeySelective(storageDO);
+        return update;
+    }
+
+    @Override
+    public StorageDO updateStorage(StorageDO storageDO) {
+        int update = storageDOMapper.updateByPrimaryKeySelective(storageDO);
+        if (update != 0){
+            StorageDO storageDOAfterUpdate = storageDOMapper.selectByPrimaryKey(storageDO.getId());
+            return storageDOAfterUpdate;
+        }
+        return null;
+    }
+
 
 }
