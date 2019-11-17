@@ -131,9 +131,7 @@ public class MarketServiceImpl implements MarketService{
      */
     @Override
     public StorageDO insertStorage(MultipartFile file) {
-        StorageDO storageDO = new StorageDO();
-        String realPath = "C:/projectStaticSources";
-        StorageDO storageDO1 = storageUtils.insertStorage(file, realPath);
+        StorageDO storageDO1 = storageUtils.insertStorage(file);
         return storageDO1;
     }
 

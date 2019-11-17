@@ -33,6 +33,7 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
 
     @Override
     public String[] getResult(ResultSet resultSet, int index) throws SQLException {
+        // 根据列的索引获得数据
         String string = resultSet.getString(index);
         return parseString2Array(string);
     }
