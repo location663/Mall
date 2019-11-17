@@ -7,6 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 @SpringBootTest
 class MallApplicationTests {
@@ -137,18 +140,8 @@ class MallApplicationTests {
 //        Map<String, Object> map = adminService.selectAllLogList(1, 20, "add_time", "desc");
 //        System.out.println(map);
 //    }
-
+//
 //    @Test
-////    public void mytest01(){
-////        Map<String, Object> map = adminService.selectAllRoleList(1, 20, "add_time", "desc");
-////        System.out.println(map);
-////    }
-//    @Test
-//    public void test1(){
-//        int hashCode = "liujicheng".hashCode();
-//        String s = Integer.toHexString(hashCode).toUpperCase();
-//        System.out.println(s);
-//    }
 
 }
 

@@ -2,10 +2,12 @@ package com.wangdao.mall.controller.admin;
 
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.service.admin.ConfigService;
+import com.wangdao.mall.service.util.ConfigRegExUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("admin/config")
@@ -28,6 +30,10 @@ public class ConfigController {
      */
     @RequestMapping(value = "mall", method = RequestMethod.POST)
     public BaseReqVo setMallConfig(@RequestBody Map<String, Object> map){
+        int configRegEx = ConfigRegExUtils.isConfigRegEx(map);
+        if (configRegEx != 0){
+            return new BaseReqVo(null,null,configRegEx);
+        }
         BaseReqVo baseReqVo = configService.setMallConfig(map);
         return baseReqVo;
     }
@@ -48,6 +54,10 @@ public class ConfigController {
      */
     @RequestMapping(value = "express", method = RequestMethod.POST)
     public BaseReqVo setExpressConfig(@RequestBody Map<String, Object> map){
+        int configRegEx = ConfigRegExUtils.isConfigRegEx(map);
+        if (configRegEx != 0){
+            return new BaseReqVo(null,null,configRegEx);
+        }
         BaseReqVo baseReqVo = configService.setExpressConfig(map);
         return baseReqVo;
     }
@@ -68,6 +78,10 @@ public class ConfigController {
      */
     @RequestMapping(value = "order", method = RequestMethod.POST)
     public BaseReqVo setOrderConfig(@RequestBody Map<String, Object> map){
+        int configRegEx = ConfigRegExUtils.isConfigRegEx(map);
+        if (configRegEx != 0){
+            return new BaseReqVo(null,null,configRegEx);
+        }
         BaseReqVo baseReqVo = configService.setOrderConfig(map);
         return baseReqVo;
     }
@@ -88,6 +102,10 @@ public class ConfigController {
      */
     @RequestMapping(value = "wx", method = RequestMethod.POST)
     public BaseReqVo setWxConfig(@RequestBody Map<String, Object> map){
+        int configRegEx = ConfigRegExUtils.isConfigRegEx(map);
+        if (configRegEx != 0){
+            return new BaseReqVo(null,null,configRegEx);
+        }
         BaseReqVo baseReqVo = configService.setWxConfig(map);
         return baseReqVo;
     }

@@ -56,7 +56,7 @@ public class CouponController {
     }
 
     @RequestMapping("coupon/listuser")
-    public BaseReqVo queryCouponsByUserIdStatus(Integer page, Integer limit, Integer couponId, Integer userId, Integer status){
+    public BaseReqVo queryCouponsByUserIdStatus(Integer page, Integer limit, Integer couponId, Integer userId, Integer status) {
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         Map<String, Object> map = couponService.queryCouponsByConditions(page, limit, couponId, userId, status);
         baseReqVo.setData(map);
