@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.SystemDO;
 import com.wangdao.mall.bean.SystemDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface SystemDOMapper {
     long countByExample(SystemDOExample example);
@@ -27,4 +28,5 @@ public interface SystemDOMapper {
     int updateByPrimaryKeySelective(SystemDO record);
 
     int updateByPrimaryKey(SystemDO record);
+
 }
