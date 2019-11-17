@@ -13,7 +13,7 @@ public interface AdminService {
 
      List<Map> selectAllAdminRole();
 
-     List<AdminDO> createNewAdmin(AdminDO adminDO);
+     AdminDO createNewAdmin(AdminDO adminDO);
 
      AdminDO updateAdmin(AdminDO adminDO);
 

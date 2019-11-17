@@ -104,12 +104,12 @@ public class AdminAdministerController {
             BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "管理员名称不符合规定", 601);
             return baseReqVo;
         }
-        List<AdminDO> adminDOAfterCreate = adminService.createNewAdmin(adminDO);
+        AdminDO adminDOAfterCreate = adminService.createNewAdmin(adminDO);
         if (adminDOAfterCreate != null){
-            BaseReqVo<List<AdminDO>> baseReqVo = new BaseReqVo<>(adminDOAfterCreate, "成功", 0);
+            BaseReqVo<AdminDO> baseReqVo = new BaseReqVo<>(adminDOAfterCreate, "成功", 0);
             return baseReqVo;
         }
-        BaseReqVo<List<AdminDO>> baseReqVo = new BaseReqVo<>(adminDOAfterCreate, "管理员已存在", 602);
+        BaseReqVo<AdminDO> baseReqVo = new BaseReqVo<>(adminDOAfterCreate, "管理员已存在", 602);
         return baseReqVo;
     }
 

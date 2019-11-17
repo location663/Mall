@@ -79,8 +79,9 @@ public class AdminServiceImpl implements AdminService {
      * @return
      */
     @Override
-    public List<AdminDO> createNewAdmin(AdminDO adminDO) {
+    public AdminDO createNewAdmin(AdminDO adminDO) {
         AdminDOExample adminDOExampleForCheckUsername = new AdminDOExample();  // 作username重名校验
+        adminDOExampleForCheckUsername.createCriteria().andDeletedEqualTo(false);
         List<AdminDO> adminDOListForCheckUsername = adminDOMapper.selectByExample(adminDOExampleForCheckUsername);
         for (AdminDO aDo : adminDOListForCheckUsername) {
             if (adminDO.getUsername().equals(aDo.getUsername())){
@@ -91,10 +92,11 @@ public class AdminServiceImpl implements AdminService {
         adminDO.setAddTime(new Date(System.currentTimeMillis()));
         int i = adminDOMapper.insertSelective(adminDO);      // 做 “增” 的操作
         AdminDOExample adminDOExample = new AdminDOExample();
-        adminDOExample.createCriteria().andUsernameEqualTo(adminDO.getUsername()).andPasswordEqualTo(adminDO.getPassword());
+        adminDOExample.createCriteria().andUsernameEqualTo(adminDO.getUsername()).andPasswordEqualTo(adminDO.getPassword()).andDeletedEqualTo(false);
         if (i != 0){
-            List<AdminDO> adminDOList = adminDOMapper.selectByExample(adminDOExample);
-            return adminDOList;
+            int id = adminDOMapper.selectLastInsertAdminId();
+            AdminDO adminDOAfterCreate = adminDOMapper.selectByPrimaryKey(id);
+            return adminDOAfterCreate;
         }
         return null;
     }
@@ -111,6 +113,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public AdminDO updateAdmin(AdminDO adminDO) {
         AdminDOExample adminDOExampleForCheckUsername = new AdminDOExample();  // 作username重名校验
+        adminDOExampleForCheckUsername.createCriteria().andDeletedEqualTo(false);
         List<AdminDO> adminDOListForCheckUsername = adminDOMapper.selectByExample(adminDOExampleForCheckUsername);
         for (AdminDO aDo : adminDOListForCheckUsername) {
             if (adminDO.getUsername().equals(aDo.getUsername()) && adminDO.getId() != aDo.getId()){
@@ -171,9 +174,15 @@ public class AdminServiceImpl implements AdminService {
         return map;
     }
 
+    /**
+     * 数据库中的 name 已经是 unique
+     * @param roleDO
+     * @return
+     */
     @Override
     public RoleDO createNewRole(RoleDO roleDO) {
         RoleDOExample roleDOExample = new RoleDOExample();
+        roleDOExample.createCriteria();
         List<RoleDO> roleDOListForCheckName = roleDOMapper.selectByExample(roleDOExample);
         for (RoleDO aDo : roleDOListForCheckName) {
             if (roleDO.getName().equals(aDo.getName())){
