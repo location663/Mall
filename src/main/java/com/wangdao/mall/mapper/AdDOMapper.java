@@ -5,6 +5,7 @@ import com.wangdao.mall.bean.AdDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 public interface AdDOMapper {
     long countByExample(AdDOExample example);
@@ -32,4 +33,7 @@ public interface AdDOMapper {
     //新增一个方法
     @Select("select last_insert_id() from cskaoyan_mall_ad")
     int selectLastInsertId();
+
+    @Update("update cskaoyan_mall_ad set deleted = 1 where id = #{id}")
+    int deleteCouponById(Integer id);
 }

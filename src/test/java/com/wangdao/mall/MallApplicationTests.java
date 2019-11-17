@@ -143,5 +143,12 @@ class MallApplicationTests {
 ////        Map<String, Object> map = adminService.selectAllRoleList(1, 20, "add_time", "desc");
 ////        System.out.println(map);
 ////    }
+//    @Test
+//    public void test1(){
+//        int hashCode = "liujicheng".hashCode();
+//        String s = Integer.toHexString(hashCode).toUpperCase();
+//        System.out.println(s);
+//    }
+
 }
 
