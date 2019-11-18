@@ -16,9 +16,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Pattern;
 
 /**
- * 商品管理
+ * 商品管理模块
  */
 @RestController
 @RequestMapping("admin")
@@ -32,10 +33,25 @@ public class GoodsContronller {
      * @return
      */
     @RequestMapping("goods/list")
-    public BaseReqVo goodsList(Integer page,Integer limit,Integer goodsSn,String name,String sort,String order){
+    public BaseReqVo goodsList(Integer page,Integer limit,String goodsSn,String name,String sort,String order) {
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        //先判断goodsSn是数字还是字符串
+        Integer goodsSnInt = null;
+        if (goodsSn!=null){
+            Pattern pattern = Pattern.compile("[0-9]+");
+            boolean matches = pattern.matcher(goodsSn).matches();
+            if (matches) {
+                goodsSnInt = Integer.valueOf(goodsSn);
+            }else {
+                baseReqVo.setData(null);
+                baseReqVo.setErrmsg(null);
+                baseReqVo.setErrno(503);
 
-        HashMap<String, Object> map = goodsService.queryGoodsList(page,limit,goodsSn,name,sort, order);
+                return baseReqVo;
+            }
+        }
+
+        HashMap<String, Object> map = goodsService.queryGoodsList(page, limit, goodsSnInt, name, sort, order);
 
         baseReqVo.setData(map);
         baseReqVo.setErrmsg("成功");
@@ -80,12 +96,46 @@ public class GoodsContronller {
     }
 
     /**
-     * 获取所有商品评论
+     * 获取所有商品评论  (搜索第一次后，不刷新，直接输入关键数字搜索，会有莫名异常)
      * @return
      */
     @RequestMapping("comment/list")
-    public BaseReqVo commentList(Integer page, Integer limit, Integer userId, Integer valueId, String sort, String order){
-        BaseReqVo baseReqVo = goodsService.queryCommentList(page,limit,userId,valueId,sort,order);
+    public BaseReqVo commentList(Integer page, Integer limit, String userId, String valueId, String sort, String order){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+
+        //先判断goodsSn是数字还是字符串
+        Integer userIdInt = null;
+        Integer valueIdInt = null;
+        if (userId!=null){
+            Pattern pattern = Pattern.compile("[0-9]+");
+            boolean matches1 = pattern.matcher(userId).matches();
+            if (matches1) {
+                userIdInt = Integer.valueOf(userId);
+            }else {
+                System.out.println(userId+"---"+userIdInt);
+                baseReqVo.setData(null);
+                baseReqVo.setErrmsg(null);
+                baseReqVo.setErrno(505);
+                return baseReqVo;
+            }
+        }
+        if (valueId!=null){
+            Pattern pattern = Pattern.compile("[0-9]+");
+            boolean matches2 = pattern.matcher(valueId).matches();
+            if (matches2) {
+                valueIdInt = Integer.valueOf(valueId);
+            }else {
+                baseReqVo.setData(null);
+                baseReqVo.setErrmsg(null);
+                baseReqVo.setErrno(505);
+                return baseReqVo;
+            }
+        }
+
+        HashMap<String, Object> map = goodsService.queryCommentList(page,limit,userIdInt,valueIdInt,sort,order);
+        baseReqVo.setData(map);
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
         return baseReqVo;
     }
 

@@ -13,7 +13,6 @@ import com.wangdao.mall.mapper.UserDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.*;
 
 @Service
@@ -57,34 +56,7 @@ public class StatServiceImpl implements StatService {
     @Override
     public Map statGoods() {
         String[] strings={"day","orders","products","amount"};
-        OrderDOExample orderDOExample = new OrderDOExample();
-        List<OrderDO> orderDOS= orderDOMapper.selectByExample(orderDOExample);
-        Set<Date> dateSet=new HashSet();
-        for (OrderDO orderDO :orderDOS ) {
-            dateSet.add(orderDO.getUpdateTime());
-        }
-        List<StateDo> stateDos=new ArrayList();
-        for (Date date : dateSet) {
-            orderDOExample.createCriteria().andUpdateTimeEqualTo(date);
-            List<OrderDO> orderDOS1 = orderDOMapper.selectByExample(orderDOExample);
-            double amount=0;
-            int product=0;
-            for (OrderDO orderDO : orderDOS1) {
-                OrderGoodsDOExample orderGoodsDOExample = new OrderGoodsDOExample();
-                orderGoodsDOExample.createCriteria().andOrderIdEqualTo(orderDO.getId());
-                List<OrderGoodsDO> orderGoodsDOS = orderGoodsDOMapper.selectByExample(orderGoodsDOExample);
-                for (OrderGoodsDO orderGoodsDO : orderGoodsDOS) {
-                    amount=amount+(orderGoodsDO.getNumber())* (orderGoodsDO.getPrice().doubleValue());
-                    product=product+(orderGoodsDO.getNumber());
-                }
-            }
-            StateDo stateDo = new StateDo();
-            stateDo.setDay(date);
-            stateDo.setOrders(orderDOS1.size());
-            stateDo.setAmount(amount);
-            stateDo.setProducts(product);
-            stateDos.add(stateDo);
-        }
+        List<StateDo> stateDos = orderDOMapper.selectGoods();
         Map<String, Object> returnmap = new HashMap<>();
         returnmap.put("columns",strings);
         returnmap.put("rows",stateDos);

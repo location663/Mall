@@ -8,6 +8,7 @@ import com.wangdao.mall.mapper.AdDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,7 +41,9 @@ public class AdServiceImpl implements AdService {
             String new_content = "%" + content + "%";
             criteria.andContentLike(new_content);
         }
+        criteria.andDeletedEqualTo(false);
         //获取所有ad的List
+
         List<AdDO> adDOList = adDOMapper.selectByExample(adDOExample);
         map.put("items", adDOList);
         //获取总条目数
@@ -58,15 +61,29 @@ public class AdServiceImpl implements AdService {
 
     @Override
     public int createAdDO(AdDO adDO) {
+        Date date = new Date();
+        adDO.setAddTime(date);
+        adDO.setUpdateTime(date);
         int id = 0;
         //修改mapper里该函数，增加selectKey
         int insert = adDOMapper.insertSelective(adDO);
-//        if(insert == 1){
-//            id = adDOMapper.getLastInsertId();
-//        }
-        id = adDOMapper.selectLastInsertId();
+        if(insert == 1){
+            id = adDOMapper.selectLastInsertId();
+        }
         return id;
     }
+
+
+    /**逻辑删除
+     * @param id
+     * @return
+     */
+    @Override
+    public int deleteAdDOById(Integer id) {
+        int delete = adDOMapper.deleteCouponById(id);
+        return delete;
+    }
+
 
     @Override
     public AdDO queryAdDO(Integer id) {
@@ -74,9 +91,4 @@ public class AdServiceImpl implements AdService {
         return adDO;
     }
 
-    @Override
-    public int deleteAdDO(AdDO adDO) {
-        int i = adDOMapper.deleteByPrimaryKey(adDO.getId());
-        return i;
-    }
 }
