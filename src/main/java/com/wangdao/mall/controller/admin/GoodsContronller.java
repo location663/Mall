@@ -45,7 +45,7 @@ public class GoodsContronller {
             }else {
                 baseReqVo.setData(null);
                 baseReqVo.setErrmsg(null);
-                baseReqVo.setErrno(503);
+                baseReqVo.setErrno(601);
 
                 return baseReqVo;
             }
@@ -115,7 +115,7 @@ public class GoodsContronller {
                 System.out.println(userId+"---"+userIdInt);
                 baseReqVo.setData(null);
                 baseReqVo.setErrmsg(null);
-                baseReqVo.setErrno(505);
+                baseReqVo.setErrno(601);
                 return baseReqVo;
             }
         }
@@ -127,7 +127,7 @@ public class GoodsContronller {
             }else {
                 baseReqVo.setData(null);
                 baseReqVo.setErrmsg(null);
-                baseReqVo.setErrno(505);
+                baseReqVo.setErrno(601);
                 return baseReqVo;
             }
         }

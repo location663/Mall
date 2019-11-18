@@ -18,8 +18,6 @@ class MallApplicationTests {
     AdminService adminService;
 
 
-<<<<<<< HEAD
-=======
 
 
     /**
@@ -117,9 +115,6 @@ class MallApplicationTests {
 //        Map<String, Object> map = adminService.selectAllLogList(1, 20, "add_time", "desc");
 //        System.out.println(map);
 //    }
-//
-//    @Test
 
->>>>>>> de388826bfaed6d5a216d1120c8ca88e10d1d62d
 }
 
