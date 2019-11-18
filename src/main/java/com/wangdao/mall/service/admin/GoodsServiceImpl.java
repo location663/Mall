@@ -73,7 +73,7 @@ public class GoodsServiceImpl implements GoodsService {
 
         goodsDOExample.setOrderByClause(sort+" "+order);
 
-        List<GoodsDO> goodsDOList = goodsDOMapper.selectByExample(goodsDOExample);
+        List<GoodsDO> goodsDOList = goodsDOMapper.selectByExampleWithBLOBs(goodsDOExample);
 
         PageInfo<GoodsDO> userPageInfo = new PageInfo<>(goodsDOList);
         long total = userPageInfo.getTotal();
