@@ -1,5 +1,6 @@
 
 
+
 import com.wangdao.mall.service.admin.AdminService;
 import com.wangdao.mall.service.wx.WxGoodsService;
 import org.junit.jupiter.api.Test;
@@ -113,5 +114,4 @@ class MallApplicationTests {
 //    }
 
 }
-
 
