@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService{
             userDOExample.createCriteria().andUsernameLike("%"+username+"%");
         }
         userDOExample.setOrderByClause(sort+" "+order);
+        userDOExample.createCriteria().andDeletedEqualTo(true);
         List<UserDO> userDOS = userDOMapper.selectByExample(userDOExample);
         long l = userDOMapper.countByExample(userDOExample);
         map.put("items",userDOS);
@@ -60,6 +61,7 @@ public class UserServiceImpl implements UserService{
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         AddressDOExample addressDOExample= new AddressDOExample();
+        addressDOExample.createCriteria().andDeletedEqualTo(true);
         if(userid!=null){
             addressDOExample.createCriteria().andUserIdEqualTo(userid);
         }
@@ -84,6 +86,7 @@ public class UserServiceImpl implements UserService{
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         CollectDOExample collectDOExample= new CollectDOExample();
+        collectDOExample.createCriteria().andDeletedEqualTo(true);
         if(userId!=null){
             collectDOExample.createCriteria().andUserIdEqualTo(userId);
         }
@@ -115,6 +118,7 @@ public class UserServiceImpl implements UserService{
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         FootprintDOExample footprintDOExample= new FootprintDOExample();
+        footprintDOExample.createCriteria().andDeletedEqualTo(true);
         if(userId!=null){
             footprintDOExample.createCriteria().andUserIdEqualTo(userId);
         }
@@ -146,6 +150,7 @@ public class UserServiceImpl implements UserService{
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         SearchHistoryDOExample historyDOExample= new SearchHistoryDOExample();
+        historyDOExample.createCriteria().andDeletedEqualTo(true);
         if(userId!=null){
             historyDOExample.createCriteria().andUserIdEqualTo(userId);
         }
@@ -177,6 +182,7 @@ public class UserServiceImpl implements UserService{
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         FeedbackDOExample feedbackDOExample= new FeedbackDOExample();
+        feedbackDOExample.createCriteria().andDeletedEqualTo(true);
         if(username!=null){
             feedbackDOExample.createCriteria().andUsernameLike("%"+username+"%");
         }
