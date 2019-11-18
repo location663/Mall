@@ -37,7 +37,8 @@ public class GoodsContronller {
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         //先判断goodsSn是数字还是字符串
         Integer goodsSnInt = null;
-        if (goodsSn!=null){
+        String nameStr=null;
+        if (goodsSn!=null && !"".equals(goodsSn.trim())){  //排除空串和空格串
             Pattern pattern = Pattern.compile("[0-9]+");
             boolean matches = pattern.matcher(goodsSn).matches();
             if (matches) {
@@ -51,7 +52,11 @@ public class GoodsContronller {
             }
         }
 
-        HashMap<String, Object> map = goodsService.queryGoodsList(page, limit, goodsSnInt, name, sort, order);
+        if (name!=null && !"".equals(name.trim())){
+            nameStr=name;
+        }
+
+        HashMap<String, Object> map = goodsService.queryGoodsList(page, limit, goodsSnInt, nameStr, sort, order);
 
         baseReqVo.setData(map);
         baseReqVo.setErrmsg("成功");
@@ -103,23 +108,25 @@ public class GoodsContronller {
     public BaseReqVo commentList(Integer page, Integer limit, String userId, String valueId, String sort, String order){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
 
+
+
         //先判断goodsSn是数字还是字符串
         Integer userIdInt = null;
         Integer valueIdInt = null;
-        if (userId!=null){
+        if (userId!=null && !"".equals(userId.trim())){
             Pattern pattern = Pattern.compile("[0-9]+");
             boolean matches1 = pattern.matcher(userId).matches();
             if (matches1) {
                 userIdInt = Integer.valueOf(userId);
             }else {
-                System.out.println(userId+"---"+userIdInt);
                 baseReqVo.setData(null);
                 baseReqVo.setErrmsg(null);
                 baseReqVo.setErrno(601);
                 return baseReqVo;
             }
         }
-        if (valueId!=null){
+
+        if (valueId!=null && !"".equals(valueId.trim())){
             Pattern pattern = Pattern.compile("[0-9]+");
             boolean matches2 = pattern.matcher(valueId).matches();
             if (matches2) {
