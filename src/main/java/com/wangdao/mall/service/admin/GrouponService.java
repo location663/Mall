@@ -10,5 +10,9 @@ public interface GrouponService {
 
     Map listGrouponRules(RequestPageDTO pageDTO);
 
-    GrouponRulesDO createGrouponRules(GrouponRulesDO grouponRulesDO);
+    GrouponRulesDO createGrouponRules(GrouponRulesDO grouponRulesDO) throws Exception;
+
+    int updateGrouponRules(GrouponRulesDO grouponRulesDO) throws Exception;
+
+    int deleteGrouponRules(GrouponRulesDO grouponRulesDO);
 }

@@ -96,7 +96,6 @@ public class MarketServiceImpl implements MarketService{
      */
     @Override
     public BrandDO updateBrandById(BrandDO brandDO) {
-
         brandDO.setUpdateTime(new Date(System.currentTimeMillis()));
         int i = brandDOMapper.updateByPrimaryKey(brandDO);
         BrandDO brandDO1 = brandDOMapper.selectByPrimaryKey(brandDO.getId());
