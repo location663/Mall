@@ -5,13 +5,13 @@ import lombok.Data;
 @Data
 public class CategoryVO {
     private Integer value;
-    private String lable;
+    private String label;
 
     public CategoryVO() {
     }
 
-    public CategoryVO(Integer value, String lable) {
+    public CategoryVO(Integer value, String label) {
         this.value = value;
-        this.lable = lable;
+        this.label = label;
     }
 }

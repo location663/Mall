@@ -3,7 +3,10 @@ package com.wangdao.mall.mapper;
 import com.wangdao.mall.bean.GrouponDO;
 import com.wangdao.mall.bean.GrouponDOExample;
 import java.util.List;
+
+import com.wangdao.mall.bean.SubGrouponDTO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface GrouponDOMapper {
     long countByExample(GrouponDOExample example);
@@ -27,4 +30,9 @@ public interface GrouponDOMapper {
     int updateByPrimaryKeySelective(GrouponDO record);
 
     int updateByPrimaryKey(GrouponDO record);
+
+    List<GrouponDO> listByGoodsId(@Param("goodsId") Integer goodsId, @Param("sort") String sort, @Param("order") String order);
+
+    @Select("select user_id as 'userId', order_id as 'orderId' from cskaoyan_mall_groupon where id = #{id} ")
+    List<SubGrouponDTO> listSubGroupon(@Param("id") Integer id);
 }

@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
+
 @Data
 public class CategoryDO {
     private Integer id;
@@ -29,6 +31,8 @@ public class CategoryDO {
     private Date updateTime;
 
     private Boolean deleted;
+
+    List<CategoryDO> children;
 
     public CategoryDO() {
     }

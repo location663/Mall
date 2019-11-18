@@ -50,7 +50,6 @@ public class MarketServiceImpl implements MarketService{
      */
     @Override
     public List<RegionVO> selectRegions() {
-
         List<RegionVO> regionByPidAndType1 = getRegionByPidAndType(0, (byte) 1);
         for (RegionVO regionVO : regionByPidAndType1) {
             List<RegionVO> regionByPidAndType2 = getRegionByPidAndType(regionVO.getId(), (byte) 2);
@@ -60,7 +59,6 @@ public class MarketServiceImpl implements MarketService{
             }
             regionVO.setChildren(regionByPidAndType2);
         }
-
         return regionByPidAndType1;
     }
 
@@ -83,15 +81,11 @@ public class MarketServiceImpl implements MarketService{
         }
         brandDOExample.setOrderByClause(pageDTO.getSort() + " " + pageDTO.getOrder());
         List<BrandDO> brandDOS = brandDOMapper.selectByExample(brandDOExample);
-
         PageInfo<BrandDO> brandDOPageInfo = new PageInfo<>(brandDOS);
         long total = brandDOPageInfo.getTotal();
-
         HashMap<String, Object> map = new HashMap<>();
-
         map.put("items", brandDOS);
         map.put("total", total);
-
         return map;
     }
 
@@ -120,7 +114,6 @@ public class MarketServiceImpl implements MarketService{
         brandDO.setUpdateTime(new Date(System.currentTimeMillis()));
         brandDOMapper.insertSelective(brandDO);
         BrandDO brandDO1 = brandDOMapper.selectByPrimaryKey(brandDOMapper.selectLastInsertId());
-
         return brandDO1;
     }
 
@@ -148,29 +141,6 @@ public class MarketServiceImpl implements MarketService{
         return i;
     }
 
-    /**
-     * 行政区域中间方法
-     * @param id
-     * @param type
-     * @return
-     */
-    private List<RegionVO> getRegionByPidAndType(Integer id, Byte type){
-        RegionDOExample regionDOExample = new RegionDOExample();
-        regionDOExample.createCriteria().andPidEqualTo(id).andTypeEqualTo(type);
-        List<RegionDO> regionDOS = regionDOMapper.selectByExample(regionDOExample);
-        ArrayList<RegionVO> regionVOS = new ArrayList<>();
-        for (RegionDO regionDO : regionDOS) {
-            RegionVO regionVO = new RegionVO();
-            regionVO.setId(regionDO.getId());
-            regionVO.setName(regionDO.getName());
-            regionVO.setType(regionDO.getType());
-            regionVO.setCode(regionDO.getCode());
-            regionVO.setPid(regionDO.getPid());
-            regionVOS.add(regionVO);
-        }
-
-        return regionVOS;
-    }
 
     /**
      * 商品类目
@@ -180,8 +150,12 @@ public class MarketServiceImpl implements MarketService{
     public List<CategoryDO> listCategory() {
         CategoryDOExample categoryDOExample = new CategoryDOExample();
         categoryDOExample.createCriteria().andLevelEqualTo("L1").andDeletedEqualTo(false);
-        List<CategoryDO> categoryDOList = categoryDOMapper.selectByExample(categoryDOExample);
-        return categoryDOList;
+        List<CategoryDO> categoryDOList1 = categoryDOMapper.selectByExample(categoryDOExample);
+        for (CategoryDO categoryDO : categoryDOList1) {
+            List<CategoryDO> l2 = getCategoryByPidAndLevel(categoryDO.getId(), "L2");
+            categoryDO.setChildren(l2);
+        }
+        return categoryDOList1;
     }
 
     /**
@@ -257,7 +231,6 @@ public class MarketServiceImpl implements MarketService{
             criteria.andOrderSnEqualTo(pageDTO.getOrderSn().trim());
         }
         if (null != pageDTO.getOrderStatusArray() ){
-//            criteria.andOrderSnEqualTo(pageDTO.getOrderStatusArray());
             criteria.andOrderStatusIn(pageDTO.getOrderStatusArray());
         }
         orderDOExample.setOrderByClause(pageDTO.getSort() + " " + pageDTO.getOrder());
@@ -419,5 +392,41 @@ public class MarketServiceImpl implements MarketService{
         keywordDOMapper.updateByPrimaryKey(keywordDO);
         KeywordDO keywordDO1 = keywordDOMapper.selectByPrimaryKey(keywordDO.getId());
         return keywordDO1;
+    }
+
+    /**
+     * 行政区域中间方法
+     * @param id
+     * @param type
+     * @return
+     */
+    private List<RegionVO> getRegionByPidAndType(Integer id, Byte type){
+        RegionDOExample regionDOExample = new RegionDOExample();
+        regionDOExample.createCriteria().andPidEqualTo(id).andTypeEqualTo(type);
+        List<RegionDO> regionDOS = regionDOMapper.selectByExample(regionDOExample);
+        ArrayList<RegionVO> regionVOS = new ArrayList<>();
+        for (RegionDO regionDO : regionDOS) {
+            RegionVO regionVO = new RegionVO();
+            regionVO.setId(regionDO.getId());
+            regionVO.setName(regionDO.getName());
+            regionVO.setType(regionDO.getType());
+            regionVO.setCode(regionDO.getCode());
+            regionVO.setPid(regionDO.getPid());
+            regionVOS.add(regionVO);
+        }
+        return regionVOS;
+    }
+
+    /**
+     * 商品类目中间方法
+     * @param pid
+     * @param level
+     * @return
+     */
+    private List<CategoryDO> getCategoryByPidAndLevel(Integer pid, String level){
+        CategoryDOExample categoryDOExample = new CategoryDOExample();
+        categoryDOExample.createCriteria().andPidEqualTo(pid).andLevelEqualTo(level).andDeletedEqualTo(false);
+        List<CategoryDO> categoryDOList = categoryDOMapper.selectByExample(categoryDOExample);
+        return categoryDOList;
     }
 }
