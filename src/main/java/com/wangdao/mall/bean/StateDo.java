@@ -11,7 +11,8 @@ import java.util.Date;
 
 @Data
 public class StateDo {
-    @JsonFormat(pattern = "yyyy-MMM-dd")
+
+    @JsonFormat(pattern = "yyyy-MM-dd",timezone = "GMT+8")
     Date day;
     Integer users;
     Double amount;

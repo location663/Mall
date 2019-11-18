@@ -20,6 +20,7 @@ class MallApplicationTests {
 
 
 
+
     /**
      * 测试url： http://192.168.2.100:8081/admin/admin/list?page=1&limit=20&sort=add_time&order=desc
      * 测试方法：AdminAdministerController 的 selectAllAdmin()方法
