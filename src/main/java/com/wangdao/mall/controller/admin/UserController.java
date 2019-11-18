@@ -9,6 +9,7 @@ package com.wangdao.mall.controller.admin;
 
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.service.admin.UserService;
+import com.wangdao.mall.service.util.UserRegExutils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,9 +34,15 @@ public class UserController {
      */
     @RequestMapping("/user/list")
     public BaseReqVo userList(int page, int limit, String sort, String order, String username, String mobile) {
-        Map map = userService.listByUserCondition(page, limit, sort, order, username, mobile);
-        BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
-        return baseReqVo;
+        if(UserRegExutils.userReg(username)==601||UserRegExutils.userReg(mobile)==602){
+            BaseReqVo baseReqVo=new BaseReqVo(null,null,601);
+            return baseReqVo;
+        }
+        else {
+            Map map = userService.listByUserCondition(page, limit, sort, order, username, mobile);
+            BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
+            return baseReqVo;
+        }
     }
 
     /**
@@ -50,10 +57,15 @@ public class UserController {
      * @return
      */
     @RequestMapping("/address/list")
-    public BaseReqVo addressList(int page, int limit, String sort, String order, String name, Integer userid) {
-        Map map = userService.listByAddressCondition(page, limit, sort, order, name, userid);
-        BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
-        return baseReqVo;
+    public BaseReqVo addressList(int page, int limit, String sort, String order, String name, String userid) {
+        if (UserRegExutils.userReg(name) == 601 || UserRegExutils.userReg(userid) == 602) {
+            BaseReqVo baseReqVo = new BaseReqVo(null, null, 601);
+            return baseReqVo;
+        } else {
+            Map map = userService.listByAddressCondition(page, limit, sort, order, name, userid);
+            BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
+            return baseReqVo;
+        }
     }
 
     /**
@@ -68,10 +80,15 @@ public class UserController {
      * @return
      */
     @RequestMapping("/collect/list")
-    public BaseReqVo collectList(int page, int limit, String sort, String order, Integer valueId, Integer userId) {
-        Map map = userService.listByCollectCondition(page, limit, sort, order, valueId, userId);
+    public BaseReqVo collectList(int page, int limit, String sort, String order, String valueId, String userId) {
+        if(UserRegExutils.userReg(valueId)==602||UserRegExutils.userReg(userId)==602){
+            BaseReqVo baseReqVo=new BaseReqVo(null,null,601);
+            return baseReqVo;
+        }
+       else{ Map map = userService.listByCollectCondition(page, limit, sort, order, valueId, userId);
         BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
         return baseReqVo;
+        }
     }
 
     /**
@@ -86,10 +103,15 @@ public class UserController {
      * @return
      */
     @RequestMapping("/footprint/list")
-    public BaseReqVo footprintList(int page, int limit, String sort, String order, Integer goodsId, Integer userId) {
-        Map map = userService.listByFootprintCondition(page, limit, sort, order, goodsId, userId);
-        BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
-        return baseReqVo;
+    public BaseReqVo footprintList(int page, int limit, String sort, String order, String goodsId, String userId) {
+        if (UserRegExutils.userReg(goodsId) == 602 || UserRegExutils.userReg(userId) == 602) {
+            BaseReqVo baseReqVo = new BaseReqVo(null, null, 601);
+            return baseReqVo;
+        } else {
+            Map map = userService.listByFootprintCondition(page, limit, sort, order, goodsId, userId);
+            BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
+            return baseReqVo;
+        }
     }
 
     /**
@@ -104,10 +126,15 @@ public class UserController {
      * @return
      */
     @RequestMapping("/history/list")
-    public BaseReqVo footprintList(int page, int limit, String sort, String order, String keyword, Integer userId) {
-        Map map = userService.listByHistoryCondition(page, limit, sort, order, keyword, userId);
-        BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
-        return baseReqVo;
+    public BaseReqVo historyList(int page, int limit, String sort, String order, String keyword, String userId) {
+        if (UserRegExutils.userReg(keyword) == 601 || UserRegExutils.userReg(userId) == 602) {
+            BaseReqVo baseReqVo = new BaseReqVo(null, null, 601);
+            return baseReqVo;
+        } else {
+            Map map = userService.listByHistoryCondition(page, limit, sort, order, keyword, userId);
+            BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
+            return baseReqVo;
+        }
     }
 
     /**
@@ -121,9 +148,15 @@ public class UserController {
      * @return
      */
     @RequestMapping("/feedback/list")
-    public BaseReqVo feedbackList(int page, int limit, String sort, String order, String username, Integer id) {
+    public BaseReqVo feedbackList(int page, int limit, String sort, String order, String username, String id) {
+        if(UserRegExutils.userReg(username)==601||UserRegExutils.userReg(id)==602){
+            BaseReqVo baseReqVo=new BaseReqVo(null,null,601);
+            return baseReqVo;
+        }
+        else {
         Map map = userService.listByFeedbackCondition(page, limit, sort, order, username, id);
         BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
         return baseReqVo;
+        }
     }
 }
