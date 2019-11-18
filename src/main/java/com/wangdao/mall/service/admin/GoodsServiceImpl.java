@@ -47,17 +47,19 @@ public class GoodsServiceImpl implements GoodsService {
      * @param page
      * @param limit
      * @param goodsSnInt
-     * @param name
+     * @param nameStr
      * @param sort
      * @param order
      * @return
      */
     @Override
-    public HashMap<String, Object> queryGoodsList(Integer page, Integer limit,Integer goodsSnInt,String name, String sort, String order) {
+    public HashMap<String, Object> queryGoodsList(Integer page, Integer limit,Integer goodsSnInt,String nameStr, String sort, String order) {
         GoodsDOExample goodsDOExample = new GoodsDOExample();
         HashMap<String, Object> map = new HashMap<>();
         Integer goodsSn=null;
         goodsSn=goodsSnInt;
+        String name=null;
+        name=nameStr;
         PageHelper.startPage(page,limit);
 
 
@@ -68,7 +70,7 @@ public class GoodsServiceImpl implements GoodsService {
         }else if (goodsSn!=null ){
             goodsDOExample.createCriteria().andDeletedEqualTo(false).andGoodsSnLike("%"+ goodsSn +"%");
         }
-            goodsDOExample.createCriteria().andDeletedEqualTo(false);
+        goodsDOExample.createCriteria().andDeletedEqualTo(false);
 
 
         goodsDOExample.setOrderByClause(sort+" "+order);

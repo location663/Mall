@@ -11,13 +11,6 @@ public class GrouponRecordVO {
     private GrouponRulesDO rules;
     private List<SubGrouponDTO> subGroupons;
 
-    public GrouponRecordVO() {
-    }
-
-    public GrouponRecordVO(GoodsDO goods, GrouponDO groupon, GrouponRulesDO rules, List<SubGrouponDTO> subGroupons) {
-        this.goods = goods;
-        this.groupon = groupon;
-        this.rules = rules;
-        this.subGroupons = subGroupons;
-    }
+    private Integer groupon_member;
+    private Double groupon_price;
 }
