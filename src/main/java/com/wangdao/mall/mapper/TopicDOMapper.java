@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.TopicDO;
 import com.wangdao.mall.bean.TopicDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface TopicDOMapper {
     long countByExample(TopicDOExample example);
@@ -33,4 +34,8 @@ public interface TopicDOMapper {
     int updateByPrimaryKeyWithBLOBs(TopicDO record);
 
     int updateByPrimaryKey(TopicDO record);
+
+    @Select("select last_insert_id()")
+    int selectLastInsertId();
+
 }
