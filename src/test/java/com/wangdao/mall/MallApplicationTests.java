@@ -1,6 +1,5 @@
 
-<<<<<<< HEAD
-=======
+
 import com.wangdao.mall.service.admin.AdminService;
 import com.wangdao.mall.service.wx.WxGoodsService;
 import org.junit.jupiter.api.Test;
@@ -13,11 +12,7 @@ import java.util.HashMap;
 @SpringBootTest
 class MallApplicationTests {
 
-    @Autowired
-    AdminService adminService;
 
-    @Autowired
-    WxGoodsService wxGoodsService;
 
 
 
@@ -118,5 +113,5 @@ class MallApplicationTests {
 //    }
 
 }
->>>>>>> a7825af30ac58dfdbd030826d82c76eadb3649af
+
 

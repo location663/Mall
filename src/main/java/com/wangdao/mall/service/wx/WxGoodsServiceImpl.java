@@ -65,7 +65,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
 
 
     /**
-     * 获取(搜索)商品列表
+     * 获取(搜索某商品)(显示某类目下所有商品)商品列表
      * response里有desc关键字
      * @param keyword
      * @param page
@@ -110,6 +110,37 @@ public class WxGoodsServiceImpl implements WxGoodsService {
 
         map.put("filterCategoryList",filterCategoryList);
 
+        return map;
+    }
+
+
+    /**
+     * WX获得分类数据(显示某一级类目下所有二级类目)
+     * @param id
+     * @return
+     */
+    @Override
+    public HashMap<String, Object> queryWxGoodsCategory(Integer id) {
+        HashMap<String, Object> map = new HashMap<>();
+
+        CategoryDO categoryDO = categoryDOMapper.selectByPrimaryKey(id);
+        if (categoryDO.getPid()==0){//pid是0，说明它是一级父类目
+            CategoryDOExample categoryDOExample = new CategoryDOExample();
+            categoryDOExample.createCriteria().andDeletedEqualTo(false).andPidEqualTo(categoryDO.getId());
+            List<CategoryDO> brotherCategory = categoryDOMapper.selectByExample(categoryDOExample);
+
+            map.put("currentCategory",brotherCategory.get(0));//默认显示currentCategory是List里第一个二级目录
+            map.put("brotherCategory",brotherCategory);
+            map.put("parentCategory",categoryDO);
+        }else {//pid不是0，说明它是二级子类目也是当前类目
+            map.put("currentCategory",categoryDO);//pid不是0，说明它是二级子类目也是当前类目
+            CategoryDO parentCategory = categoryDOMapper.selectByPrimaryKey(categoryDO.getPid());//找出其父类目
+            map.put("parentCategory",parentCategory);
+            CategoryDOExample categoryDOExample1 = new CategoryDOExample();
+            categoryDOExample1.createCriteria().andDeletedEqualTo(false).andPidEqualTo(parentCategory.getId());
+            List<CategoryDO> categoryDOS = categoryDOMapper.selectByExample(categoryDOExample1);
+            map.put("brotherCategory",categoryDOS);
+        }
         return map;
     }
 }
