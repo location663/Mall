@@ -40,6 +40,26 @@ public class CouponServiceImpl implements CouponService {
         return update;
     }
 
+    /**编辑优惠券
+     * @param couponDO
+     * @return
+     */
+    @Override
+    public CouponDO updateCoupon(CouponDO couponDO) {
+        //如果优惠券类型不再是兑换码, 应该把code置空，如果以前不是兑换码，现在改为兑换码，应该生成一个兑换码
+        if(couponDO.getType() != 2){
+            couponDO.setCode("");
+        }else{
+            int i1 = new Random().nextInt(100) + couponDO.getName().hashCode();
+            String s = Integer.toHexString(i1).toUpperCase();
+            couponDO.setCode(s);
+        }
+        couponDOMapper.updateByPrimaryKey(couponDO);
+        //应该给一个返回值，并写一个判断，更新成功再做下面的事情，不然抛一个异常
+        CouponDO couponDO1 = couponDOMapper.selectByPrimaryKey(couponDO.getId());
+        return couponDO1;
+    }
+
     /**优惠券详情里的查询优惠券-用户信息
      * @param page
      * @param limit
@@ -99,7 +119,7 @@ public class CouponServiceImpl implements CouponService {
         if(couponDO.getStartTime() != null && couponDO.getEndTime() != null){
             couponDOMapper.updateDays(id);//应该用selectKey,在插入之前就先设置好其中的属性
         }
-        if(couponDO.getType() == 2){
+        if(couponDO.getType() == 2){//兑换码的生成是不是应该在前面插入优惠券的时候就直接设置好？？
             //生成一个随机的兑换码
             int i1 = new Random().nextInt(100) + couponDO.getName().hashCode();
             String s = Integer.toHexString(i1).toUpperCase();

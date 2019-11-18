@@ -31,7 +31,7 @@ public interface AdDOMapper {
     int updateByPrimaryKey(AdDO record);
 
     //新增一个方法
-    @Select("select last_insert_id() from cskaoyan_mall_ad")
+    @Select("select distinct last_insert_id() from cskaoyan_mall_ad")
     int selectLastInsertId();
 
     @Update("update cskaoyan_mall_ad set deleted = 1 where id = #{id}")
