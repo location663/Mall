@@ -75,7 +75,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
      * @return
      */
     @Override
-    public HashMap<String, Object> queryWxGoodsList(String keyword, Integer page, Integer size, String sort, String order) {
+    public HashMap<String, Object> queryWxGoodsListBykeyword(String keyword, Integer page, Integer size, String sort, String order) {
         GoodsDOExample goodsDOExample = new GoodsDOExample();
         CategoryDOExample categoryDOExample = new CategoryDOExample();
         HashMap<String, Object> map = new HashMap<>();
@@ -92,16 +92,14 @@ public class WxGoodsServiceImpl implements WxGoodsService {
         map.put("goodsList",goodsDOList);
 
         //封装filterCategoryList
-
         List<CategoryDO> categoryDOArrayList = new ArrayList<>();
-
         for (GoodsDO goodsDO : goodsDOList) {
             CategoryDO categoryDO = categoryDOMapper.selectByPrimaryKey(goodsDO.getCategoryId());
             if (!categoryDO.getDeleted()){
                 categoryDOArrayList.add(categoryDO);
             }
         }
-
+        //把 categoryDOArrayList 里的 Category 对象去重
         List<CategoryDO> filterCategoryList = new ArrayList<>();
         Set set = new HashSet();
         for (CategoryDO categoryDO : categoryDOArrayList) {
