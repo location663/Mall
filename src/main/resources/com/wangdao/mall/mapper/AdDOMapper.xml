@@ -122,9 +122,8 @@
 
   <insert id="insertSelective" parameterType="com.wangdao.mall.bean.AdDO">
     <!--<selectKey order="AFTER" keyColumn="id" keyProperty="adDO.id" resultType="int">-->
-      <!--select last_insert_id()-->
+      <!--select LAST_INSERT_ID() as id -->
     <!--</selectKey>-->
-
     insert into cskaoyan_mall_ad
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

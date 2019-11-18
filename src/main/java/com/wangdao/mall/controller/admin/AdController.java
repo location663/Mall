@@ -1,11 +1,14 @@
 package com.wangdao.mall.controller.admin;
 import com.wangdao.mall.bean.AdDO;
 import com.wangdao.mall.bean.BaseReqVo;
+import com.wangdao.mall.bean.StorageDO;
 import com.wangdao.mall.service.admin.AdService;
+import com.wangdao.mall.service.util.StorageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.Map;
@@ -18,11 +21,13 @@ import java.util.Map;
  * @date : 2019-11-15 17:13
  **/
 @RestController
-@RequestMapping("admin/ad")
+@RequestMapping("admin")
 public class AdController {
     @Autowired
     AdService adDOService;
 
+    @Autowired
+    StorageUtils storageUtils;
     /**
      * 获取根据条件查询广告，默认不输入条件时该条件的值是null
      * @param page
@@ -31,7 +36,7 @@ public class AdController {
      * @param content
      * @return
      */
-    @RequestMapping("list")
+    @RequestMapping("ad/list")
     public BaseReqVo getAdList(Integer page, Integer limit, String name, String content){
         Map<String, Object> map = adDOService.queryAdDOs(page, limit, name, content);
         BaseReqVo<Map<String, Object>> baseReqVo = new BaseReqVo();
@@ -46,7 +51,7 @@ public class AdController {
      * @param adDO
      * @return
      */
-    @RequestMapping("update")
+    @RequestMapping("ad/update")
     public BaseReqVo getAdList(@RequestBody AdDO adDO){
         BaseReqVo<Object> baseReqVo = new BaseReqVo();
         //这是import java.sql.Date;不是java.util22222222.Date!!!
@@ -73,13 +78,13 @@ public class AdController {
 //    }返回值是string，不行，因为AdDO类里Date updateTime
 
     /**
-     * 删除广告
+     * 逻辑删除广告
      * @param adDO
      * @return
      */
-    @RequestMapping("delete")
+    @RequestMapping("ad/delete")
     public BaseReqVo deleteAdDO(@RequestBody AdDO adDO){
-        int delete = adDOService.deleteAdDO(adDO);
+        int delete = adDOService.deleteAdDOById(adDO.getId());
         BaseReqVo<Object> baseReqVo = new BaseReqVo();
         if(delete == 1){
             baseReqVo.setErrmsg("成功");
@@ -93,12 +98,9 @@ public class AdController {
      * @param adDO
      * @return
      */
-    @RequestMapping("create")
+    @RequestMapping("ad/create")
     public AdDO createAdDO(@RequestBody AdDO adDO){
         BaseReqVo<Object> baseReqVo = new BaseReqVo();
-        Date date = new Date();
-        adDO.setAddTime(date);
-        adDO.setUpdateTime(date);
         int id = adDOService.createAdDO(adDO);
         if(id > 0){
             adDO.setId(id);
@@ -109,7 +111,23 @@ public class AdController {
 //        AdDO adDO1 = adDOService.queryAdDO(adDO.getId());这样不能完成功能，因为现在adDO里还没有id属性。
 //        解决办法1：应该在插入新的一条数据时，一并返回select last_insert_id(),再去查询出来该条数据的信息。
         //解决办法2：插入该条新数据时，返回值int，返回的是插入的id, 再在service层或者controller层adDO.setId()。
-        //由于响应报文里有几个比请求报文里的bean多了几条额外的id    ！！！,addTime, updateTime属性，所以必须要查询数据库
+        //由于响应报文里有几个比请求报文里的bean多了几条额外的id  ！！！,addTime, updateTime属性，所以必须要查询数据库
         return adDO;
     }
+
+//    /**
+//     * 新建广告时的图片上传
+//     * @param multipartFile
+//     * @return
+//     */
+//    @RequestMapping("storage/create")
+//    public BaseReqVo imgUpload(MultipartFile multipartFile){
+//        BaseReqVo<Object> baseReqVo = new BaseReqVo();
+//        String realpath = "C:\\Users\\crazy\\IdeaProjects\\Mall\\src\\main\\resources\\static";
+//        StorageDO storageDO = storageUtils.insertStorage(multipartFile, realpath);
+//        baseReqVo.setData(storageDO);
+//        baseReqVo.setErrno(0);
+//        baseReqVo.setErrmsg("成功");
+//        return baseReqVo;
+//    }
 }

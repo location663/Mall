@@ -8,6 +8,7 @@ package com.wangdao.mall.controller.admin;
 
 import com.wangdao.mall.bean.AdminDO;
 import com.wangdao.mall.bean.BaseReqVo;
+import com.wangdao.mall.bean.RoleDO;
 import com.wangdao.mall.bean.StorageDO;
 import com.wangdao.mall.service.admin.AdminService;
 import com.wangdao.mall.service.util.StorageUtils;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -104,12 +104,12 @@ public class AdminAdministerController {
             BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "管理员名称不符合规定", 601);
             return baseReqVo;
         }
-        List<AdminDO> adminDOAfterCreate = adminService.createNewAdmin(adminDO);
+        AdminDO adminDOAfterCreate = adminService.createNewAdmin(adminDO);
         if (adminDOAfterCreate != null){
-            BaseReqVo<List<AdminDO>> baseReqVo = new BaseReqVo<>(adminDOAfterCreate, "成功", 0);
+            BaseReqVo<AdminDO> baseReqVo = new BaseReqVo<>(adminDOAfterCreate, "成功", 0);
             return baseReqVo;
         }
-        BaseReqVo<List<AdminDO>> baseReqVo = new BaseReqVo<>(adminDOAfterCreate, "管理员已存在", 602);
+        BaseReqVo<AdminDO> baseReqVo = new BaseReqVo<>(adminDOAfterCreate, "管理员已存在", 602);
         return baseReqVo;
     }
 
@@ -165,7 +165,7 @@ public class AdminAdministerController {
      */
     @RequestMapping("/admin/delete")
     public BaseReqVo deleteAdmin(@RequestBody AdminDO adminDO){
-        int result = adminService.deleteAdminByAdminDORecord(adminDO);
+        int result = adminService.deleteAdmin(adminDO);
         if (result != 0){
             BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "成功", 0);
             return baseReqVo;
@@ -242,5 +242,224 @@ public class AdminAdministerController {
     }
 
 
+    /**
+     * request:
+     * {
+     * 	"name": "test01",
+     * 	"desc": "第一次测试添加"
+     * }
+     * response:
+     * {
+     * 	"errno": 0,               重名校验：
+     * 	"data": {                 没有长度校验：
+     * 		"id": 102,
+     * 		"name": "test01",
+     * 		"desc": "第一次测试添加",
+     * 		"addTime": "2019-11-16 22:43:25",
+     * 		"updateTime": "2019-11-16 22:43:25"    // addtime和updatetime是一样的时间 第一层添加set * 2
+     *        },
+     * 	"errmsg": "成功"
+     * }
+     * @param roleDO
+     * @return
+     */
+    @RequestMapping("/role/create")
+    public BaseReqVo createNewRole(@RequestBody RoleDO roleDO){
+        RoleDO roleDOAfterCreate = adminService.createNewRole(roleDO);
+        if (roleDOAfterCreate != null){
+            BaseReqVo<RoleDO> baseReqVo = new BaseReqVo<>(roleDOAfterCreate, "成功", 0);
+            return baseReqVo;
+        }
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "角色已经存在", 640);
+        return baseReqVo;
+    }
 
+
+    /**
+     * request:
+     * {
+     * 	"id": 104,
+     * 	"name": "无限大",
+     * 	"desc": "有一说一",
+     * 	"enabled": true,
+     * 	"addTime": "2019-11-16 22:57:27",
+     * 	"updateTime": "2019-11-16 22:57:27",
+     * 	"deleted": false
+     * }
+     *
+     * response :
+     * {
+     * 	"errno": 0,
+     * 	"errmsg": "成功"
+     * }
+     * @param roleDO
+     * @return
+     *
+     * 这个接口：更新失败的时候并不发送数据到后端，似乎是在前端完成了重名校验
+     */
+    @RequestMapping("/role/update")
+    public BaseReqVo updateRole(@RequestBody RoleDO roleDO){
+        RoleDO roleDOAfterUpdate = adminService.updateRole(roleDO);
+        if (roleDOAfterUpdate != null){
+            BaseReqVo<RoleDO> baseReqVo = new BaseReqVo<>(null, "成功", 0);
+            return baseReqVo;
+        }
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "失败", 502);
+        return baseReqVo;
+    }
+
+
+    /**
+     * request:
+     * {
+     * 	"id": 104,
+     * 	"name": "无限大",
+     * 	"desc": "有一说一",
+     * 	"enabled": true,
+     * 	"addTime": "2019-11-16 22:57:27",
+     * 	"updateTime": "2019-11-16 22:57:27",
+     * 	"deleted": false
+     * }
+     * response:
+     * {
+     * 	"errno": 0,
+     * 	"errmsg": "成功"
+     * }
+     * @param roleDO
+     * @return
+     */
+    @RequestMapping("/role/delete")
+    public BaseReqVo deleteRole(@RequestBody RoleDO roleDO){
+        int result = adminService.deleteRole(roleDO);
+        if (result != 0){
+            BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "成功", 0);
+            return baseReqVo;
+        }
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "失败", 502);
+        return baseReqVo;
+    }
+
+
+    /**
+     * response :
+     * {
+     * 	"errno": 0,
+     * 	"data": {
+     * 		"total": 1666,
+     * 		"items": [{
+     * 			"id": 1776,
+     * 			"key": "6v7rrekw9jtfqlln3qxq.jpg",
+     * 			"name": "1.jpg",
+     * 			"type": "image/jpeg",
+     * 			"size": 23895,
+     * 			"url": "http://192.168.2.100:8081/wx/storage/fetch/6v7rrekw9jtfqlln3qxq.jpg",
+     * 			"addTime": "2019-11-17 01:27:08",
+     * 			"updateTime": "2019-11-17 01:27:08",
+     * 			"deleted": false
+     *                }, {
+     * 			"id": 1775,
+     * 			"key": "vhtbowa6yqkqoh32iv1a.jpg",
+     * 			"name": "复古外套.jpg",
+     * 			"type": "image/jpeg",
+     * 			"size": 73367,
+     * 			"url": "http://192.168.2.100:8081/wx/storage/fetch/vhtbowa6yqkqoh32iv1a.jpg",
+     * 			"addTime": "2019-11-17 01:26:39",
+     * 			"updateTime": "2019-11-17 01:26:39",
+     * 			"deleted": false
+     *        }]* 	},
+     * 	"errmsg": "成功"
+     * }
+     *
+     * request:
+     * @param name      文件名
+     * @param key       文件唯一索引
+     * @param page      页数
+     * @param limit     页面
+     * @param sort      排序字段
+     * @param order     排序方式
+     * @return
+     *
+     *  key 有问题
+     */
+    @RequestMapping("/storage/list")
+    public BaseReqVo selectAllStorageList(String name,String key,Integer page,Integer limit,String sort,String order){
+        Map<String,Object> map = adminService.selectAllStorageList(name,key,page,limit,sort,order);
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>(map, "成功", 0);
+        return baseReqVo;
+    }
+
+
+    /**
+     * response : {"errno":0,"errmsg":"成功"}
+     * requset :
+     * {
+     * 	"id": 1798,
+     * 	"key": "7v5irmjjc9taj7mq0ug1.jpg",
+     * 	"name": "4.jpg",
+     * 	"type": "image/jpeg",
+     * 	"size": 273908,
+     * 	"url": "http://192.168.2.100:8081/wx/storage/fetch/7v5irmjjc9taj7mq0ug1.jpg",
+     * 	"addTime": "2019-11-17 02:38:58",
+     * 	"updateTime": "2019-11-17 02:38:58"
+     * }
+     * @param storageDO
+     * @return
+     */
+    @RequestMapping("/storage/delete")
+    public BaseReqVo deleteStorage(@RequestBody StorageDO storageDO){
+        int result = adminService.deleteStorage(storageDO);
+        if (result != 0){
+            BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "成功", 0);
+            return baseReqVo;
+        }
+        BaseReqVo baseReqVo = new BaseReqVo();
+        return baseReqVo;
+    }
+
+
+    /**
+     * request :
+     * {
+     * 	"id": 1822,
+     * 	"key": "4dk9vyj0fnpjth6eflrt.jpg",
+     * 	"name": "123.jpg",
+     * 	"type": "image/jpeg",
+     * 	"size": 71887,
+     * 	"url": "http://192.168.2.100:8081/wx/storage/fetch/4dk9vyj0fnpjth6eflrt.jpg",
+     * 	"addTime": "2019-11-17 02:57:43",
+     * 	"updateTime": "2019-11-17 02:57:43"
+     * }
+     *
+     * response :
+     * {
+     * 	"errno": 0,
+     * 	"data": {
+     * 		"id": 1822,
+     * 		"key": "4dk9vyj0fnpjth6eflrt.jpg",
+     * 		"name": "123.jpg",
+     * 		"type": "image/jpeg",
+     * 		"size": 71887,
+     * 		"url": "http://192.168.2.100:8081/wx/storage/fetch/4dk9vyj0fnpjth6eflrt.jpg",
+     * 		"addTime": "2019-11-17 02:57:43",
+     * 		"updateTime": "2019-11-17 02:58:03"   只有时间不一样 还是需要重新查询一次
+     *        },
+     * 	"errmsg": "成功"
+     * }
+     *
+     * 这个不用重名校验
+     *
+     * @param storageDO
+     * @return
+     *
+     */
+    @RequestMapping("/storage/update")
+    public BaseReqVo updateStorage(@RequestBody StorageDO storageDO){
+        StorageDO storageDOAfterUpdate = adminService.updateStorage(storageDO);
+        if (storageDOAfterUpdate != null){
+            BaseReqVo<StorageDO> baseReqVo = new BaseReqVo<>(storageDOAfterUpdate, "成功", 0);
+            return baseReqVo;
+        }
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();  // 不知道返回错误代号
+        return baseReqVo;
+    }
 }
