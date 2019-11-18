@@ -57,6 +57,23 @@ public class TopicDOServiceImpl implements TopicDOService {
     }
 
     @Override
+    public TopicDO updateTopic(TopicDO topicDO) {
+        topicDO.setUpdateTime(new Date());
+        int update = topicDOMapper.updateByPrimaryKey(topicDO);
+        TopicDO topicDO1 = null;
+        if(update == 1){
+            topicDO1 = topicDOMapper.selectByPrimaryKey(topicDO.getId());
+        }
+        return topicDO1;
+    }
+
+    @Override
+    public int deleteTopic(TopicDO topicDO) {
+        int delete = topicDOMapper.deleteTopicById(topicDO.getId());
+        return delete;
+    }
+
+    @Override
     public TopicDO creatTopic(TopicDO topicDO) {
         Date date = new Date();
         topicDO.setAddTime(date);

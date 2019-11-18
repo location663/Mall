@@ -2,12 +2,10 @@ package com.wangdao.mall.service.admin;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.exception.NoSuchGoodsException;
-import com.wangdao.mall.mapper.GoodsDOMapper;
-import com.wangdao.mall.mapper.GrouponDOMapper;
-import com.wangdao.mall.mapper.GrouponRulesDOMapper;
-import com.wangdao.mall.mapper.OrderGoodsDOMapper;
+import com.wangdao.mall.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +27,12 @@ public class GrouponServiceImpl implements GrouponService {
 
     @Autowired
     OrderGoodsDOMapper orderGoodsDOMapper;
+
+
+
+
+//    @Autowired
+//    OrderDOMapper orderDOMapper;
 
     /**
      * 团购活动列表
@@ -69,6 +73,40 @@ public class GrouponServiceImpl implements GrouponService {
         map.put("total", total);
         return map;
     }
+
+//    @Override
+//    public Map<String, Object> queryGrouponListByConditions(Integer page, Integer limit, Integer goodsId) {
+//        HashMap<String, Object> map = new HashMap<>();
+//        PageHelper pageHelper = new PageHelper();
+//        pageHelper.startPage(page, limit);
+//        GrouponDOExample grouponDOExample = new GrouponDOExample();
+//        grouponDOExample.setOrderByClause("add_time desc");
+//        GrouponDOExample.Criteria criteria = grouponDOExample.createCriteria();
+//
+//        List<SubGrouponDTO> subGrouponDTOList = new ArrayList<>();
+//        ArrayList<GrouponRecordVO> grouponRecordVOList = new ArrayList<>();
+//        if(goodsId != null) {
+//            //每种商品可以对应多种团购规则，每种团购规则对应一个团购活动
+//            //根据商品id查询商品信息
+//            GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(goodsId);
+//            //根据商品id查询对应的团购规则集合
+//            List<GrouponRulesDO> rulesDOList = grouponRulesDOMapper.selectRulesByGoodsId(goodsId);
+//            for (GrouponRulesDO grouponRulesDO : rulesDOList) {
+//                //根据每个团购规则的id查询团购活动
+//                GrouponDO grouponDO = grouponDOMapper.selectByPrimaryKey(grouponRulesDO.getId());
+//                //构建list<SubGroupon>
+//                Integer orderId = grouponDO.getOrderId();
+//
+//                List<Integer> userIdList = orderDOMapper.selectUserIdByOrderId(orderId);
+//                for (Integer userId : userIdList) {
+//                    SubGrouponDTO subGrouponDTO = new SubGrouponDTO(orderId, userId);
+//                    subGrouponDTOList.add(subGrouponDTO);
+//                }
+//                grouponRecordVOList.add(new GrouponRecordVO(goodsDO, grouponDO, grouponRulesDO, subGrouponDTOList));
+//            }
+//        }
+//        return map;
+//    }
 
     /**
      * 团购规则列表

@@ -43,5 +43,24 @@ public class TopicController {
         return baseReqVo;
     }
 
+    @RequestMapping("topic/update")
+    public BaseReqVo updateTopic(@RequestBody TopicDO topicDO){
+        TopicDO topicDO1 = topicDOService.updateTopic(topicDO);
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        baseReqVo.setData(topicDO1);
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
 
+    @RequestMapping("topic/delete")
+    public BaseReqVo deleteTopic(@RequestBody TopicDO topicDO){
+        int delete = topicDOService.deleteTopic(topicDO);
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        if(delete == 1) {
+            baseReqVo.setErrmsg("成功");
+            baseReqVo.setErrno(0);
+        }
+        return baseReqVo;
+    }
 }

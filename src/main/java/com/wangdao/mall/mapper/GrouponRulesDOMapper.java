@@ -27,4 +27,9 @@ public interface GrouponRulesDOMapper {
     int updateByPrimaryKeySelective(GrouponRulesDO record);
 
     int updateByPrimaryKey(GrouponRulesDO record);
+
+
+
+
+    Boolean selectGoodsIdByRuleJoinGroupon(Integer goodsId);
 }
