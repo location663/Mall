@@ -178,7 +178,7 @@ public class UserServiceImpl implements UserService{
         PageHelper.startPage(page,limit);
         FeedbackDOExample feedbackDOExample= new FeedbackDOExample();
         if(username!=null){
-            feedbackDOExample.createCriteria().andUsernameLike(username);
+            feedbackDOExample.createCriteria().andUsernameLike("%"+username+"%");
         }
         else if(id!=null){
             feedbackDOExample.createCriteria().andIdEqualTo(id);
