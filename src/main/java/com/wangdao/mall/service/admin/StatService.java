@@ -5,5 +5,5 @@ import java.util.Map;
 public interface StatService {
     Map statUser();
     Map statGoods();
-//    Map statOrder();
+    Map statOrder();
 }

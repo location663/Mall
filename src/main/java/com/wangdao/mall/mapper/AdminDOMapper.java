@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.AdminDO;
 import com.wangdao.mall.bean.AdminDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface AdminDOMapper {
     long countByExample(AdminDOExample example);
@@ -27,4 +28,8 @@ public interface AdminDOMapper {
     int updateByPrimaryKeySelective(AdminDO record);
 
     int updateByPrimaryKey(AdminDO record);
+
+    @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_admin")
+    int selectLastInsertAdminId();
+
 }

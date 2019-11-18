@@ -1,5 +1,7 @@
 package com.wangdao.mall.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -8,16 +10,17 @@ public class GoodsProductDO {
 
     private Integer goodsId;
 
-    private String specifications;
+    //商品规格值列表，数据表里注释说“采用JSON数组格式”
+    private String[] specifications;
 
     private BigDecimal price;
 
     private Integer number;
 
     private String url;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date addTime;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date updateTime;
 
     private Boolean deleted;
@@ -38,12 +41,12 @@ public class GoodsProductDO {
         this.goodsId = goodsId;
     }
 
-    public String getSpecifications() {
+    public String[] getSpecifications() {
         return specifications;
     }
 
-    public void setSpecifications(String specifications) {
-        this.specifications = specifications == null ? null : specifications.trim();
+    public void setSpecifications(String[] specifications) {
+        this.specifications = specifications;
     }
 
     public BigDecimal getPrice() {

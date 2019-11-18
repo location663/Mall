@@ -28,4 +28,24 @@ public interface MarketService {
     int updateCategory(CategoryDO categoryDO);
 
     int deleteCategory(CategoryDO categoryDO);
+
+    Map listOrder(RequestPageDTO requestPageDTO);
+
+    Map<String, Object> detailOrder(Integer orderId);
+
+    Map listIssue(RequestPageDTO requestPageDTO);
+
+    IssueDO insertIssue(IssueDO issueDO);
+
+    IssueDO updateIssue(IssueDO issueDO);
+
+    int deleteIssue(IssueDO issueDO);
+
+    Map listKeyword(RequestPageDTO requestPageDTO);
+
+    KeywordDO insertKeyword(KeywordDO keywordDO);
+
+    int deleteKeyword(KeywordDO keywordDO);
+
+    KeywordDO updateKeyword(KeywordDO keywordDO);
 }

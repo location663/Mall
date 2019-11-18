@@ -557,4 +557,19 @@
       deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+    <resultMap id="order_statistics" type="com.wangdao.mall.bean.OrderStatisticsDTO">
+      <result column="amount" property="amount"/>
+      <result column="day" property="day"/>
+      <result column="customers" property="customers"/>
+      <result column="orders" property="orders"/>
+    </resultMap>
+    <select id="selectForStatistics" resultMap="order_statistics">
+      SELECT
+      DATE(pay_time) as 'day',
+      COUNT(DISTINCT user_id) AS 'customers',
+      SUM(order_price) as 'amount',
+      COUNT(0) as 'orders'
+      FROM `cskaoyan_mall_order`
+      GROUP BY DATE(pay_time)
+    </select>
 </mapper>

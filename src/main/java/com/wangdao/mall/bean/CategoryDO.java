@@ -1,8 +1,11 @@
 package com.wangdao.mall.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
+
 @Data
 public class CategoryDO {
     private Integer id;
@@ -22,12 +25,14 @@ public class CategoryDO {
     private String level;
 
     private Byte sortOrder;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date addTime;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date updateTime;
 
     private Boolean deleted;
+
+    List<CategoryDO> children;
 
     public CategoryDO() {
     }

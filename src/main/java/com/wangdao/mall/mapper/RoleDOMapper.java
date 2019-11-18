@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.RoleDO;
 import com.wangdao.mall.bean.RoleDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface RoleDOMapper {
     long countByExample(RoleDOExample example);
@@ -27,4 +28,8 @@ public interface RoleDOMapper {
     int updateByPrimaryKeySelective(RoleDO record);
 
     int updateByPrimaryKey(RoleDO record);
+
+    @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_role")
+    int selectLastInsertRoleId();
+
 }

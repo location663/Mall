@@ -1,5 +1,6 @@
 package com.wangdao.mall.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
@@ -12,23 +13,23 @@ public class AdminDO {
     private String password;
 
     private String lastLoginIp;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date lastLoginTime;
 
     private String avatar;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date addTime;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date updateTime;
 
     private Boolean deleted;
 
-    private String roleIds;
+    private Integer[] roleIds;
 
     public AdminDO() {
     }
 
-    public AdminDO(Integer id, String username, String password, String lastLoginIp, Date lastLoginTime, String avatar, Date addTime, Date updateTime, Boolean deleted, String roleIds) {
+    public AdminDO(Integer id, String username, String password, String lastLoginIp, Date lastLoginTime, String avatar, Date addTime, Date updateTime, Boolean deleted, Integer[] roleIds) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -113,11 +114,11 @@ public class AdminDO {
         this.deleted = deleted;
     }
 
-    public String getRoleIds() {
+    public Integer[] getRoleIds() {
         return roleIds;
     }
 
-    public void setRoleIds(String roleIds) {
-        this.roleIds = roleIds == null ? null : roleIds.trim();
+    public void setRoleIds(Integer[] roleIds) {
+        this.roleIds = roleIds == null ? null : roleIds;
     }
 }

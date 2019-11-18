@@ -3,13 +3,15 @@ package com.wangdao.mall.mapper;
 import com.wangdao.mall.bean.OrderDO;
 import com.wangdao.mall.bean.OrderDOExample;
 import java.util.List;
-
 import com.wangdao.mall.bean.StateDo;
+import com.wangdao.mall.bean.OrderStatisticsDTO;
 import org.apache.ibatis.annotations.Param;
 
 public interface OrderDOMapper {
     long countByExample(OrderDOExample example);
+
     List<StateDo> selectGoods();
+
     int deleteByExample(OrderDOExample example);
 
     int deleteByPrimaryKey(Integer id);
@@ -29,4 +31,6 @@ public interface OrderDOMapper {
     int updateByPrimaryKeySelective(OrderDO record);
 
     int updateByPrimaryKey(OrderDO record);
+
+    List<OrderStatisticsDTO> selectForStatistics();
 }

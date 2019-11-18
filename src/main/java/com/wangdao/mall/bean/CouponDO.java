@@ -1,5 +1,6 @@
 package com.wangdao.mall.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -28,20 +29,20 @@ public class CouponDO {
 
     private Short goodsType;
 
-    private String goodsValue;
+    private String[] goodsValue;
 
     private String code;
 
     private Short timeType;
 
     private Short days;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date startTime;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date endTime;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date addTime;
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date updateTime;
 
     private Boolean deleted;
@@ -49,7 +50,7 @@ public class CouponDO {
     public CouponDO() {
     }
 
-    public CouponDO(Integer id, String name, String desc, String tag, Integer total, BigDecimal discount, BigDecimal min, Short limit, Short type, Short status, Short goodsType, String goodsValue, String code, Short timeType, Short days, Date startTime, Date endTime, Date addTime, Date updateTime, Boolean deleted) {
+    public CouponDO(Integer id, String name, String desc, String tag, Integer total, BigDecimal discount, BigDecimal min, Short limit, Short type, Short status, Short goodsType, String[] goodsValue, String code, Short timeType, Short days, Date startTime, Date endTime, Date addTime, Date updateTime, Boolean deleted) {
         this.id = id;
         this.name = name;
         this.desc = desc;
@@ -160,13 +161,13 @@ public class CouponDO {
         this.goodsType = goodsType;
     }
 
-    public String getGoodsValue() {
+    public String[] getGoodsValue() {
         return goodsValue;
     }
 
-    public void setGoodsValue(String goodsValue) {
-        this.goodsValue = goodsValue == null ? null : goodsValue.trim();
-    }
+//    public void setGoodsValue(String goodsValue) {
+//        this.goodsValue = goodsValue == null ? null : goodsValue.trim();
+//    }
 
     public String getCode() {
         return code;

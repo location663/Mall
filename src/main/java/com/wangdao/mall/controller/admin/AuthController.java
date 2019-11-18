@@ -14,6 +14,10 @@ import java.util.ArrayList;
 @RequestMapping("admin")
 public class AuthController {
 
+    /**
+     * 登录模块
+     * @return
+     */
     @RequestMapping("/auth/login")
     public BaseReqVo login(){
         BaseReqVo baseReqVo = new BaseReqVo();

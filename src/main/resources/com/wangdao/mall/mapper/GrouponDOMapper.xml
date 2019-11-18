@@ -303,4 +303,14 @@
       deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <!--团购活动列表，按goodsID查询-->
+  <select id="listByGoodsId" resultMap="BaseResultMap">
+    select
+    gro.id, gro.order_id, gro.groupon_id, gro.rules_id, gro.user_id, gro.creator_user_id, gro.add_time, gro.update_time,
+    gro.share_url, gro.payed, gro.deleted
+    from cskaoyan_mall_groupon gro
+    left join cskaoyan_mall_groupon_rules rules
+    on gro.rules_id = rules.id and rules.goods_id = #{goodsId}
+    where gro.deleted = 0 order by #{sort} #{order}
+  </select>
 </mapper>

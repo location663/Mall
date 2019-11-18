@@ -11,7 +11,8 @@
     <result column="add_time" jdbcType="TIMESTAMP" property="addTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
     <result column="deleted" jdbcType="BIT" property="deleted" />
-    <result column="role_ids" jdbcType="VARCHAR" property="roleIds" />
+    <result column="role_ids" jdbcType="VARCHAR" property="roleIds"
+            typeHandler="com.wangdao.mall.handler.String2IntArrayTypeHandler"/>
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>

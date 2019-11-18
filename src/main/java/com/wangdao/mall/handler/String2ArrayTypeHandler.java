@@ -33,6 +33,7 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
 
     @Override
     public String[] getResult(ResultSet resultSet, int index) throws SQLException {
+        // 根据列的索引获得数据
         String string = resultSet.getString(index);
         return parseString2Array(string);
     }
@@ -44,6 +45,7 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
     }
 
 
+
     private String parseArray2String(String[] strings) {
         ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -53,7 +55,6 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
             e.printStackTrace();
         }
         return null;
-
     }
 
     private String[] parseString2Array(String arrayString){
@@ -66,4 +67,5 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
         }
         return strings;
     }
+
 }

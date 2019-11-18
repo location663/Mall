@@ -18,8 +18,7 @@ public interface AdService {
 
     int updateAdDO(AdDO adDO);
 
-    int deleteAdDO(AdDO adDO);
-
     int createAdDO(AdDO adDO);
 
+    int deleteAdDOById(Integer id);
 }
