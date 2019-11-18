@@ -30,16 +30,16 @@ public class StorageUtils {
          * 获取应用下的target/classes/static
          */
         File system = new File("target/classes/static");
-        File system2 = new File("src/main/resources/static");
+//        File system2 = new File("src/main/resources/static");
         if (!system.exists()){
             system.mkdirs();
         }
-        if (!system2.exists()){
+        /*if (!system2.exists()){
             system2.mkdirs();
-        }
+        }*/
 
         String absolutePath = system.getAbsolutePath();
-        String absolutePath2 = system2.getAbsolutePath();
+//        String absolutePath2 = system2.getAbsolutePath();
 
         /**
          * 随机生成UUID，后面加上文件名，避免重名文件的覆盖
@@ -50,10 +50,10 @@ public class StorageUtils {
         // 去掉UUID中的-
         String s2 = s1.replaceAll("-", "");
         File file1 = new File(absolutePath, s2 + originalFilename);
-        File file2 = new File(absolutePath2, s2 + originalFilename);
+//        File file2 = new File(absolutePath2, s2 + originalFilename);
         try {
             file.transferTo(file1);
-            file.transferTo(file2);
+//            file.transferTo(file2);
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -99,7 +99,7 @@ public class AdController {
      * @return
      */
     @RequestMapping("ad/create")
-    public AdDO createAdDO(@RequestBody AdDO adDO){
+    public BaseReqVo<Object> createAdDO(@RequestBody AdDO adDO){
         BaseReqVo<Object> baseReqVo = new BaseReqVo();
         int id = adDOService.createAdDO(adDO);
         if(id > 0){
@@ -112,7 +112,7 @@ public class AdController {
 //        解决办法1：应该在插入新的一条数据时，一并返回select last_insert_id(),再去查询出来该条数据的信息。
         //解决办法2：插入该条新数据时，返回值int，返回的是插入的id, 再在service层或者controller层adDO.setId()。
         //由于响应报文里有几个比请求报文里的bean多了几条额外的id  ！！！,addTime, updateTime属性，所以必须要查询数据库
-        return adDO;
+        return baseReqVo;
     }
 
 //    /**
