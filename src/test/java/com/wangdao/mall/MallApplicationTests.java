@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
 import java.util.Map;
 
 @SpringBootTest
@@ -143,5 +144,6 @@ class MallApplicationTests {
 ////        Map<String, Object> map = adminService.selectAllRoleList(1, 20, "add_time", "desc");
 ////        System.out.println(map);
 ////    }
+
 }
 

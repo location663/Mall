@@ -27,7 +27,7 @@ public class StorageUtils {
      */
     public StorageDO insertStorage(MultipartFile file){
         /**
-         * 获取应用下的target/classes/static
+         * 获取应用下的target/classes/static   如果不存在创建所有必须的父路径
          */
         File system = new File("target/classes/static");
         if (!system.exists()){
@@ -63,7 +63,7 @@ public class StorageUtils {
         storageDO.setKey(s2 + originalFilename);
 
         int i = storageDOMapper.insertSelective(storageDO);
-        int id = storageDOMapper.selectLastInsertStoragre();
+        int id = storageDOMapper.selectLastInsertStoragre();      // 自己写的语句
         StorageDO storageDO1 = storageDOMapper.selectByPrimaryKey(id);
         return storageDO1;
     }
