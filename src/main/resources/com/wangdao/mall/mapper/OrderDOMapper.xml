@@ -571,5 +571,6 @@
       COUNT(0) as 'orders'
       FROM `cskaoyan_mall_order`
       GROUP BY DATE(pay_time)
+      where deleted = false
     </select>
 </mapper>

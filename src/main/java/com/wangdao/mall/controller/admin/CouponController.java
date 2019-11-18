@@ -75,4 +75,14 @@ public class CouponController {
         }
         return baseReqVo;
     }
+
+    @RequestMapping("coupon/update")
+    public BaseReqVo updateCoupon(@RequestBody CouponDO couponDO){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        CouponDO couponDO1 = couponService.updateCoupon(couponDO);
+        baseReqVo.setData(couponDO1);
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
 }

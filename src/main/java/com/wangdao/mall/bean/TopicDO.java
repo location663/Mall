@@ -21,7 +21,7 @@ public class TopicDO {
 
     private Integer sortOrder;
 
-    private String goods;
+    private String[] goods;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date addTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
@@ -34,7 +34,7 @@ public class TopicDO {
     public TopicDO() {
     }
 
-    public TopicDO(Integer id, String title, String subtitle, BigDecimal price, String readCount, String picUrl, Integer sortOrder, String goods, Date addTime, Date updateTime, Boolean deleted, String content) {
+    public TopicDO(Integer id, String title, String subtitle, BigDecimal price, String readCount, String picUrl, Integer sortOrder, String[] goods, Date addTime, Date updateTime, Boolean deleted, String content) {
         this.id = id;
         this.title = title;
         this.subtitle = subtitle;
@@ -105,13 +105,13 @@ public class TopicDO {
         this.sortOrder = sortOrder;
     }
 
-    public String getGoods() {
+    public String[] getGoods() {
         return goods;
     }
 
-    public void setGoods(String goods) {
-        this.goods = goods == null ? null : goods.trim();
-    }
+//    public void setGoods(String[] goods) {
+//        this.goods = goods == null ? null : goods.trim();
+//    }
 
     public Date getAddTime() {
         return addTime;
