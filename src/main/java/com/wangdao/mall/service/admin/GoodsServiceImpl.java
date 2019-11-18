@@ -70,7 +70,7 @@ public class GoodsServiceImpl implements GoodsService {
         }else if (goodsSn!=null ){
             goodsDOExample.createCriteria().andDeletedEqualTo(false).andGoodsSnLike("%"+ goodsSn +"%");
         }
-            goodsDOExample.createCriteria().andDeletedEqualTo(false);
+        goodsDOExample.createCriteria().andDeletedEqualTo(false);
 
 
         goodsDOExample.setOrderByClause(sort+" "+order);

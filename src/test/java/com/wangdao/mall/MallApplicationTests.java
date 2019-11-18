@@ -1,14 +1,12 @@
 package com.wangdao.mall;
 
-import com.wangdao.mall.bean.AdminDO;
 import com.wangdao.mall.service.admin.AdminService;
+import com.wangdao.mall.service.wx.WxGoodsService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.HashMap;
 
 
 @SpringBootTest
@@ -17,7 +15,8 @@ class MallApplicationTests {
     @Autowired
     AdminService adminService;
 
-
+    @Autowired
+    WxGoodsService wxGoodsService;
 
 
 
@@ -113,7 +112,7 @@ class MallApplicationTests {
 
 //    @Test
 //    public void mytest06(){
-//        Map<String, Object> map = adminService.selectAllLogList(1, 20, "add_time", "desc");
+//        HashMap<String, Object> map = wxGoodsService.queryGoodsCount();
 //        System.out.println(map);
 //    }
 
