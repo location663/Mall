@@ -23,10 +23,31 @@ public class WxCatalogController {
     WxCatalogService wxCatalogService;
 
 
+    /**
+     *分类目录全部分类数据接口
+     * @return
+     */
     @RequestMapping("catalog/index")
     public BaseReqVo catalogIndex(){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         HashMap<String, Object> map = wxCatalogService.queryCatalogIndex();
+        baseReqVo.setData(map);
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
+
+
+
+    /**
+     * 分类目录当前分类数据接口
+     * @param id
+     * @return
+     */
+    @RequestMapping("catalog/current")
+    public BaseReqVo catalogCurrent(Integer id){   //用户点击的当前父类的id
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        HashMap<String, Object> map = wxCatalogService.queryCatalogCurrent(id);
         baseReqVo.setData(map);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);

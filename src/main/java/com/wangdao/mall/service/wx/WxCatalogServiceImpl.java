@@ -22,6 +22,11 @@ public class WxCatalogServiceImpl implements WxCatalogService{
     @Autowired
     CategoryDOMapper categoryDOMapper;
 
+
+    /**
+     * 分类目录全部分类数据接口
+     * @return
+     */
     @Override
     public HashMap<String, Object> queryCatalogIndex() {
         HashMap<String, Object> map = new HashMap<>();
@@ -40,6 +45,30 @@ public class WxCatalogServiceImpl implements WxCatalogService{
         categoryDOExample1.createCriteria().andDeletedEqualTo(false).andPidEqualTo(categoryFatherList.get(0).getId());
         List<CategoryDO> categorySonList = categoryDOMapper.selectByExample(categoryDOExample1);
         map.put("currentSubCategory",categorySonList);
+        return map;
+    }
+
+
+
+    /**
+     * 分类目录当前分类数据接口
+     * @param id
+     * @return
+     */
+    @Override
+    public HashMap<String, Object> queryCatalogCurrent(Integer id) {
+        HashMap<String, Object> map = new HashMap<>();
+
+        //封装 currentCategory 用户点击的显示的父类
+        CategoryDO currentCategory = categoryDOMapper.selectByPrimaryKey(id);  //获取当前父类目(用户点击的显示的父类)
+        map.put("currentCategory",currentCategory);
+
+        //封装 currentSubCategory  当前父类的所有子类
+        CategoryDOExample categoryDOExample = new CategoryDOExample();
+        categoryDOExample.createCriteria().andDeletedEqualTo(false).andPidEqualTo(currentCategory.getId());
+        List<CategoryDO> currentSubCategory = categoryDOMapper.selectByExample(categoryDOExample);
+        map.put("currentSubCategory",currentSubCategory);
+
         return map;
     }
 }
