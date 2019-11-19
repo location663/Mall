@@ -6,6 +6,7 @@ import java.util.List;
 import com.wangdao.mall.bean.StateDo;
 import com.wangdao.mall.bean.OrderStatisticsDTO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface OrderDOMapper {
     long countByExample(OrderDOExample example);
@@ -33,4 +34,7 @@ public interface OrderDOMapper {
     int updateByPrimaryKey(OrderDO record);
 
     List<OrderStatisticsDTO> selectForStatistics();
+
+//    @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_order")
+//    int selectLastInsertId();
 }

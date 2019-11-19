@@ -9,5 +9,5 @@ public class CategoryGoodsVO {
 
     private String name;
     private Integer id;
-    private List<GoodsDO> goodsDOList;
+    private List<GoodsDO> goodsList;
 }
