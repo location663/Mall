@@ -6,9 +6,11 @@
  **/
 package com.wangdao.mall.service.wx;
 
+import com.wangdao.mall.bean.TopicListDoBean;
+
 import java.util.Map;
 
 public interface WxTopicService {
     Map topicDetail(String id);
-    Map topicList(String valueID, String type, String showType, String page, String size);
+    TopicListDoBean topicList(String valueID, String type, String showType, String page, String size);
 }

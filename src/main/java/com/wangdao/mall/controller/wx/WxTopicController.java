@@ -6,6 +6,7 @@
  **/
 package com.wangdao.mall.controller.wx;
 import com.wangdao.mall.bean.BaseReqVo;
+import com.wangdao.mall.bean.TopicListDoBean;
 import com.wangdao.mall.service.wx.WxTopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,7 @@ public class WxTopicController {
     }
     @RequestMapping("topic/list")
     public BaseReqVo topicList(String valueID,String type,String showType,String page,String size){
-        Map map=topicService.topicList(valueID,type,showType,page,size);
-        return new BaseReqVo(map,"成功",0);
+        TopicListDoBean topicListDoBean = topicService.topicList(valueID, type, showType, page, size);
+        return new BaseReqVo(topicListDoBean,"成功",0);
     }
 }
