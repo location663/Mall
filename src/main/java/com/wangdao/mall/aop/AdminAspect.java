@@ -41,9 +41,7 @@ public class AdminAspect {
         String admin = null;
         logDO = new LogDO();
         request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        if (request.getRequestURI().contains("auth/info")){
-            admin = request.getParameter("token");
-        }
+        admin = request.getHeader("X-Litemall-Admin-Token");
         logDO.setIp(getRemoteIp(request));
         logDO.setAction(getAction(request));
         logDO.setStatus(true);
@@ -58,12 +56,11 @@ public class AdminAspect {
         }
     }
 
+    /**
+     * return 之后
+     */
     @AfterReturning("AdminControllerMypointCut()")
     public void myAfterReturning(){
-        String admin = null;
-        if (request.getRequestURI().contains("auth/info")){
-            admin = request.getParameter("token");
-        }
         if (!request.getRequestURI().contains("list")){
             if (!request.getMethod().equals("OPTIONS")){
                 logService.insertLog(logDO);
@@ -99,9 +96,7 @@ public class AdminAspect {
             }
         }
         if (!request.getRequestURI().contains("list")) {
-            if (logDO.getAdmin() != null) {
-                logService.insertLog(logDO);
-            }
+            logService.insertLog(logDO);
         }
     }
 
@@ -113,7 +108,7 @@ public class AdminAspect {
      * @return ip
      */
     public static String getRemoteIp(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
+        String ip = request.getHeader("X-Forwarded-For");
         if (ip == null || ip.length() == 0) {
             ip = request.getRemoteAddr();
             return ip;
@@ -146,7 +141,9 @@ public class AdminAspect {
             return "编辑管理权限";
         }else if (requestURI.contains("role/delete")){
             return "删除管理权限";
-        }else if (requestURI.contains("config/express")){
+        }else if (requestURI.contains("config/express") && request.getMethod().equals("GET")){
+            return "获取运费配置";
+        }else if (requestURI.contains("config/express") && request.getMethod().equals("POST")){
             return "运费配置";
         }else if (requestURI.contains("config/mall")){
             return "商城配置" ;
@@ -190,29 +187,4 @@ public class AdminAspect {
         }
         return 0;
     }
-
-
-    /**
-     * 反射查找注解信息
-     * @param joinPoint
-     * @return
-     * @throws ClassNotFoundException
-     */
-//    public static String getControllerMethodDescription(JoinPoint joinPoint) throws ClassNotFoundException {
-//        String targetName = joinPoint.getTarget().getClass().getName(); //
-//        String methodName = joinPoint.getSignature().getName();// 目标方法名
-//        Object[] args = joinPoint.getArgs();
-//        Class targetClass = Class.forName(targetName);
-//        Method[] methods = targetClass.getMethods();
-//        for (Method method : methods) {
-//            if (method.getName().equals(methodName)) {
-//                Parameter[] parameters = method.getParameters();
-//                if (parameters.length == args.length) {
-//                    String description = method.getAnnotation(ControllerAnnotation.class).description();
-//                    return description;
-//                }
-//            }
-//        }
-//        return "";
-//    }
 }
