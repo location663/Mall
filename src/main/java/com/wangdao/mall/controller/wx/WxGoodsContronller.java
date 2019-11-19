@@ -48,7 +48,7 @@ public class WxGoodsContronller {
 
 
     /**
-     * WX获取(搜索某商品)(显示某类目下所有商品)商品列表
+     * WX获取(搜索某商品)或者(显示某类目下所有商品)商品列表  改进
      * 输入一串空格，没有显示商品，但是返回得成功
      * @param keyword
      * @param page
@@ -58,16 +58,11 @@ public class WxGoodsContronller {
      * @return
      */
     @RequestMapping("goods/list")
-    public BaseReqVo wxGoodsList(String keyword,Integer categoryId,Integer page,Integer size,String sort,String order){
+    public BaseReqVo wxGoodsList(String keyword,Integer categoryId,Integer brandId,Boolean isNew,Boolean isHot,Integer page,Integer size,String sort,String order){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
 
         HashMap<String, Object> map = new HashMap<>();
-        if (categoryId!=0){
-
-        }else if (categoryId==0){
-            map = wxGoodsService.queryWxGoodsListBykeyword(keyword,page,size,sort,order);
-        }
-
+        map = wxGoodsService.queryWxGoodsList(keyword,categoryId,brandId,isNew,isHot,page,size,sort,order);
 
         baseReqVo.setData(map);
         baseReqVo.setErrmsg("成功");

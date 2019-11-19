@@ -89,7 +89,7 @@ public class GrouponServiceImpl implements GrouponService {
         HashMap<String, Object> map = new HashMap<>();
         List<Map<String, Object>> mapList = new ArrayList<>();
         List<GrouponDO> grouponDOList = new ArrayList<>();
-        if(goodsId == null){
+        if (goodsId == null) {
             GrouponDOExample grouponDOExample = new GrouponDOExample();
             grouponDOExample.setOrderByClause("add_time desc");
             GrouponDOExample.Criteria criteria = grouponDOExample.createCriteria();
@@ -118,7 +118,7 @@ public class GrouponServiceImpl implements GrouponService {
                 map1.put("subGroupons", subGrouponDTOList);
                 mapList.add(map1);
             }
-        }else if(goodsId != null && !"".equals(goodsId)){
+        } else if (goodsId != null && !"".equals(goodsId)) {
             //goodsId不为null时
             //goods
             GoodsDO goods = goodsDOMapper.selectByPrimaryKey(goodsId);
@@ -151,6 +151,38 @@ public class GrouponServiceImpl implements GrouponService {
         map.put("total", total);
         return map;
     }
+
+
+//    public Map listGrouponRecord(RequestPageDTO pageDTO) {
+//        PageHelper.startPage(pageDTO.getPage(), pageDTO.getLimit());
+//
+//        List<GrouponRecordVO> list = new ArrayList<>();
+//
+//        List<GrouponDO> grouponDOS;
+//        if (null != pageDTO.getGoodsId()) {
+//            grouponDOS = grouponDOMapper.listByGoodsId(pageDTO.getGoodsId(), pageDTO.getSort(), pageDTO.getOrder());
+//        } else {
+////            GrouponDOExample grouponDOExample = new GrouponDOExample();
+////            grouponDOExample.createCriteria().andDeletedEqualTo(false);
+////            grouponDOExample.setOrderByClause(pageDTO.getSort() + " " + pageDTO.getOrder());
+////            grouponDOS = grouponDOMapper.selectByExample(grouponDOExample);
+//             grouponDOS = grouponDOMapper.listByGoodsId(pageDTO.getGoodsId(), pageDTO.getSort(), pageDTO.getOrder());
+//        }
+//
+//        for (GrouponDO grouponDO : grouponDOS) {
+//            GrouponRulesDO grouponRulesDO = grouponRulesDOMapper.selectByPrimaryKey(grouponDO.getRulesId());
+//            GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(grouponRulesDO.getGoodsId());
+//            GrouponRecordVO grouponRecordVO = new GrouponRecordVO();
+//            grouponRecordVO.setGoods(goodsDO);
+//            grouponRecordVO.setGroupon(grouponDO);
+//            grouponRecordVO.setRules(grouponRulesDO);
+//            List<SubGrouponDTO> subGrouponDTOS = grouponDOMapper.listSubGroupon(grouponDO.getGrouponId());
+//            grouponRecordVO.setSubGroupons(subGrouponDTOS);
+//            list.add(grouponRecordVO);
+//
+//        }
+//
+//    }
 
     /**
      * 团购规则列表

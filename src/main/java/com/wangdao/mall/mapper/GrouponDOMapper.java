@@ -39,4 +39,7 @@ public interface GrouponDOMapper {
 
     List<GrouponDO> selectByGoodsId(@Param("goodsId") Integer goodsId);
 
+    @Select("select user_id as 'userId', order_id as 'orderId' from cskaoyan_mall_groupon where groupon_id = #{id} ")
+    List<SubGrouponDTO> listSubGroupon(@Param("id") Integer id);
 }
+

@@ -304,6 +304,7 @@
       deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
   <!--&lt;!&ndash;团购活动列表，按goodsID查询&ndash;&gt;-->
   <!--<select id="listByGoodsId" resultMap="BaseResultMap">-->
     <!--select-->
@@ -326,5 +327,20 @@
       where r.goodsId = #{goodsId} and gro.deleted = false
       order by gro.add_time desc
   </select>
+  <!--团购活动列表，按goodsID查询-->
+  <!--<select id="listByGoodsId" resultMap="BaseResultMap">-->
+    <!--select-->
+    <!--gro.id, gro.order_id, gro.groupon_id, gro.rules_id, gro.user_id, gro.creator_user_id, gro.add_time, gro.update_time,-->
+    <!--gro.share_url, gro.payed, gro.deleted-->
+    <!--from cskaoyan_mall_groupon gro-->
+    <!--left join cskaoyan_mall_groupon_rules rules-->
+    <!--on gro.rules_id = rules.id-->
+    <!--<if test="null != goodsId">-->
+    <!--and rules.goods_id = #{goodsId}-->
+    <!--</if>-->
+    <!--where gro.deleted = 0-->
+    <!--group by gro.groupon_id-->
+    <!--order by #{sort} #{order}-->
+
 
 </mapper>
