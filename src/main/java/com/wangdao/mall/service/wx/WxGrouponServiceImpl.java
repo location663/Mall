@@ -32,15 +32,21 @@ public class WxGrouponServiceImpl implements WxGrouponService {
         grouponDOExample.createCriteria().andDeletedEqualTo(false);
         List<GrouponDO> grouponDOS = grouponDOMapper.selectByExample(grouponDOExample);
         List<GrouponRecordVO> grouponRecordVOList = homeCatalogServiceImpl.getGrouponRecordVOList(grouponDOS);
-
+//        PageInfo<GrouponDO> grouponDOPageInfo = new PageInfo<>(grouponDOS);
         HashMap<String, Object> map = new HashMap<>();
         map.put("count", grouponRecordVOList.size());
         map.put("data", grouponRecordVOList);
         return map;
     }
 
+    /**
+     * 团购详情
+     * @param grouponId
+     * @return
+     */
     @Override
     public GrouponDetailVO selectById(Integer grouponId) {
+        GrouponDO grouponDO = grouponDOMapper.selectByPrimaryKey(grouponId);
         return null;
     }
 }

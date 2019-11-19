@@ -33,6 +33,6 @@ public interface GrouponDOMapper {
 
     List<GrouponDO> listByGoodsId(@Param("goodsId") Integer goodsId, @Param("sort") String sort, @Param("order") String order);
 
-    @Select("select user_id as 'userId', order_id as 'orderId' from cskaoyan_mall_groupon where id = #{id} ")
+    @Select("select user_id as 'userId', order_id as 'orderId' from cskaoyan_mall_groupon where groupon_id = #{id} ")
     List<SubGrouponDTO> listSubGroupon(@Param("id") Integer id);
 }

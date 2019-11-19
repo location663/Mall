@@ -49,10 +49,11 @@ public class GrouponServiceImpl implements GrouponService {
         if (null != pageDTO.getGoodsId()) {
             grouponDOS = grouponDOMapper.listByGoodsId(pageDTO.getGoodsId(), pageDTO.getSort(), pageDTO.getOrder());
         } else {
-            GrouponDOExample grouponDOExample = new GrouponDOExample();
-            grouponDOExample.createCriteria().andDeletedEqualTo(false);
-            grouponDOExample.setOrderByClause(pageDTO.getSort() + " " + pageDTO.getOrder());
-            grouponDOS = grouponDOMapper.selectByExample(grouponDOExample);
+//            GrouponDOExample grouponDOExample = new GrouponDOExample();
+//            grouponDOExample.createCriteria().andDeletedEqualTo(false);
+//            grouponDOExample.setOrderByClause(pageDTO.getSort() + " " + pageDTO.getOrder());
+//            grouponDOS = grouponDOMapper.selectByExample(grouponDOExample);
+             grouponDOS = grouponDOMapper.listByGoodsId(pageDTO.getGoodsId(), pageDTO.getSort(), pageDTO.getOrder());
         }
 
         for (GrouponDO grouponDO : grouponDOS) {
@@ -62,7 +63,7 @@ public class GrouponServiceImpl implements GrouponService {
             grouponRecordVO.setGoods(goodsDO);
             grouponRecordVO.setGroupon(grouponDO);
             grouponRecordVO.setRules(grouponRulesDO);
-            List<SubGrouponDTO> subGrouponDTOS = grouponDOMapper.listSubGroupon(grouponDO.getId());
+            List<SubGrouponDTO> subGrouponDTOS = grouponDOMapper.listSubGroupon(grouponDO.getGrouponId());
             grouponRecordVO.setSubGroupons(subGrouponDTOS);
             list.add(grouponRecordVO);
         }
