@@ -117,7 +117,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
                     filterCategoryList.add(categoryDO);
                 }
             }
-        }else {   //说明keyword=null,是通过categoryId显示某类下所有商品List
+        }else if (brandId==null && keyword==null){   //说明keyword=null,是通过categoryId显示某类下所有商品List   (待改进，返回的filterCategoryList存疑)
             GoodsDOExample goodsDOExample3 = new GoodsDOExample();
             goodsDOExample3.createCriteria().andDeletedEqualTo(false).andCategoryIdEqualTo(categoryId);
             List<GoodsDO> goodsDOList3 = goodsDOMapper.selectByExample(goodsDOExample3);
@@ -130,6 +130,30 @@ public class WxGoodsServiceImpl implements WxGoodsService {
             categoryDOExample3.createCriteria().andPidNotEqualTo(0);
             List<CategoryDO> categoryDOS = categoryDOMapper.selectByExample(categoryDOExample3);
             filterCategoryList.addAll(categoryDOS);
+        }else if (brandId!=null){
+            GoodsDOExample goodsDOExample4 = new GoodsDOExample();
+            goodsDOExample4.createCriteria().andDeletedEqualTo(false).andBrandIdEqualTo(brandId);
+            List<GoodsDO> goodsDOList4 = goodsDOMapper.selectByExample(goodsDOExample4);
+            PageInfo<GoodsDO> userPageInfo4 = new PageInfo<>(goodsDOList4);
+            long total4 = userPageInfo4.getTotal();
+            map.put("count",total4);
+            map.put("goodsList",goodsDOList4);
+
+            //封装filterCategoryList
+            List<CategoryDO> categoryDOArrayList4 = new ArrayList<>();
+            for (GoodsDO goodsDO : goodsDOList4) {
+                CategoryDO categoryDO = categoryDOMapper.selectByPrimaryKey(goodsDO.getCategoryId());
+                if (!categoryDO.getDeleted()){
+                    categoryDOArrayList4.add(categoryDO);
+                }
+            }
+            //把 categoryDOArrayList 里的 Category 对象去重
+            Set set = new HashSet();
+            for (CategoryDO categoryDO : categoryDOArrayList4) {
+                if (set.add(categoryDO)) {
+                    filterCategoryList.add(categoryDO);
+                }
+            }
         }
 
 //        if (keyword!=null){
