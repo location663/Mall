@@ -8,4 +8,6 @@ public interface WxGoodsService {
     HashMap<String, Object> queryWxGoodsList(String keyword, Integer categoryId,Integer brandId,Boolean isNew,Boolean isHot,Integer page, Integer size, String sort, String order);
 
     HashMap<String, Object> queryWxGoodsCategory(Integer id);
+
+    HashMap<String, Object> queryWxGoodsDetail(Integer id);
 }

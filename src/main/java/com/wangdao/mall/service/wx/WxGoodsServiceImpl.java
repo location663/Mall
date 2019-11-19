@@ -9,14 +9,12 @@ package com.wangdao.mall.service.wx;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wangdao.mall.bean.CategoryDO;
-import com.wangdao.mall.bean.CategoryDOExample;
-import com.wangdao.mall.bean.GoodsDO;
-import com.wangdao.mall.bean.GoodsDOExample;
+import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.stream.events.Comment;
 import java.util.*;
 
 @Service
@@ -43,6 +41,12 @@ public class WxGoodsServiceImpl implements WxGoodsService {
     @Autowired
     GoodsProductDOMapper goodsProductDOMapper;
 
+    @Autowired
+    GrouponDOMapper grouponDOMapper;
+
+    @Autowired
+    IssueDOMapper issueDOMapper;
+
 
     /**
      * //WX统计商品总数
@@ -65,8 +69,9 @@ public class WxGoodsServiceImpl implements WxGoodsService {
 
 
     /**
-     * 获取(搜索某商品)(显示某类目下所有商品)商品列表
+     * 获取显示(搜索keyword)(某类目)(某品牌)(是新品)(是热卖)的商品列表
      * response里有desc关键字
+     * 需要改进:显示商品时检查商品是否在售卖
      * @param keyword
      * @param page
      * @param size
@@ -230,6 +235,107 @@ public class WxGoodsServiceImpl implements WxGoodsService {
             List<CategoryDO> categoryDOS = categoryDOMapper.selectByExample(categoryDOExample1);
             map.put("brotherCategory",categoryDOS);
         }
+        return map;
+    }
+
+
+    /**
+     * 获取商品详情
+     * "groupon": [],//团购商品列表  和 "shareImage": "",这两个属性不知道该返回啥，需改进
+     * "issue": []    //所有的问答  //我是直接返回数据表的所有issue对象，不知道是否正确(老师项目也是全返回)
+     * "userHasCollect": 0,    //返回的这个属性，0为没收藏关注，1为收藏关注，需要注意，先检查登录状态，如果用户没登录统一为0
+     * "comment"  商品评论   //商品详情页只显示两条评论，但是不知道这两条以什么顺序显示
+     * @param id
+     * @return
+     */
+    @Override
+    public HashMap<String, Object> queryWxGoodsDetail(Integer id) {
+        HashMap<String, Object> map = new HashMap<>();
+
+        //封装 userHasCollect ,无登录下全部为0,后续需要改进，判断用户登录情况获取
+        map.put("userHasCollect",0);
+
+        //封装 shareImage: ""  不知道是啥，返回空串，后续需要改进
+        map.put("shareImage","");
+
+        //封装 info
+        GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(id);
+        map.put("info",goodsDO);
+
+        //封装团购商品列表groupon[]  后续根据情况需要改进
+        GrouponDOExample grouponDOExample = new GrouponDOExample();
+        grouponDOExample.createCriteria().andDeletedEqualTo(false);
+        List<GrouponDO> grouponDOS = grouponDOMapper.selectByExample(grouponDOExample);
+        map.put("groupon",grouponDOS);
+
+        //封装全部问答 issue 后续根据情况需要改进
+        IssueDOExample issueDOExample = new IssueDOExample();
+        issueDOExample.createCriteria().andDeletedEqualTo(false);
+        List<IssueDO> issueDOS = issueDOMapper.selectByExample(issueDOExample);
+        map.put("issue",issueDOS);
+
+        //封装 attribute
+        GoodsAttributeDOExample goodsAttributeDOExample = new GoodsAttributeDOExample();
+        goodsAttributeDOExample.createCriteria().andGoodsIdEqualTo(id).andDeletedEqualTo(false);
+        List<GoodsAttributeDO> goodsAttributeDOS = goodsAttributeDOMapper.selectByExample(goodsAttributeDOExample);
+        map.put("attribute",goodsAttributeDOS);
+
+        //封装 brand
+//        BrandDOExample brandDOExample = new BrandDOExample();
+//        brandDOExample.createCriteria().andDeletedEqualTo(false).andIdEqualTo(goodsDO.getBrandId());
+//        List<BrandDO> brandDOS = brandDOMapper.selectByExample(brandDOExample);
+//        map.put("brand",brandDOS.get(0));
+        BrandDO brandDO = brandDOMapper.selectByPrimaryKey(goodsDO.getBrandId());
+        map.put("brand",brandDO);
+
+        //封装 productList
+        GoodsProductDOExample goodsProductDOExample = new GoodsProductDOExample();
+        goodsProductDOExample.createCriteria().andDeletedEqualTo(false).andGoodsIdEqualTo(goodsDO.getId());
+        List<GoodsProductDO> goodsProductDOS = goodsProductDOMapper.selectByExample(goodsProductDOExample);
+        map.put("productList",goodsProductDOS);
+
+        //封装"comment"商品评论,详情页只显示两条评论，但是不知道这两条以什么顺序显示,我这里只显示List里前两条
+        HashMap<String, Object> commentMap = new HashMap<>();
+        List<CommentDO> data = new ArrayList<>();
+        CommentDOExample commentDOExample = new CommentDOExample();
+        commentDOExample.createCriteria().andDeletedEqualTo(false).andValueIdEqualTo(id);
+        List<CommentDO> commentDOS = commentDOMapper.selectByExample(commentDOExample);
+        int i=0;
+        for (CommentDO commentDO : commentDOS) {
+            if (i >= 2){
+                break;
+            }
+            data.add(commentDO);
+            i++;
+        }
+        PageInfo<CommentDO> userPageInfo = new PageInfo<>(commentDOS);
+        long count = userPageInfo.getTotal();
+        commentMap.put("data",data);
+        commentMap.put("count",count);
+        map.put("comment",commentMap);
+
+        //封装 specificationList
+        ArrayList<Map> specificationList = new ArrayList<>();
+        //先查出该商品所有的未删除的规格List
+        GoodsSpecificationDOExample goodsSpecificationDOExample = new GoodsSpecificationDOExample();
+        goodsSpecificationDOExample.createCriteria().andDeletedEqualTo(false).andGoodsIdEqualTo(goodsDO.getId());
+        List<GoodsSpecificationDO> goodsSpecificationDOList = goodsSpecificationDOMapper.selectByExample(goodsSpecificationDOExample);
+        HashSet<String> name = new HashSet<>();
+        for (GoodsSpecificationDO goodsSpecificationDO : goodsSpecificationDOList) {
+            name.add(goodsSpecificationDO.getSpecification());
+        }
+        for (String s : name) {  //name 相同的specificationList对象封装成一个valueList
+            GoodsSpecificationDOExample goodsSpecificationDOExample1 = new GoodsSpecificationDOExample();
+            goodsSpecificationDOExample1.createCriteria().andDeletedEqualTo(false).andSpecificationEqualTo(s).andGoodsIdEqualTo(goodsDO.getId());
+            List<GoodsSpecificationDO> valueList = goodsSpecificationDOMapper.selectByExample(goodsSpecificationDOExample1);
+
+            HashMap<String, Object> specificationMap = new HashMap<>();
+            specificationMap.put("name",s);
+            specificationMap.put("valueList",valueList);
+            specificationList.add(specificationMap);
+        }
+        map.put("specificationList",specificationList);
+
         return map;
     }
 }
