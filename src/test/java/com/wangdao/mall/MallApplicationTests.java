@@ -10,11 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.HashMap;
 
 
-@SpringBootTest
-class MallApplicationTests {
+//@SpringBootTest
+//class MallApplicationTests {
 
 
-
+//}
 
 
     /**
@@ -113,5 +113,5 @@ class MallApplicationTests {
 //        System.out.println(map);
 //    }
 
-}
+//}
 
