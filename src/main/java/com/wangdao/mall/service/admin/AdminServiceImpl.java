@@ -192,9 +192,12 @@ public class AdminServiceImpl implements AdminService {
         roleDO.setAddTime(new Date(System.currentTimeMillis()));
         roleDO.setUpdateTime(new Date(System.currentTimeMillis()));
         int insertResult = roleDOMapper.insertSelective(roleDO);
-        int idLastInsert = roleDOMapper.selectLastInsertRoleId();
-        RoleDO roleDOAfterInsert = roleDOMapper.selectByPrimaryKey(idLastInsert);
-        return roleDOAfterInsert;
+        if (insertResult != 0) {
+            int idLastInsert = roleDOMapper.selectLastInsertRoleId();
+            RoleDO roleDOAfterInsert = roleDOMapper.selectByPrimaryKey(idLastInsert);
+            return roleDOAfterInsert;
+        }
+        return null;
     }
 
     @Override

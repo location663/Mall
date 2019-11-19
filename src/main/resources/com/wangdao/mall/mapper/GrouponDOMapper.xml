@@ -310,7 +310,12 @@
     gro.share_url, gro.payed, gro.deleted
     from cskaoyan_mall_groupon gro
     left join cskaoyan_mall_groupon_rules rules
-    on gro.rules_id = rules.id and rules.goods_id = #{goodsId}
-    where gro.deleted = 0 order by #{sort} #{order}
+    on gro.rules_id = rules.id
+    <if test="null != goodsId">
+    and rules.goods_id = #{goodsId}
+    </if>
+    where gro.deleted = 0
+    group by gro.groupon_id
+    order by #{sort} #{order}
   </select>
 </mapper>
