@@ -82,7 +82,9 @@ public class MarketServiceImpl implements MarketService{
         if (null != pageDTO.getName() && !pageDTO.getName().trim().equals("")){
             criteria.andNameLike("%" + pageDTO.getName() + "%");
         }
-        brandDOExample.setOrderByClause(pageDTO.getSort() + " " + pageDTO.getOrder());
+        if (null != pageDTO.getOrder() && null != pageDTO.getSort()) {
+            brandDOExample.setOrderByClause(pageDTO.getSort() + " " + pageDTO.getOrder());
+        }
         List<BrandDO> brandDOS = brandDOMapper.selectByExample(brandDOExample);
         PageInfo<BrandDO> brandDOPageInfo = new PageInfo<>(brandDOS);
         long total = brandDOPageInfo.getTotal();
@@ -99,7 +101,6 @@ public class MarketServiceImpl implements MarketService{
      */
     @Override
     public BrandDO updateBrandById(BrandDO brandDO) {
-
         brandDO.setUpdateTime(new Date(System.currentTimeMillis()));
         int i = brandDOMapper.updateByPrimaryKey(brandDO);
         BrandDO brandDO1 = brandDOMapper.selectByPrimaryKey(brandDO.getId());

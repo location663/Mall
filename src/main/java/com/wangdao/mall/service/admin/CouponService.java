@@ -23,4 +23,6 @@ public interface CouponService {
     Map<String, Object> queryCouponsByConditions(Integer page, Integer limit, Integer couponId, Integer userId, Integer status);
 
     int deleteCoupon(Integer id);
+
+    CouponDO updateCoupon(CouponDO couponDO);
 }
