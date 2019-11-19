@@ -1,4 +1,4 @@
-
+package com.wangdao.mall;
 
 
 import com.wangdao.mall.service.admin.AdminService;
