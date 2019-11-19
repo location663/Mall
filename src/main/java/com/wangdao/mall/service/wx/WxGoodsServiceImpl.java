@@ -338,4 +338,31 @@ public class WxGoodsServiceImpl implements WxGoodsService {
 
         return map;
     }
+
+
+    /**
+     * 商品详情页的关联商品(广告)
+     * 该商品详情页的关联商品最多只显示该商品同类目下6个商品，顺序不清楚，可以再次显示该商品自己
+     * @param id
+     * @return
+     */
+    @Override
+    public HashMap<String, Object> queryWxGoodsRelated(Integer id) {
+        HashMap<String, Object> map = new HashMap<>();
+        GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(id);//获取商品详情页的商品对象
+        GoodsDOExample goodsDOExample = new GoodsDOExample();
+        goodsDOExample.createCriteria().andDeletedEqualTo(false).andCategoryIdEqualTo(goodsDO.getCategoryId());
+        List<GoodsDO> goodsDOList = goodsDOMapper.selectByExample(goodsDOExample);
+        ArrayList<GoodsDO> goodsList = new ArrayList<>();
+        int i=0;
+        for (GoodsDO aDo : goodsDOList) {    //因为顺序不清楚，所有只显示前6个同类商品
+            if (i >= 6){
+                break;
+            }
+            goodsList.add(aDo);
+            i++;
+        }
+        map.put("goodsList",goodsList);
+        return map;
+    }
 }

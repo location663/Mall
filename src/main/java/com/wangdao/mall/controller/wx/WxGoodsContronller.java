@@ -36,13 +36,10 @@ public class WxGoodsContronller {
     @RequestMapping("goods/count")
     public BaseReqVo goodsCount() {
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
-
         HashMap<String, Object> map = wxGoodsService.queryGoodsCount();
-
         baseReqVo.setData(map);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
-
         return baseReqVo;
     }
 
@@ -60,14 +57,11 @@ public class WxGoodsContronller {
     @RequestMapping("goods/list")
     public BaseReqVo wxGoodsList(String keyword,Integer categoryId,Integer brandId,Boolean isNew,Boolean isHot,Integer page,Integer size,String sort,String order){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
-
         HashMap<String, Object> map = new HashMap<>();
         map = wxGoodsService.queryWxGoodsList(keyword,categoryId,brandId,isNew,isHot,page,size,sort,order);
-
         baseReqVo.setData(map);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
-
         return baseReqVo;
     }
 
@@ -80,13 +74,10 @@ public class WxGoodsContronller {
     @RequestMapping("goods/category")
     public BaseReqVo wxGoodsCategory(Integer id){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
-
         HashMap<String, Object> map = wxGoodsService.queryWxGoodsCategory(id);
-
         baseReqVo.setData(map);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
-
         return baseReqVo;
     }
 
@@ -102,13 +93,28 @@ public class WxGoodsContronller {
     @RequestMapping("goods/detail")
     public BaseReqVo wxGoodsDetail(Integer id){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
-
         HashMap<String, Object> map = wxGoodsService.queryWxGoodsDetail(id);
-
         baseReqVo.setData(map);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
 
+
+
+    /**
+     * 商品详情页的关联商品(广告)
+     * 该商品详情页的关联商品最多只显示该商品同类目下6个商品，顺序不清楚，可以再次显示该商品自己
+     * @param id
+     * @return
+     */
+    @RequestMapping("goods/related")
+    public BaseReqVo goodsRelated(Integer id){   //id为该商品详情页的商品id
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        HashMap<String, Object> map = wxGoodsService.queryWxGoodsRelated(id);
+        baseReqVo.setData(map);
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
         return baseReqVo;
     }
 

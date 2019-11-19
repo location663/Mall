@@ -10,4 +10,6 @@ public interface WxGoodsService {
     HashMap<String, Object> queryWxGoodsCategory(Integer id);
 
     HashMap<String, Object> queryWxGoodsDetail(Integer id);
+
+    HashMap<String, Object> queryWxGoodsRelated(Integer id);
 }
