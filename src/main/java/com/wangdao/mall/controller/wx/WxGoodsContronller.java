@@ -58,7 +58,7 @@ public class WxGoodsContronller {
      * @return
      */
     @RequestMapping("goods/list")
-    public BaseReqVo wxGoodsList(String keyword,Integer categoryId,Integer brandId,boolean isNew,boolean isHot,Integer page,Integer size,String sort,String order){
+    public BaseReqVo wxGoodsList(String keyword,Integer categoryId,Integer brandId,Boolean isNew,Boolean isHot,Integer page,Integer size,String sort,String order){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
 
         HashMap<String, Object> map = new HashMap<>();

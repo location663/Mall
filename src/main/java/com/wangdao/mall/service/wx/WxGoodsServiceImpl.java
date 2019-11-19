@@ -75,7 +75,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
      * @return
      */
     @Override
-    public HashMap<String, Object> queryWxGoodsList(String keyword,Integer categoryId, Integer brandId,boolean isNew,boolean isHot,Integer page, Integer size, String sort, String order) {
+    public HashMap<String, Object> queryWxGoodsList(String keyword,Integer categoryId, Integer brandId,Boolean isNew,Boolean isHot,Integer page, Integer size, String sort, String order) {
         GoodsDOExample goodsDOExample1 = new GoodsDOExample();
         CategoryDOExample categoryDOExample = new CategoryDOExample();
         HashMap<String, Object> map = new HashMap<>();
@@ -83,7 +83,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
         PageHelper.startPage(page,size);
 
         //封装goodsList和count
-        if (keyword!=null ) {
+        if ( isNew==null && keyword!=null ) {
             goodsDOExample1.createCriteria().andDeletedEqualTo(false).andNameLike("%" + keyword + "%");
             goodsDOExample1.setOrderByClause(sort+" "+order);
             List<GoodsDO> goodsDOList1 = goodsDOMapper.selectByExample(goodsDOExample1);
@@ -93,7 +93,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
                 long total1 = userPageInfo1.getTotal();
                 map.put("count",total1);
                 map.put("goodsList",goodsDOList1);
-            }else if (categoryId!=0){   //说明是搜索 关键字和和显示某分类下 （分类）显示商品List
+            }else {   //categoryId!=0说明是搜索 关键字和和显示某分类下 （分类）显示商品List
                 GoodsDOExample goodsDOExample2 = new GoodsDOExample();
                 goodsDOExample2.createCriteria().andDeletedEqualTo(false).andCategoryIdEqualTo(categoryId).andNameLike("%" + keyword + "%");
                 List<GoodsDO> goodsDOList2 = goodsDOMapper.selectByExample(goodsDOExample2);
@@ -117,7 +117,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
                     filterCategoryList.add(categoryDO);
                 }
             }
-        }else if (brandId==null && keyword==null){   //说明keyword=null,是通过categoryId显示某类下所有商品List   (待改进，返回的filterCategoryList存疑)
+        }else if (isNew==null && brandId==null && keyword==null){   //说明keyword=null,是通过categoryId显示某类下所有商品List   (待改进，返回的filterCategoryList存疑)
             GoodsDOExample goodsDOExample3 = new GoodsDOExample();
             goodsDOExample3.createCriteria().andDeletedEqualTo(false).andCategoryIdEqualTo(categoryId);
             List<GoodsDO> goodsDOList3 = goodsDOMapper.selectByExample(goodsDOExample3);
@@ -130,7 +130,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
             categoryDOExample3.createCriteria().andPidNotEqualTo(0);
             List<CategoryDO> categoryDOS = categoryDOMapper.selectByExample(categoryDOExample3);
             filterCategoryList.addAll(categoryDOS);
-        }else if (brandId!=null){
+        }else if (isNew==null && brandId!=null){
             GoodsDOExample goodsDOExample4 = new GoodsDOExample();
             goodsDOExample4.createCriteria().andDeletedEqualTo(false).andBrandIdEqualTo(brandId);
             List<GoodsDO> goodsDOList4 = goodsDOMapper.selectByExample(goodsDOExample4);
@@ -150,6 +150,44 @@ public class WxGoodsServiceImpl implements WxGoodsService {
             //把 categoryDOArrayList 里的 Category 对象去重
             Set set = new HashSet();
             for (CategoryDO categoryDO : categoryDOArrayList4) {
+                if (set.add(categoryDO)) {
+                    filterCategoryList.add(categoryDO);
+                }
+            }
+        }else if (isNew){
+            GoodsDOExample goodsDOExample5 = new GoodsDOExample();
+            goodsDOExample5.createCriteria().andDeletedEqualTo(false).andIsNewEqualTo(true);
+            goodsDOExample5.setOrderByClause(sort + " " + order);
+            List<GoodsDO> goodsDOList5 = goodsDOMapper.selectByExample(goodsDOExample5);
+
+            if (categoryId==0) {  //说明是只显示全为新品的商品List
+                PageInfo<GoodsDO> userPageInfo5 = new PageInfo<>(goodsDOList5);
+                long total5 = userPageInfo5.getTotal();
+                map.put("count", total5);
+                map.put("goodsList", goodsDOList5);
+
+            }else {  //categoryId!=0  //说明是只显示全为新品的某类的商品List
+                GoodsDOExample goodsDOExample6 = new GoodsDOExample();
+                goodsDOExample6.createCriteria().andDeletedEqualTo(false).andIsNewEqualTo(true).andCategoryIdEqualTo(categoryId);
+                goodsDOExample6.setOrderByClause(sort + " " + order);
+                List<GoodsDO> goodsDOList6 = goodsDOMapper.selectByExample(goodsDOExample6);
+                PageInfo<GoodsDO> userPageInfo6 = new PageInfo<>(goodsDOList6);
+                long total6 = userPageInfo6.getTotal();
+                map.put("count", total6);
+                map.put("goodsList", goodsDOList6);
+            }
+
+            //封装filterCategoryList
+            List<CategoryDO> categoryDOArrayList5 = new ArrayList<>();
+            for (GoodsDO goodsDO : goodsDOList5) {
+                CategoryDO categoryDO = categoryDOMapper.selectByPrimaryKey(goodsDO.getCategoryId());
+                if (!categoryDO.getDeleted()) {
+                    categoryDOArrayList5.add(categoryDO);
+                }
+            }
+            //把 categoryDOArrayList 里的 Category 对象去重
+            Set set = new HashSet();
+            for (CategoryDO categoryDO : categoryDOArrayList5) {
                 if (set.add(categoryDO)) {
                     filterCategoryList.add(categoryDO);
                 }
