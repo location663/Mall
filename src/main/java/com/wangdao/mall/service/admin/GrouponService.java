@@ -15,4 +15,8 @@ public interface GrouponService {
     int updateGrouponRules(GrouponRulesDO grouponRulesDO) throws Exception;
 
     int deleteGrouponRules(GrouponRulesDO grouponRulesDO);
+
+
+
+//    Map<String, Object> queryGrouponListByConditions(Integer page, Integer limit, Integer goodsId);
 }

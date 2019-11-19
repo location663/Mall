@@ -1,4 +1,5 @@
-package com.wangdao.mall;
+
+
 
 import com.wangdao.mall.service.admin.AdminService;
 import com.wangdao.mall.service.wx.WxGoodsService;
@@ -12,11 +13,7 @@ import java.util.HashMap;
 @SpringBootTest
 class MallApplicationTests {
 
-    @Autowired
-    AdminService adminService;
 
-    @Autowired
-    WxGoodsService wxGoodsService;
 
 
 

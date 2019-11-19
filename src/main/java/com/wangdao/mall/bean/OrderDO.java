@@ -58,6 +58,7 @@ public class OrderDO {
 
     private Boolean deleted;
 
+//    private  handleOption;
     public OrderDO() {
     }
 
