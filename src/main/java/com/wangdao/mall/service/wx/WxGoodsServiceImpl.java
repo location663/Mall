@@ -83,7 +83,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
         PageHelper.startPage(page,size);
 
         //封装goodsList和count
-        if ( isNew==null && keyword!=null ) {
+        if ( isHot==null && isNew==null && keyword!=null ) {
             goodsDOExample1.createCriteria().andDeletedEqualTo(false).andNameLike("%" + keyword + "%");
             goodsDOExample1.setOrderByClause(sort+" "+order);
             List<GoodsDO> goodsDOList1 = goodsDOMapper.selectByExample(goodsDOExample1);
@@ -117,7 +117,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
                     filterCategoryList.add(categoryDO);
                 }
             }
-        }else if (isNew==null && brandId==null && keyword==null){   //说明keyword=null,是通过categoryId显示某类下所有商品List   (待改进，返回的filterCategoryList存疑)
+        }else if (isHot==null && isNew==null && brandId==null && keyword==null){   //说明keyword=null,是通过categoryId显示某类下所有商品List   (待改进，返回的filterCategoryList存疑)
             GoodsDOExample goodsDOExample3 = new GoodsDOExample();
             goodsDOExample3.createCriteria().andDeletedEqualTo(false).andCategoryIdEqualTo(categoryId);
             List<GoodsDO> goodsDOList3 = goodsDOMapper.selectByExample(goodsDOExample3);
@@ -130,7 +130,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
             categoryDOExample3.createCriteria().andPidNotEqualTo(0);
             List<CategoryDO> categoryDOS = categoryDOMapper.selectByExample(categoryDOExample3);
             filterCategoryList.addAll(categoryDOS);
-        }else if (isNew==null && brandId!=null){
+        }else if (isHot==null && isNew==null && brandId!=null){
             GoodsDOExample goodsDOExample4 = new GoodsDOExample();
             goodsDOExample4.createCriteria().andDeletedEqualTo(false).andBrandIdEqualTo(brandId);
             List<GoodsDO> goodsDOList4 = goodsDOMapper.selectByExample(goodsDOExample4);
@@ -154,9 +154,14 @@ public class WxGoodsServiceImpl implements WxGoodsService {
                     filterCategoryList.add(categoryDO);
                 }
             }
-        }else if (isNew){
+        }else {
             GoodsDOExample goodsDOExample5 = new GoodsDOExample();
-            goodsDOExample5.createCriteria().andDeletedEqualTo(false).andIsNewEqualTo(true);
+            if (isNew!=null && isHot==null) {
+                goodsDOExample5.createCriteria().andDeletedEqualTo(false).andIsNewEqualTo(true);
+            }else {
+                goodsDOExample5.createCriteria().andDeletedEqualTo(false).andIsHotEqualTo(true);
+            }
+
             goodsDOExample5.setOrderByClause(sort + " " + order);
             List<GoodsDO> goodsDOList5 = goodsDOMapper.selectByExample(goodsDOExample5);
 
@@ -193,32 +198,6 @@ public class WxGoodsServiceImpl implements WxGoodsService {
                 }
             }
         }
-
-//        if (keyword!=null){
-//            goodsDOExample1.setOrderByClause(sort+" "+order);
-//            List<GoodsDO> goodsDOList = goodsDOMapper.selectByExample(goodsDOExample1);
-//            PageInfo<GoodsDO> userPageInfo = new PageInfo<>(goodsDOList);
-//            long total = userPageInfo.getTotal();
-//            map.put("count",total);
-//            map.put("goodsList",goodsDOList);
-//
-//            //封装filterCategoryList
-//            List<CategoryDO> categoryDOArrayList = new ArrayList<>();
-//            for (GoodsDO goodsDO : goodsDOList) {
-//                CategoryDO categoryDO = categoryDOMapper.selectByPrimaryKey(goodsDO.getCategoryId());
-//                if (!categoryDO.getDeleted()){
-//                    categoryDOArrayList.add(categoryDO);
-//                }
-//            }
-//            //把 categoryDOArrayList 里的 Category 对象去重
-//            List<CategoryDO> filterCategoryList = new ArrayList<>();
-//            Set set = new HashSet();
-//            for (CategoryDO categoryDO : categoryDOArrayList) {
-//                if (set.add(categoryDO)) {
-//                    filterCategoryList.add(categoryDO);
-//                }
-//            }
-//        }
         map.put("filterCategoryList",filterCategoryList);
         return map;
     }
