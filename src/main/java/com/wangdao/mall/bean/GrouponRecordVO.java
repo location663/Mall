@@ -10,6 +10,7 @@ public class GrouponRecordVO {
     private GrouponDO groupon;
     private GrouponRulesDO rules;
     private List<SubGrouponDTO> subGroupons;
+
     private Integer groupon_member;
     private Double groupon_price;
 }

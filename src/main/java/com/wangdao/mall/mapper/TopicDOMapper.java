@@ -5,6 +5,7 @@ import com.wangdao.mall.bean.TopicDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 public interface TopicDOMapper {
     long countByExample(TopicDOExample example);
@@ -38,4 +39,6 @@ public interface TopicDOMapper {
     @Select("select last_insert_id()")
     int selectLastInsertId();
 
+    @Update("update cskaoyan_mall_topic set deleted = 1 where id = #{id}")
+    int deleteTopicById(Integer id);
 }

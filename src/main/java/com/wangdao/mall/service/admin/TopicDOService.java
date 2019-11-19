@@ -16,4 +16,8 @@ public interface TopicDOService {
     Map<String, Object> queryTopocList(Integer page, Integer limit, String title, String subtitle);
 
     TopicDO creatTopic(TopicDO topicDO);
+
+    TopicDO updateTopic(TopicDO topicDO);
+
+    int deleteTopic(TopicDO topicDO);
 }
