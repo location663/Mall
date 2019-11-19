@@ -26,6 +26,7 @@ public class AdminAdministerController {
 
     @Autowired
     AdminService adminService;
+
     @Autowired
     StorageUtils storageUtils;
 
@@ -146,7 +147,7 @@ public class AdminAdministerController {
             BaseReqVo baseReqVo = new BaseReqVo<>(adminDOAfterUpdate,"成功",0);
             return baseReqVo;
         }
-        BaseReqVo baseReqVo = new BaseReqVo<>(adminDOAfterUpdate, "失败", 602);
+        BaseReqVo baseReqVo = new BaseReqVo<>(adminDOAfterUpdate, "失败", 505);
         return baseReqVo;
     }
 
