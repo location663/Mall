@@ -69,16 +69,11 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <version>1.1.10</version>
         </dependency>
-<<<<<<< HEAD
         <dependency>
             <groupId>org.apache.shiro</groupId>
             <artifactId>shiro-spring</artifactId>
             <version>1.2.3</version>
         </dependency>
-    </dependencies>
-=======
->>>>>>> 343d063b6e52873db44babd4a3109be36a12b451
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
