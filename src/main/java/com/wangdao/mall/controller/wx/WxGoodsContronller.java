@@ -1,5 +1,5 @@
 /**
- * Created by IntelliJ IDEA.
+ * wx端所有goods接口
  * User: Jql
  * Date  2019/11/18
  * Time  下午 7:50
