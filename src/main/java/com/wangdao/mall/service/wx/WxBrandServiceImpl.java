@@ -19,6 +19,11 @@ public class WxBrandServiceImpl implements WxBrandService {
     @Autowired
     BrandDOMapper brandDOMapper;
 
+    /**
+     * 品牌列表
+     * @param pageDTO
+     * @return
+     */
     @Override
     public Map<String, Object> listBrand(RequestPageDTO pageDTO) {
         PageHelper.startPage(pageDTO.getPage(), pageDTO.getLimit());

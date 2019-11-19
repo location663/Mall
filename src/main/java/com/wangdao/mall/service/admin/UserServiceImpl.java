@@ -43,6 +43,7 @@ public class UserServiceImpl implements UserService{
             userDOExample.createCriteria().andUsernameLike("%"+username+"%");
         }
         userDOExample.setOrderByClause(sort+" "+order);
+        userDOExample.createCriteria().andDeletedEqualTo(false);
         List<UserDO> userDOS = userDOMapper.selectByExample(userDOExample);
         long l = userDOMapper.countByExample(userDOExample);
         map.put("items",userDOS);
@@ -56,12 +57,13 @@ public class UserServiceImpl implements UserService{
     @Autowired
     AddressDOMapper addressDOMapper;
     @Override
-    public Map listByAddressCondition(int page, int limit, String sort, String order, String name, Integer userid) {
+    public Map listByAddressCondition(int page, int limit, String sort, String order, String name, String userid) {
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         AddressDOExample addressDOExample= new AddressDOExample();
+        addressDOExample.createCriteria().andDeletedEqualTo(false);
         if(userid!=null){
-            addressDOExample.createCriteria().andUserIdEqualTo(userid);
+            addressDOExample.createCriteria().andUserIdEqualTo(Integer.parseInt(userid));
         }
         else if(name!=null){
             addressDOExample.createCriteria().andNameLike("%"+name+"%");
@@ -80,15 +82,16 @@ public class UserServiceImpl implements UserService{
     @Autowired
     CollectDOMapper collectDOMapper;
     @Override
-    public Map listByCollectCondition(int page, int limit, String sort, String order, Integer valueId, Integer userId) {
+    public Map listByCollectCondition(int page, int limit, String sort, String order, String valueId, String userId) {
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         CollectDOExample collectDOExample= new CollectDOExample();
+        collectDOExample.createCriteria().andDeletedEqualTo(false);
         if(userId!=null){
-            collectDOExample.createCriteria().andUserIdEqualTo(userId);
+            collectDOExample.createCriteria().andUserIdEqualTo(Integer.parseInt(userId));
         }
         else if(valueId!=null){
-            collectDOExample.createCriteria().andValueIdEqualTo(valueId);
+            collectDOExample.createCriteria().andValueIdEqualTo(Integer.parseInt(valueId));
         }
         collectDOExample.setOrderByClause(sort+" "+order);
         List<CollectDO> collectDos = collectDOMapper.selectByExample(collectDOExample);
@@ -111,15 +114,16 @@ public class UserServiceImpl implements UserService{
     @Autowired
     FootprintDOMapper footprintDOMapper;
     @Override
-    public Map listByFootprintCondition(int page, int limit, String sort, String order, Integer goodsId, Integer userId) {
+    public Map listByFootprintCondition(int page, int limit, String sort, String order, String goodsId, String userId) {
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         FootprintDOExample footprintDOExample= new FootprintDOExample();
+        footprintDOExample.createCriteria().andDeletedEqualTo(false);
         if(userId!=null){
-            footprintDOExample.createCriteria().andUserIdEqualTo(userId);
+            footprintDOExample.createCriteria().andUserIdEqualTo(Integer.parseInt(userId));
         }
         else if(goodsId!=null){
-            footprintDOExample.createCriteria().andGoodsIdEqualTo(goodsId);
+            footprintDOExample.createCriteria().andGoodsIdEqualTo(Integer.parseInt(goodsId));
         }
         footprintDOExample.setOrderByClause(sort+" "+order);
         List<FootprintDO> footprintDOS = footprintDOMapper.selectByExample(footprintDOExample);
@@ -142,12 +146,13 @@ public class UserServiceImpl implements UserService{
     @Autowired
     SearchHistoryDOMapper historyDOMapper;
     @Override
-    public Map listByHistoryCondition(int page, int limit, String sort, String order, String keyword, Integer userId) {
+    public Map listByHistoryCondition(int page, int limit, String sort, String order, String keyword, String userId) {
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         SearchHistoryDOExample historyDOExample= new SearchHistoryDOExample();
+        historyDOExample.createCriteria().andDeletedEqualTo(false);
         if(userId!=null){
-            historyDOExample.createCriteria().andUserIdEqualTo(userId);
+            historyDOExample.createCriteria().andUserIdEqualTo(Integer.parseInt(userId));
         }
         else if(keyword!=null){
             historyDOExample.createCriteria().andKeywordLike(keyword);
@@ -173,15 +178,16 @@ public class UserServiceImpl implements UserService{
     @Autowired
     FeedbackDOMapper feedbackDOMapper;
     @Override
-    public Map listByFeedbackCondition(int page, int limit, String sort, String order, String username, Integer id) {
+    public Map listByFeedbackCondition(int page, int limit, String sort, String order, String username, String id) {
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         FeedbackDOExample feedbackDOExample= new FeedbackDOExample();
+        feedbackDOExample.createCriteria().andDeletedEqualTo(false);
         if(username!=null){
             feedbackDOExample.createCriteria().andUsernameLike("%"+username+"%");
         }
         else if(id!=null){
-            feedbackDOExample.createCriteria().andIdEqualTo(id);
+            feedbackDOExample.createCriteria().andIdEqualTo(Integer.parseInt(id));
         }
         feedbackDOExample.setOrderByClause(sort+" "+order);
         List<FeedbackDO> feedbackDOS = feedbackDOMapper.selectByExample(feedbackDOExample);
