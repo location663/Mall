@@ -23,7 +23,7 @@ public class OrderGoodsDO {
 
     private BigDecimal price;
 
-    private String specifications;
+    private String[] specifications;
 
     private String picUrl;
 
@@ -38,7 +38,7 @@ public class OrderGoodsDO {
     public OrderGoodsDO() {
     }
 
-    public OrderGoodsDO(Integer id, Integer orderId, Integer goodsId, String goodsName, String goodsSn, Integer productId, Short number, BigDecimal price, String specifications, String picUrl, Integer comment, Date addTime, Date updateTime, Boolean deleted) {
+    public OrderGoodsDO(Integer id, Integer orderId, Integer goodsId, String goodsName, String goodsSn, Integer productId, Short number, BigDecimal price, String[] specifications, String picUrl, Integer comment, Date addTime, Date updateTime, Boolean deleted) {
         this.id = id;
         this.orderId = orderId;
         this.goodsId = goodsId;
@@ -119,12 +119,12 @@ public class OrderGoodsDO {
         this.price = price;
     }
 
-    public String getSpecifications() {
+    public String[] getSpecifications() {
         return specifications;
     }
 
-    public void setSpecifications(String specifications) {
-        this.specifications = specifications == null ? null : specifications.trim();
+    public void setSpecifications(String[] specifications) {
+        this.specifications = specifications;
     }
 
     public String getPicUrl() {

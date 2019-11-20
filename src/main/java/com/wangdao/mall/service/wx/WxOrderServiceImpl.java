@@ -1,11 +1,13 @@
 package com.wangdao.mall.service.wx;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.*;
+import com.wangdao.mall.service.util.GetOrderHandleOption;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -50,7 +52,7 @@ public class WxOrderServiceImpl implements WxOrderService {
      * @return
      */
     @Override
-    public BaseReqVo submitOrder(Map<String, Object> map) {
+    public BaseReqVo submitOrder(Map<String, Object> map) throws JsonProcessingException {
 
         OrderDO orderDO = new OrderDO();
         UserDO userDO  = (UserDO) SecurityUtils.getSubject().getPrincipal();
@@ -121,7 +123,11 @@ public class WxOrderServiceImpl implements WxOrderService {
             if (orderDO.getGoodsPrice().doubleValue() - couponDO.getMin().doubleValue() >= 0) {
                 //优惠券优惠价格
                 orderDO.setCouponPrice(couponDO.getDiscount());
+            }else {
+                orderDO.setCouponPrice(BigDecimal.valueOf(0));
             }
+        }else {
+            orderDO.setCouponPrice(BigDecimal.valueOf(0));
         }
 
         //团购联系信息
@@ -137,6 +143,8 @@ public class WxOrderServiceImpl implements WxOrderService {
             if (new Date().after(grouponRulesDO.getExpireTime())) {
                 return new BaseReqVo(null, "团购活动已过期", 730);
             }
+        }else {
+            orderDO.setGrouponPrice(BigDecimal.valueOf(0));
         }
 
         //订单付款时留言
@@ -144,7 +152,10 @@ public class WxOrderServiceImpl implements WxOrderService {
         orderDO.setMessage(message);
 
         //订单费用
-        double orderPrice = orderDO.getGoodsPrice().doubleValue()+orderDO.getFreightPrice().doubleValue()-orderDO.getCouponPrice().doubleValue();
+        double orderPrice = orderDO.getGoodsPrice().doubleValue()+orderDO.getFreightPrice().doubleValue()/*-orderDO.getCouponPrice().doubleValue()*/;
+        if (orderDO.getCouponPrice() != null){
+            orderPrice = orderPrice - orderDO.getCouponPrice().doubleValue();
+        }
         orderDO.setOrderPrice(BigDecimal.valueOf(orderPrice));
 
         //实付费用
@@ -177,6 +188,11 @@ public class WxOrderServiceImpl implements WxOrderService {
         //逻辑删除
         orderDO.setDeleted(false);
 
+        //暂时初始化值订单编号、微信付款编号和发货编号
+        orderDO.setOrderSn("0");
+        orderDO.setPayId("0");
+        orderDO.setShipSn("0");
+
         //插入order数据
         orderDOMapper.insertSelective(orderDO);
 
@@ -185,6 +201,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         orderDO.setOrderSn(String.valueOf(i));
         orderDO.setPayId(String.valueOf(i));
         orderDO.setShipSn(String.valueOf(i));
+        orderDO.setId(i);
         orderDOMapper.updateByPrimaryKeySelective(orderDO);
 
         //order_goods表对象
@@ -215,6 +232,23 @@ public class WxOrderServiceImpl implements WxOrderService {
 
             //逻辑删除
             orderGoodsDO.setDeleted(false);
+
+            //order_goods表商品货品的id
+            orderGoodsDO.setProductId(cartDO.getProductId());
+
+            //order_goods表商品货品的购买数量
+            orderGoodsDO.setNumber(cartDO.getNumber());
+
+            //order_goods表商品货品的售价
+            orderGoodsDO.setPrice(cartDO.getPrice());
+
+            //order_goods表商品货品的规格列表
+            ObjectMapper objectMapper = new ObjectMapper();
+            String[] strings = objectMapper.readValue(cartDO.getSpecifications(), String[].class);
+            orderGoodsDO.setSpecifications(strings);
+
+            //order_goods表商品货品的图片
+            orderGoodsDO.setPicUrl(cartDO.getPicUrl());
 
             //插入order_goods表中
             orderGoodsDOMapper.insertSelective(orderGoodsDO);
@@ -300,21 +334,29 @@ public class WxOrderServiceImpl implements WxOrderService {
         UserDO user = (UserDO) SecurityUtils.getSubject().getPrincipal();
 
         //转换状态码
-        int statuInt = 0;
+        List<Short> statuList = new ArrayList();
+//        int statuInt = 0;
         switch (showType){
             case 1:
-                statuInt = 101;
+                statuList.add((short)101);
+                statuList.add((short)102);
+                statuList.add((short)103);
+//                statuInt = 101;
                 break;
             case 2:
-                statuInt = 201;
+                statuList.add((short)201);
+                statuList.add((short)202);
+                statuList.add((short)203);
+//                statuInt = 201;
                 break;
             case 3:
-                statuInt = 301;
+                statuList.add((short)301);
+//                statuInt = 301;
                 break;
             case 4:
-                statuInt = 401;
-                break;
-            default:
+                statuList.add((short)401);
+                statuList.add((short)402);
+//                statuInt = 401;
                 break;
         }
 
@@ -323,7 +365,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         OrderDOExample orderDOExample = new OrderDOExample();
         if (showType != 0) {
             PageHelper.startPage(page,size);
-            orderDOExample.createCriteria().andUserIdEqualTo(user.getId()).andOrderStatusEqualTo((short) statuInt).andDeletedEqualTo(false);
+            orderDOExample.createCriteria().andUserIdEqualTo(user.getId()).andOrderStatusIn(statuList)/*.andOrderStatusEqualTo((short) statuInt)*/.andDeletedEqualTo(false);
             orderDOList = orderDOMapper.selectByExample(orderDOExample);
             List<OrderDO> allOrderDOList = orderDOMapper.selectByExample(orderDOExample);
             count = allOrderDOList.size();
@@ -350,13 +392,28 @@ public class WxOrderServiceImpl implements WxOrderService {
                 case 101:
                     orderStatusText = "未付款";
                     break;
+                case 102:
+                    orderStatusText = "已取消";
+                    break;
+                case 103:
+                    orderStatusText = "已取消";
+                    break;
                 case 201:
                     orderStatusText = "已付款";
+                    break;
+                case 202:
+                    orderStatusText = "申请退款";
+                    break;
+                case 203:
+                    orderStatusText = "已退款";
                     break;
                 case 301:
                     orderStatusText = "已发货";
                     break;
                 case 401:
+                    orderStatusText = "已收货";
+                    break;
+                case 402:
                     orderStatusText = "已收货";
                     break;
             }
@@ -366,6 +423,8 @@ public class WxOrderServiceImpl implements WxOrderService {
             BigDecimal grouponPrice = orderDOMapper.selectByPrimaryKey(orderDO.getId()).getGrouponPrice();
             if (grouponPrice.doubleValue() != 0){
                 orderVO.setIsGroupin(true);
+            }else {
+                orderVO.setIsGroupin(false);
             }
 
             //orderSn
@@ -376,42 +435,45 @@ public class WxOrderServiceImpl implements WxOrderService {
 
             //goodsList
             OrderGoodsDOExample orderGoodsDOExample = new OrderGoodsDOExample();
-            orderGoodsDOExample.createCriteria().andGoodsIdEqualTo(orderDO.getId()).andDeletedEqualTo(false);
+            orderGoodsDOExample.createCriteria().andOrderIdEqualTo(orderDO.getId()).andDeletedEqualTo(false);
             List<OrderGoodsDO> orderGoodsDOList = orderGoodsDOMapper.selectByExample(orderGoodsDOExample);
+//            OrderGoodsDOExample orderGoodsDOExample = new OrderGoodsDOExample();
+//            orderGoodsDOExample.createCriteria().andGoodsIdEqualTo(orderDO).andDeletedEqualTo(false);
+//            List<OrderGoodsDO> orderGoodsDOList = orderGoodsDOMapper.selectByExample(orderGoodsDOExample);
             orderVO.setGoodsList(orderGoodsDOList);
 
             //handleOption
-            OrderHandleOption handleOption = null;
-            switch (orderStatus){
-                case 101:
-                    handleOption = new OrderHandleOption(true,false,false,false,true,false,false);
-                    break;
-                case 102:
-                    handleOption = new OrderHandleOption(false,false,false,true,true,false,false);
-                    break;
-                case 103:
-                    handleOption = new OrderHandleOption(false,false,false,true,true,false,false);
-                    break;
-                case 201:
-                    handleOption = new OrderHandleOption(true,false,false,false,true,false,false);
-                    break;
-                case 202:
-                    handleOption = new OrderHandleOption(true,false,false,false,true,false,false);
-                    break;
-                case 203:
-                    handleOption = new OrderHandleOption(true,false,false,false,true,false,false);
-                    break;
-                case 301:
-                    handleOption = new OrderHandleOption(true,false,false,false,true,false,false);
-                    break;
-                case 401:
-                    handleOption = new OrderHandleOption(false,true,false,true,false,true,false);
-                    break;
-                case 402:
-                    handleOption = new OrderHandleOption(false,true,false,true,false,true,false);
-                    break;
-            }
-            orderVO.setHandleOption(handleOption);
+//            OrderHandleOption handleOption = null;
+//            switch (orderStatus){
+//                case 101:
+//                    handleOption = new OrderHandleOption(true,false,false,false,true,false,false);
+//                    break;
+//                case 102:
+//                    handleOption = new OrderHandleOption(false,false,false,true,true,false,false);
+//                    break;
+//                case 103:
+//                    handleOption = new OrderHandleOption(false,false,false,true,true,false,false);
+//                    break;
+//                case 201:
+//                    handleOption = new OrderHandleOption(true,false,false,false,true,false,false);
+//                    break;
+//                case 202:
+//                    handleOption = new OrderHandleOption(true,false,false,false,true,false,false);
+//                    break;
+//                case 203:
+//                    handleOption = new OrderHandleOption(true,false,false,false,true,false,false);
+//                    break;
+//                case 301:
+//                    handleOption = new OrderHandleOption(true,false,false,false,true,false,false);
+//                    break;
+//                case 401:
+//                    handleOption = new OrderHandleOption(false,true,false,true,false,true,false);
+//                    break;
+//                case 402:
+//                    handleOption = new OrderHandleOption(false,true,false,true,false,true,false);
+//                    break;
+//            }
+            orderVO.setHandleOption(GetOrderHandleOption.getOrderHandleOption(orderStatus));
 
 //            boolean cancel = false;
 //            if (orderStatus == 102 || orderStatus == 103){
@@ -445,5 +507,173 @@ public class WxOrderServiceImpl implements WxOrderService {
 
 
         return new BaseReqVo(data,"成功",0);
+    }
+
+    /**
+     * 获取订单详情
+     * @param orderId
+     * @return
+     */
+    @Override
+    public BaseReqVo getOrderDetail(Integer orderId) {
+
+        Map<String, Object> map = new HashMap<>();
+
+        //获取订单详情
+        OrderDO orderDO = orderDOMapper.selectByPrimaryKey(orderId);
+
+        //获取orderInfo
+        OrderInfoVO orderInfoVO = new OrderInfoVO();
+
+        //consignee
+        orderInfoVO.setConsignee(orderDO.getConsignee());
+
+        //address
+        orderInfoVO.setAddress(orderDO.getAddress());
+
+        //addTime
+        orderInfoVO.setAddTime(orderDO.getAddTime());
+
+        //orderSn
+        orderInfoVO.setOrderSn(orderDO.getOrderSn());
+
+        //actualPrice
+        orderInfoVO.setActualPrice(orderDO.getActualPrice().doubleValue());
+
+        //mobile
+        orderInfoVO.setMobile(orderDO.getMobile());
+
+        //orderStatusText
+        String statuText = null;
+        switch (orderDO.getOrderStatus()){
+            case 101:
+                statuText = "未付款";
+                break;
+            case 102:
+                statuText = "已取消";
+                break;
+            case 103:
+                statuText = "已取消";
+                break;
+            case 201:
+                statuText = "已付款";
+                break;
+            case 202:
+                statuText = "申请退款";
+                break;
+            case 203:
+                statuText = "已退款";
+                break;
+            case 301:
+                statuText = "已发货";
+                break;
+            case 401:
+                statuText = "已收货";
+                break;
+            case 402:
+                statuText = "已收货";
+                break;
+        }
+        orderInfoVO.setOrderStatusText(statuText);
+
+        //goodsPrice
+        orderInfoVO.setGoodsPrice(orderDO.getGoodsPrice().doubleValue());
+
+        //couponPrice
+        orderInfoVO.setCouponPrice(orderDO.getCouponPrice().doubleValue());
+
+        //id
+        orderInfoVO.setId(orderDO.getId());
+
+        //freightPrice
+        orderInfoVO.setFreightPrice(orderDO.getFreightPrice().doubleValue());
+
+        //handleOption
+        orderInfoVO.setHandleOption(GetOrderHandleOption.getOrderHandleOption((int)orderDO.getOrderStatus()));
+
+        //orderGoods
+        OrderGoodsDOExample orderGoodsDOExample = new OrderGoodsDOExample();
+        orderGoodsDOExample.createCriteria().andOrderIdEqualTo(orderId).andDeletedEqualTo(false);
+        List<OrderGoodsDO> orderGoodsDOList = orderGoodsDOMapper.selectByExample(orderGoodsDOExample);
+
+        map.put("orderInfo",orderInfoVO);
+        map.put("orderGoods",orderGoodsDOList);
+
+        return new BaseReqVo(map,"成功",0);
+    }
+
+    /**
+     * 取消订单
+     * @param map
+     * @return
+     */
+    @Override
+    public BaseReqVo CancelOrder(Map<String, Object> map) {
+        Integer orderId = (Integer) map.get("orderId");
+        OrderDO orderDO = new OrderDO();
+        orderDO.setId(orderId);
+        orderDO.setOrderStatus((short)102);
+        orderDOMapper.updateByPrimaryKeySelective(orderDO);
+        return new BaseReqVo(null,"成功",0);
+    }
+
+    /**
+     * 订单的预支付会话
+     * @param map
+     * @return
+     */
+    @Override
+    public BaseReqVo orderPrepay(Map<String, Object> map) {
+        Integer orderId = (Integer) map.get("orderId");
+        OrderDO orderDO = new OrderDO();
+        orderDO.setId(orderId);
+        orderDO.setOrderStatus((short)201);
+        orderDOMapper.updateByPrimaryKeySelective(orderDO);
+        return new BaseReqVo(null,"成功",0);
+    }
+
+    /**
+     * 退款取消订单
+     * @param map
+     * @return
+     */
+    @Override
+    public BaseReqVo orderRefund(Map<String, Object> map) {
+        Integer orderId = (Integer) map.get("orderId");
+        OrderDO orderDO = new OrderDO();
+        orderDO.setId(orderId);
+        orderDO.setOrderStatus((short)102);
+        orderDOMapper.updateByPrimaryKeySelective(orderDO);
+        return new BaseReqVo(null,"成功",0);
+    }
+
+    /**
+     * 确认收货
+     * @param map
+     * @return
+     */
+    @Override
+    public BaseReqVo confirmOrder(Map<String, Object> map) {
+        Integer orderId = (Integer) map.get("orderId");
+        OrderDO orderDO = new OrderDO();
+        orderDO.setId(orderId);
+        orderDO.setOrderStatus((short)401);
+        orderDOMapper.updateByPrimaryKeySelective(orderDO);
+        return new BaseReqVo(null,"成功",0);
+    }
+
+    /**
+     * 删除订单
+     * @param map
+     * @return
+     */
+    @Override
+    public BaseReqVo deleteOrder(Map<String, Object> map) {
+        Integer orderId = (Integer) map.get("orderId");
+        OrderDO orderDO = new OrderDO();
+        orderDO.setId(orderId);
+        orderDO.setDeleted(true);
+        orderDOMapper.updateByPrimaryKeySelective(orderDO);
+        return new BaseReqVo(null,"成功",0);
     }
 }
