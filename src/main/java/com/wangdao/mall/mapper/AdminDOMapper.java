@@ -32,4 +32,6 @@ public interface AdminDOMapper {
     @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_admin")
     int selectLastInsertAdminId();
 
+    List<String> selectPermissionByUsername(@Param("username") String username);
+
 }
