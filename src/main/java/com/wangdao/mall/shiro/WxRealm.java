@@ -23,7 +23,7 @@ public class WxRealm extends AuthorizingRealm {
         String username = token.getUsername();
 
         UserDOExample userDOExample = new UserDOExample();
-        userDOExample.createCriteria().andDeletedEqualTo(false).andUsernameEqualTo(username);
+        userDOExample.createCriteria().andStatusEqualTo((byte) 0).andUsernameEqualTo(username);
         List<UserDO> userDOS = userMapper.selectByExample(userDOExample);
         UserDO userDO = userDOS.get(0);
 
