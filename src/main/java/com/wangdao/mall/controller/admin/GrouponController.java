@@ -24,21 +24,21 @@ public class GrouponController {
      * @param pageDTO
      * @return
      */
-    @RequestMapping("groupon/listRecord")
-    public BaseReqVo grouponListRecord(RequestPageDTO pageDTO){
-        Map map = grouponService.listGrouponRecord(pageDTO);
-        BaseReqVo<Map> baseReqVo = new BaseReqVo<>(map, "成功", 0);
-        return baseReqVo;
-    }
 //    @RequestMapping("groupon/listRecord")
-//    public BaseReqVo queryGrouponList(Integer page, Integer limit, Integer goodsId){
-//        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
-//        Map<String, Object> map = grouponService.queryGrouponListByConditions(page, limit, goodsId);
-//        baseReqVo.setData(map);
-//        baseReqVo.setErrmsg("成功");
-//        baseReqVo.setErrno(0);
+//    public BaseReqVo grouponListRecord(RequestPageDTO pageDTO){
+//        Map map = grouponService.listGrouponRecord(pageDTO);
+//        BaseReqVo<Map> baseReqVo = new BaseReqVo<>(map, "成功", 0);
 //        return baseReqVo;
 //    }
+    @RequestMapping("groupon/listRecord")
+    public BaseReqVo queryGrouponList(Integer page, Integer limit, Integer goodsId){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        Map<String, Object> map = grouponService.queryGrouponList(page, limit, goodsId);
+        baseReqVo.setData(map);
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
 
     /**
      * 团购规则列表

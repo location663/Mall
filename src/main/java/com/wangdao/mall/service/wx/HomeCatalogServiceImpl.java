@@ -1,5 +1,6 @@
 package com.wangdao.mall.service.wx;
 
+import com.github.pagehelper.PageHelper;
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ public class HomeCatalogServiceImpl implements HomeCatalogService {
 
     @Override
     public Map<String, Object> getHomeIndex() {
+        PageHelper.startPage(1,6);
         Map<String, Object> map = new HashMap<>();
         GoodsDOExample goodsDOExample = new GoodsDOExample();
 
@@ -69,21 +71,27 @@ public class HomeCatalogServiceImpl implements HomeCatalogService {
         grouponDOExample.createCriteria().andDeletedEqualTo(false);
         List<GrouponDO> grouponDOList = grouponDOMapper.selectByExample(grouponDOExample);
         List<GrouponRecordVO> grouponRecordVOList = getGrouponRecordVOList(grouponDOList);
+        grouponDOExample.clear();
 
+        PageHelper.startPage(1,6);
         //广告信息
         AdDOExample adDOExample = new AdDOExample();
         adDOExample.createCriteria().andDeletedEqualTo(false);
         List<AdDO> adDOList = adDOMapper.selectByExample(adDOExample);
+        adDOExample.clear();
 
+        PageHelper.startPage(1,6);
         //品牌制造商
         BrandDOExample brandDOExample = new BrandDOExample();
         brandDOExample.createCriteria().andDeletedEqualTo(false);
         List<BrandDO> brandDOList = brandDOMapper.selectByExample(brandDOExample);
+        brandDOExample.clear();
 
         //标题信息
         TopicDOExample topicDOExample = new TopicDOExample();
         topicDOExample.createCriteria().andDeletedEqualTo(false);
         List<TopicDO> topicDOList = topicDOMapper.selectByExample(topicDOExample);
+        topicDOExample.clear();
 
         //各类目下的商品
         List<CategoryGoodsVO> categoryGoodsVOList = getCategoryGoodsVOList(categoryDOList);
@@ -100,17 +108,48 @@ public class HomeCatalogServiceImpl implements HomeCatalogService {
         return map;
     }
 
+    /**
+     * 获取各类目下的商品
+     * @param list
+     * @return
+     */
     public List<CategoryGoodsVO> getCategoryGoodsVOList(List<CategoryDO> list){
         List<CategoryGoodsVO> categoryGoodsVOList = new ArrayList<>();
         for (CategoryDO categoryDO : list) {
+            List<GoodsDO> goodsDOList = new ArrayList<>();
             CategoryGoodsVO categoryGoodsVO = new CategoryGoodsVO();
             categoryGoodsVO.setId(categoryDO.getId());
             categoryGoodsVO.setName(categoryDO.getName());
-            GoodsDOExample goodsDOExample = new GoodsDOExample();
-            goodsDOExample.createCriteria().andCategoryIdEqualTo(categoryDO.getId()).andDeletedEqualTo(false);
-            List<GoodsDO> goodsDOList = goodsDOMapper.selectByExample(goodsDOExample);
-            categoryGoodsVO.setGoodsDOList(goodsDOList);
+//            List<GoodsDO> goodsDOList = goodsDOMapper.selectByCategoryDOList(categoryDO.getName());
+//            categoryGoodsVO.setGoodsList(goodsDOList);
+//            categoryGoodsVOList.add(categoryGoodsVO);
+
+            CategoryDOExample categoryDOExample = new CategoryDOExample();
+            categoryDOExample.createCriteria().andPidEqualTo(categoryDO.getId());
+            List<CategoryDO> categoryDOS = categoryDOMapper.selectByExample(categoryDOExample);
+            for (CategoryDO aDo : categoryDOS) {
+                GoodsDOExample goodsDOExample = new GoodsDOExample();
+                goodsDOExample.createCriteria().andCategoryIdEqualTo(aDo.getId());
+                List<GoodsDO> goodsDOList1 = goodsDOMapper.selectByExample(goodsDOExample);
+                goodsDOList.addAll(goodsDOList1);
+            }
+            int i = 0;
+            List<GoodsDO> resultList = new ArrayList<>();
+            for (GoodsDO goodsDO : goodsDOList) {
+                resultList.add(goodsDO);
+                if (i >= 3){
+                    break;
+                }
+                i++;
+            }
+            categoryGoodsVO.setGoodsList(resultList);
             categoryGoodsVOList.add(categoryGoodsVO);
+
+//            GoodsDOExample goodsDOExample = new GoodsDOExample();
+//            goodsDOExample.createCriteria().andCategoryIdEqualTo(categoryDO.getId()).andDeletedEqualTo(false);
+//            List<GoodsDO> goodsDOList = goodsDOMapper.selectByExample(goodsDOExample);
+//            categoryGoodsVO.setGoodsDOList(goodsDOList);
+//            categoryGoodsVOList.add(categoryGoodsVO);
         }
         return categoryGoodsVOList;
     }
