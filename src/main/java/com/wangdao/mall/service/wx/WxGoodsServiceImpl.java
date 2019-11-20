@@ -11,6 +11,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.*;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,9 @@ public class WxGoodsServiceImpl implements WxGoodsService {
     @Autowired
     IssueDOMapper issueDOMapper;
 
+    @Autowired
+    SearchHistoryDOMapper searchHistoryDOMapper;
+
 
     /**
      * //WX统计商品总数
@@ -71,6 +75,7 @@ public class WxGoodsServiceImpl implements WxGoodsService {
     /**
      * 获取显示(搜索keyword)(某类目)(某品牌)(是新品)(是热卖)的商品列表
      * response里有desc关键字
+     * 把传过来的keyword关键字存入search_history数据表里
      * 需要改进:显示商品时检查商品是否在售卖
      * @param keyword
      * @param page
@@ -81,6 +86,9 @@ public class WxGoodsServiceImpl implements WxGoodsService {
      */
     @Override
     public HashMap<String, Object> queryWxGoodsList(String keyword,Integer categoryId, Integer brandId,Boolean isNew,Boolean isHot,Integer page, Integer size, String sort, String order) {
+        //获取当前用户登录对象
+        UserDO userDO  = (UserDO) SecurityUtils.getSubject().getPrincipal();
+
         GoodsDOExample goodsDOExample1 = new GoodsDOExample();
         CategoryDOExample categoryDOExample = new CategoryDOExample();
         HashMap<String, Object> map = new HashMap<>();
@@ -89,6 +97,19 @@ public class WxGoodsServiceImpl implements WxGoodsService {
 
         //封装goodsList和count
         if ( isHot==null && isNew==null && keyword!=null ) {
+
+            //如果用户已经登录，keyword!=null，说明是搜索，先把传过来的keyword关键字存入search_history数据表里
+            if (userDO!=null){
+                SearchHistoryDO searchHistoryDO = new SearchHistoryDO();
+                searchHistoryDO.setUserId(userDO.getId());
+                searchHistoryDO.setKeyword(keyword);
+                searchHistoryDO.setFrom("wx");
+                searchHistoryDO.setAddTime(new Date());
+                searchHistoryDO.setUpdateTime(new Date());
+                searchHistoryDO.setDeleted(false);
+                int insertSearchHistoryDO = searchHistoryDOMapper.insert(searchHistoryDO);
+            }
+
             goodsDOExample1.createCriteria().andDeletedEqualTo(false).andNameLike("%" + keyword + "%");
             goodsDOExample1.setOrderByClause(sort+" "+order);
             List<GoodsDO> goodsDOList1 = goodsDOMapper.selectByExample(goodsDOExample1);

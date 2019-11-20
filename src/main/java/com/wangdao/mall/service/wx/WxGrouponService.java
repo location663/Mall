@@ -9,4 +9,6 @@ public interface WxGrouponService {
     Map<String, Object> listGroupon(RequestPageDTO pageDTO);
 
     GrouponDetailVO selectById(Integer grouponId);
+
+    Map listByUseridAndShowtype(Integer showType);
 }

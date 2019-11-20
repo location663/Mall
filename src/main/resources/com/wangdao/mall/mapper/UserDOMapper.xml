@@ -382,4 +382,11 @@
       deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <select id="selectPermissionByUsername" resultType="String">
+    select p.permission from cskaoyan_mall_user u
+        LEFT JOIN j17_user_role_relation_t r on u.id = r.user_id
+        LEFT JOIN j17_role_perm_relation_t r2 on r2.role_id = r.role_id
+        LEFT JOIN j17_permission_t p on p.id = r2.perm_id
+        where u.username = #{username}
+  </select>
 </mapper>
