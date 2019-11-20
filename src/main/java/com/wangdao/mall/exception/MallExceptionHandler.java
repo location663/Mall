@@ -19,4 +19,9 @@ public class MallExceptionHandler {
     public BaseReqVo InvalidFormat(InvalidFormatException e){
         return new BaseReqVo(null , null, 601);
     }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public BaseReqVo Authhentication(AuthenticationException e){
+        return new BaseReqVo(null, null, 901);
+    }
 }

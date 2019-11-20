@@ -15,27 +15,24 @@ import java.util.List;
 
 @Component
 public class WxRealm extends AuthorizingRealm {
+
     @Autowired
     UserDOMapper userMapper;
+
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String username = token.getUsername();
-
         UserDOExample userDOExample = new UserDOExample();
         userDOExample.createCriteria().andDeletedEqualTo(false).andUsernameEqualTo(username);
         List<UserDO> userDOS = userMapper.selectByExample(userDOExample);
         UserDO userDO = userDOS.get(0);
-
-//        LoginDTO user = new LoginDTO();
-//        user.setPassword(userDO.getPassword());
-//        user.setUsername(userDO.getUsername());
-
         String passwordFromDb = userDO.getPassword();
         SimpleAuthenticationInfo authenticationInfo = new SimpleAuthenticationInfo(userDO, passwordFromDb, getName());
-
         return authenticationInfo;
     }
+
+
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
         UserDO primaryPrincipal = (UserDO) principalCollection.getPrimaryPrincipal();

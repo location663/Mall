@@ -30,11 +30,11 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //认证失败重定向的url
-//        shiroFilterFactoryBean.setLoginUrl("/admin/redirect");
+        //shiroFilterFactoryBean.setLoginUrl("/admin/redirect");
         //配置的是拦截器 shiro提供的filter
         //这儿一定要使用linkedHashMap 否则，chain的顺序会有问题
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
-        //第一个参数是请求url 第二个参数是过滤器
+        //第一个参数是请求url 第二个参数是过滤器  “anon” 就是这边可以匿名
         filterChainDefinitionMap.put("/admin/auth/login","anon");
         filterChainDefinitionMap.put("/wx/auth/login","anon");
         //filterChainDefinitionMap.put("/user/query","perms[user:query]");
@@ -43,18 +43,22 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
     }
+
+
+
     /*SecurityManager*/
     @Bean
     public DefaultWebSecurityManager securityManager(AdminRealm adminRealm, WxRealm wxRealm,
                                                      CustomSessionManager sessionManager,
                                                      CustomRealmAuthenticator authenticator){
+
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        //securityManager.setRealm(customRealm);
+        //securityManager.setRealm(customRealm);  把自己写的 realm 都放到reals里面   1
         ArrayList<Realm> realms = new ArrayList<>();
         realms.add(adminRealm);
         realms.add(wxRealm);
         //单个realm
-        securityManager.setRealms(realms);
+        securityManager.setRealms(realms);    // 并且在securitymanager中配置上
         securityManager.setSessionManager(sessionManager);
         securityManager.setAuthenticator(authenticator);
         return securityManager;
@@ -69,6 +73,11 @@ public class ShiroConfig {
         return authorizationAttributeSourceAdvisor;
     }
 
+    /**
+     *
+     * 注册这个sessionManager 并且设置了时间
+     * @return
+     */
     @Bean
     public CustomSessionManager sessionManager(){
         CustomSessionManager customSessionManager = new CustomSessionManager();
@@ -82,7 +91,7 @@ public class ShiroConfig {
         CustomRealmAuthenticator customRealmAuthenticator = new CustomRealmAuthenticator();
         ArrayList<Realm> realms = new ArrayList<>();
         realms.add(adminRealm);
-        realms.add(wxRealm);
+        realms.add(wxRealm);  // 注册 两个Realm
         customRealmAuthenticator.setRealms(realms);
         return customRealmAuthenticator;
     }
