@@ -25,4 +25,6 @@ public class MallExceptionHandler {
     public BaseReqVo wxHandler(NoSuchGoodsException e){
         return new BaseReqVo(null , e.getMessage(), 702);
     }
+
+
 }

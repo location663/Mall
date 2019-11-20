@@ -11,4 +11,14 @@ public class GrouponDetailVO {
     private List<UserDO> joiners;
     private OrderDO orderInfo;
     private List<GoodsDO> orderGoods;
+    private List<GoodsDO> goodsList;
+    private GrouponRulesDO rules;
+    private Double actualPrice;
+    private Object creator;
+    private Integer id;
+    private Boolean isCreator;
+    private Integer joinerCount;
+    private Integer orderId;
+    private String orderSn;
+    private String orderStatusText;
 }
