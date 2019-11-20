@@ -26,7 +26,7 @@ public class WxSearchController {
 
 
     /**
-     * 搜索关键字  必须是"isHot"=true和"deleted"=false   "historyKeywordList": []需要待改进
+     * 搜索关键字  必须是"isHot"=true和"deleted"=false   "historyKeywordList": []如果用户未登录，直接返回空List
      * @return
      */
     @RequestMapping("search/index")
