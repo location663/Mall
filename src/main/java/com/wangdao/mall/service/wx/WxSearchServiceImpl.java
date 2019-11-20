@@ -55,9 +55,14 @@ public class WxSearchServiceImpl implements WxSearchService{
      * @return
      */
     @Override
-    public HashMap<String, Object> searchHelper(String keyword) {
-        HashMap<String, Object> map = new HashMap<>();
-            
-        return map;
+    public ArrayList<String> searchHelper(String keyword) {
+        ArrayList<String> keywords = new ArrayList<>();
+        KeywordDOExample keywordDOExample = new KeywordDOExample();
+        keywordDOExample.createCriteria().andDeletedEqualTo(false).andKeywordLike("%"+keyword+"%");
+        List<KeywordDO> keywordDOList = keywordDOMapper.selectByExample(keywordDOExample);
+        for (KeywordDO keywordDO : keywordDOList) {
+            keywords.add(keywordDO.getKeyword());
+        }
+        return keywords;
     }
 }

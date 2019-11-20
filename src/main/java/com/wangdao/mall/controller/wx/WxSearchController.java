@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 @RestController
@@ -47,8 +48,8 @@ public class WxSearchController {
     @RequestMapping("search/helper")
     public BaseReqVo searchHelper(String keyword){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
-        HashMap<String, Object> map = wxSearchService.searchHelper(keyword);
-        baseReqVo.setData(map);
+        ArrayList<String> keywords = wxSearchService.searchHelper(keyword);
+        baseReqVo.setData(keywords);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
         return baseReqVo;
