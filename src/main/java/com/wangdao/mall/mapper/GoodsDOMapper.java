@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.GoodsDO;
 import com.wangdao.mall.bean.GoodsDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface GoodsDOMapper {
     long countByExample(GoodsDOExample example);
@@ -33,4 +34,6 @@ public interface GoodsDOMapper {
     int updateByPrimaryKeyWithBLOBs(GoodsDO record);
 
     int updateByPrimaryKey(GoodsDO record);
+
+//    List<GoodsDO> selectByCategoryDOList(String name);
 }

@@ -28,8 +28,13 @@ public class StatServiceImpl implements StatService {
          * 按登录时间去重，并依次按登录时间搜索并统计
          */
         Set<Date> dateSet=new HashSet();
+        //将时分秒归0
         for (UserDO userDO : userDOS) {
-            dateSet.add(userDO.getLastLoginTime());
+            Date lastLoginTime = userDO.getLastLoginTime();
+            lastLoginTime.setHours(0);
+            lastLoginTime.setMinutes(0);
+            lastLoginTime.setSeconds(0);
+            dateSet.add(lastLoginTime);
         }
         List<StateDo> stateDos=new ArrayList();
         for (Date date : dateSet) {
