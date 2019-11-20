@@ -3,7 +3,10 @@ package com.wangdao.mall.mapper;
 import com.wangdao.mall.bean.FootprintDO;
 import com.wangdao.mall.bean.FootprintDOExample;
 import java.util.List;
+
+import com.wangdao.mall.bean.FootprintVO;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 public interface FootprintDOMapper {
     long countByExample(FootprintDOExample example);
@@ -27,4 +30,10 @@ public interface FootprintDOMapper {
     int updateByPrimaryKeySelective(FootprintDO record);
 
     int updateByPrimaryKey(FootprintDO record);
+
+    @Update("update cskaoyan_mall_footprint set deleted = 1 where id = #{id}")
+    int deleteFootprintById(Integer id);
+
+    List<FootprintVO> selectFootprintVOs();
+
 }
