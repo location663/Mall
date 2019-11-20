@@ -2,6 +2,7 @@ package com.wangdao.mall.service.wx;
 
 import com.github.pagehelper.PageHelper;
 import com.wangdao.mall.bean.*;
+import com.wangdao.mall.handler.String2ArrayTypeHandler;
 import com.wangdao.mall.mapper.*;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,9 @@ public class WxGrouponServiceImpl implements WxGrouponService {
     @Autowired
     OrderDOMapper orderDOMapper;
 
+    @Autowired
+    OrderGoodsDOMapper orderGoodsDOMapper;
+
     /**
      * 团购列表
      * @param pageDTO
@@ -60,8 +64,28 @@ public class WxGrouponServiceImpl implements WxGrouponService {
      */
     @Override
     public GrouponDetailVO selectById(Integer grouponId) {
+        GrouponDetailVO grouponDetailVO = new GrouponDetailVO();
         GrouponDO grouponDO = grouponDOMapper.selectByPrimaryKey(grouponId);
-        return null;
+        UserDO userDO = userDOMapper.selectByPrimaryKey(grouponDO.getCreatorUserId());
+        List<UserDO> userDOS = grouponDOMapper.listJoiners(grouponId);
+        GrouponRulesDO grouponRulesDO = grouponRulesDOMapper.selectByPrimaryKey(grouponDO.getRulesId());
+        GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(grouponRulesDO.getGoodsId());
+        OrderGoodsDOExample orderGoodsDOExample = new OrderGoodsDOExample();
+        orderGoodsDOExample.createCriteria().andDeletedEqualTo(false).andOrderIdEqualTo(grouponDO.getOrderId());
+        List<OrderGoodsDO> orderGoodsDOS = orderGoodsDOMapper.selectByExample(orderGoodsDOExample);
+        for (OrderGoodsDO orderGoodsDO : orderGoodsDOS) {
+            orderGoodsDO.setRetailPrice(orderGoodsDO.getPrice().doubleValue());
+            String specifications = orderGoodsDO.getSpecifications();
+            String[] strings = new String2ArrayTypeHandler().parseString2Array(specifications);
+            orderGoodsDO.setGoodsSpecificationValues(strings);
+        }
+        grouponDetailVO.setCreator(userDO);
+        grouponDetailVO.setGroupon(grouponDO);
+        grouponDetailVO.setJoiners(userDOS);
+        grouponDetailVO.setLinkGrouponId(grouponId);
+        grouponDetailVO.setOrderGoods(orderGoodsDOS);
+        grouponDetailVO.setRules(grouponRulesDO);
+        return grouponDetailVO;
     }
 
     /**

@@ -10,7 +10,7 @@ public class GrouponDetailVO {
     private Integer linkGrouponId;
     private List<UserDO> joiners;
     private OrderDO orderInfo;
-    private List<GoodsDO> orderGoods;
+    private List<OrderGoodsDO> orderGoods;
     private List<GoodsDO> goodsList;
     private GrouponRulesDO rules;
     private Double actualPrice;
