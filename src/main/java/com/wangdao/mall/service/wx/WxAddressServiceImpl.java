@@ -15,6 +15,10 @@ public class WxAddressServiceImpl implements WxAddressService {
     @Autowired
     AddressDOMapper addressDOMapper;
 
+    /**
+     * 用户的收货地址
+     * @return
+     */
     @Override
     public List<AddressDO> listAddress() {
         SecurityUtils.getSubject().getPrincipal();

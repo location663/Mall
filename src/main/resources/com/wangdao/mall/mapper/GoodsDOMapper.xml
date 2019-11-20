@@ -534,4 +534,12 @@
       deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+  <!--<select id="selectByCategoryDOList" resultType="com.wangdao.mall.bean.GoodsDO">
+    SELECT g.id, g.goods_sn, g.name, g.category_id, g.brand_id, g.gallery, g.keywords, g.brief, g.is_on_sale, g.sort_order, g.pic_url, g.share_url, g.is_new, g.is_hot, g.unit, g.counter_price, g.retail_price, g.add_time, g.update_time, g.deleted
+    FROM cskaoyan_mall_goods g
+    where g.category_id in
+    (SELECT c1.id from cskaoyan_mall_category c1
+     where c1.pid = (SELECT c2.id from cskaoyan_mall_category c2 where c2.name=#{name})
+    ) limit 6
+  </select>-->
 </mapper>

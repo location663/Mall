@@ -101,7 +101,7 @@ public class GoodsContronller {
     }
 
     /**
-     * 获取所有商品评论  (搜索第一次后，不刷新，直接输入关键数字搜索，会有莫名异常)
+     * 获取所有商品评论
      * @return
      */
     @RequestMapping("comment/list")
@@ -176,7 +176,7 @@ public class GoodsContronller {
 
     /**
      * 上架创建商品
-     * @param goodsCreateRequest  封装了request的四个json
+     * @param goodsCreateRequest  封装了request的四个json   (需要空串校验改进)
      * @return
      */
     @RequestMapping("goods/create")
@@ -194,7 +194,7 @@ public class GoodsContronller {
 
     /**
      * 编辑更新商品
-     * @param goodsCreateRequest  封装了request的四个json
+     * @param goodsCreateRequest  封装了request的四个json (需要空串校验改进)
      * @return
      */
     @RequestMapping("goods/update")
