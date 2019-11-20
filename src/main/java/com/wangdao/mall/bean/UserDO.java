@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Map;
+
 @Data
 public class UserDO {
     private Integer id;
@@ -38,6 +40,9 @@ public class UserDO {
 
     private Boolean deleted;
 
+    private String code;
+
+    private String wxCode;
 
     public UserDO() {
     }
