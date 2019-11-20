@@ -62,16 +62,15 @@ public class GoodsServiceImpl implements GoodsService {
         name=nameStr;
         PageHelper.startPage(page,limit);
 
-
         if (goodsSn!=null && name!=null){
             goodsDOExample.createCriteria().andDeletedEqualTo(false).andGoodsSnLike("%"+ goodsSn +"%").andNameLike("%"+ name +"%");
         }else if (goodsSn==null && name!=null){
             goodsDOExample.createCriteria().andDeletedEqualTo(false).andNameLike("%"+ name +"%");
         }else if (goodsSn!=null ){
             goodsDOExample.createCriteria().andDeletedEqualTo(false).andGoodsSnLike("%"+ goodsSn +"%");
+        }else {
+            goodsDOExample.createCriteria().andDeletedEqualTo(false);
         }
-        goodsDOExample.createCriteria().andDeletedEqualTo(false);
-
 
         goodsDOExample.setOrderByClause(sort+" "+order);
 
@@ -97,7 +96,6 @@ public class GoodsServiceImpl implements GoodsService {
     public HashMap<String, Object> queryGoodsDetail(Integer id) {
         HashMap<String, Object> map = new HashMap<>();
 
-
         //获取"categoryIds": [1013001, 1013002]
 
         GoodsDOExample goodsDOExample = new GoodsDOExample();
@@ -105,7 +103,6 @@ public class GoodsServiceImpl implements GoodsService {
         List<GoodsDO> goodsDOList = goodsDOMapper.selectByExampleWithBLOBs(goodsDOExample);
         GoodsDO goodsDO =goodsDOList.get(0);
         //GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(id);  //通过goods_id获取一个GoodsDO对象
-
 
         CategoryDO categoryDO = categoryDOMapper.selectByPrimaryKey(goodsDO.getCategoryId());// 通过Category_id获取CategoryDO对象
 
@@ -115,14 +112,11 @@ public class GoodsServiceImpl implements GoodsService {
         map.put("categoryIds",categoryIds);
         map.put("goods",goodsDO);
 
-
         //获取attributes
         GoodsAttributeDOExample goodsAttributeDOExample = new GoodsAttributeDOExample();
         goodsAttributeDOExample.createCriteria().andGoodsIdEqualTo(id).andDeletedEqualTo(false);//只获取该商品的attributes表里delete属性为fales的attribute
         List<GoodsAttributeDO> attributes = goodsAttributeDOMapper.selectByExample(goodsAttributeDOExample);
         map.put("attributes",attributes);
-
-
 
         //获取specifications
         GoodsSpecificationDOExample goodsSpecificationDOExample = new GoodsSpecificationDOExample();
@@ -130,14 +124,11 @@ public class GoodsServiceImpl implements GoodsService {
         List<GoodsSpecificationDO> specifications = goodsSpecificationDOMapper.selectByExample(goodsSpecificationDOExample);
         map.put("specifications",specifications);
 
-
-
         //获取products
         GoodsProductDOExample goodsProductDOExample = new GoodsProductDOExample();
         goodsProductDOExample.createCriteria().andGoodsIdEqualTo(id).andDeletedEqualTo(false);//只获取该商品的products表里delete属性为fales的product
         List<GoodsProductDO> products = goodsProductDOMapper.selectByExample(goodsProductDOExample);
         map.put("products",products);
-
 
         return map;
     }
@@ -151,8 +142,6 @@ public class GoodsServiceImpl implements GoodsService {
     @Override
     public HashMap<String, Object> queryGoodsCatAndBrandList() {
         HashMap<String, Object> map1 = new HashMap<>();
-
-
 
         //封装categoryList
         CategoryDOExample categoryDOExample1 = new CategoryDOExample();
@@ -243,8 +232,9 @@ public class GoodsServiceImpl implements GoodsService {
             commentDOExample.createCriteria().andValueIdEqualTo(valueId).andDeletedEqualTo(false);
         }else if (userId!=null){
             commentDOExample.createCriteria().andUserIdEqualTo(userId).andDeletedEqualTo(false);
+        }else {
+            commentDOExample.createCriteria().andDeletedEqualTo(false);
         }
-        commentDOExample.createCriteria().andDeletedEqualTo(false);
 
         commentDOExample.setOrderByClause(sort+" "+order);
         List<CommentDO> commentDOList = commentDOMapper.selectByExample(commentDOExample);
@@ -343,20 +333,15 @@ public class GoodsServiceImpl implements GoodsService {
      */
     @Override
     public int goodsUpdate(GoodsCreateRequest goodsCreateRequest) {
-
         //取出四个json
         GoodsDO goods = goodsCreateRequest.getGoods();
         List<GoodsSpecificationDO> specifications = goodsCreateRequest.getSpecifications();
         List<GoodsProductDO> products = goodsCreateRequest.getProducts();
         List<GoodsAttributeDO> attributes = goodsCreateRequest.getAttributes();
 
-
-
         //update goods对象
         goods.setUpdateTime(new Date());  //编辑商品时需要更新update_time
         int updateGoodsNum = goodsDOMapper.updateByPrimaryKey(goods);
-
-
 
         //逻辑上delete旧的specification属性(把新的specifications里没有的specification属性在数据表里delete)
         GoodsSpecificationDOExample goodsSpecificationDOExample = new GoodsSpecificationDOExample();
@@ -368,8 +353,6 @@ public class GoodsServiceImpl implements GoodsService {
             int i = goodsSpecificationDOMapper.updateByPrimaryKey(specificationOld);
         }
 
-
-
         //update specification对象
         for (GoodsSpecificationDO specification : specifications) {
             if (specification.getId()==null) {  //说明这是新加的specification属性，需要insert到数据表里
@@ -377,13 +360,12 @@ public class GoodsServiceImpl implements GoodsService {
                 specification.setAddTime(new Date());
                 specification.setDeleted(false);   //刚创建specification对象时需要添加delete为false
                 int insertSpecificationNum1 = goodsSpecificationDOMapper.insert(specification);
+            }else {
+                //specification.getId()!=null   说明这是旧的的specification属性，需要update到数据表里
+                specification.setUpdateTime(new Date());  //update编辑商品specification对象时需要更新update_time
+                int updateSpecificationNum1 = goodsSpecificationDOMapper.updateByPrimaryKey(specification);
             }
-            //specification.getId()!=null   说明这是旧的的specification属性，需要update到数据表里
-            specification.setUpdateTime(new Date());  //update编辑商品specification对象时需要更新update_time
-            int updateSpecificationNum1 = goodsSpecificationDOMapper.updateByPrimaryKey(specification);
         }
-
-
 
         //update product对象
         int updateProductNum=0;
@@ -407,11 +389,12 @@ public class GoodsServiceImpl implements GoodsService {
                 product.setAddTime(new Date());
                 product.setDeleted(false);    //刚创建时需要添加delete为false
                 int insertProductNum1 = goodsProductDOMapper.insertSelective(product);//用insertSelective时，如果判断id=null,就不会使用到id这个属性去insert
+            }else {
+                //product.getId()!=0,则只需要update
+                product.setUpdateTime(new Date());  //编辑商品product对象时需要更新update_time
+                int updateProductNum1 = goodsProductDOMapper.updateByPrimaryKey(product);
+                updateProductNum=updateProductNum+updateProductNum1;
             }
-            //product.getId()!=0,则只需要update
-            product.setUpdateTime(new Date());  //编辑商品product对象时需要更新update_time
-            int updateProductNum1 = goodsProductDOMapper.updateByPrimaryKey(product);
-            updateProductNum=updateProductNum+updateProductNum1;
         }
 
 
@@ -426,8 +409,6 @@ public class GoodsServiceImpl implements GoodsService {
             int i = goodsAttributeDOMapper.updateByPrimaryKey(goodsAttributeDO);
         }
 
-
-
         //update attribute对象
         int updateAttributeNum=0;
         for (GoodsAttributeDO attribute : attributes) {
@@ -436,10 +417,11 @@ public class GoodsServiceImpl implements GoodsService {
                 attribute.setAddTime(new Date());
                 attribute.setDeleted(false);  //刚创建时需要添加delete为false
                 int insertAttributeNum1 = goodsAttributeDOMapper.insert(attribute);
+            }else {
+                //attribute.getGoodsId()!=null说明这是旧的的attribute属性，需要update到数据表里
+                attribute.setUpdateTime(new Date());  //编辑商品attribute对象时需要更新update_time
+                int updateAttributeNum1 = goodsAttributeDOMapper.updateByPrimaryKey(attribute);
             }
-            //attribute.getGoodsId()!=null说明这是旧的的attribute属性，需要update到数据表里
-            attribute.setUpdateTime(new Date());  //编辑商品attribute对象时需要更新update_time
-            int updateAttributeNum1 = goodsAttributeDOMapper.updateByPrimaryKey(attribute);
         }
         return updateGoodsNum;
     }
