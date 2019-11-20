@@ -6,17 +6,16 @@
  **/
 package com.wangdao.mall.controller.admin;
 
-import com.wangdao.mall.bean.AdminDO;
-import com.wangdao.mall.bean.BaseReqVo;
-import com.wangdao.mall.bean.RoleDO;
-import com.wangdao.mall.bean.StorageDO;
+import com.wangdao.mall.bean.*;
 import com.wangdao.mall.service.admin.AdminService;
 import com.wangdao.mall.service.util.StorageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -461,6 +460,32 @@ public class AdminAdministerController {
             return baseReqVo;
         }
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();  // 不知道返回错误代号
+        return baseReqVo;
+    }
+
+
+    /**
+     *
+     * @param roleId
+     * @return
+     */
+    @RequestMapping(value = "/role/permissions",method = {RequestMethod.GET})
+    public BaseReqVo listPermissionsByRoleId(Integer roleId){
+        List<String> permissionList = adminService.listPermissions(roleId);
+        List<SystemPermissionDO> systemPermissionDOList = adminService.systemPermissionsList();
+        Map<String, Object> map = new HashMap<>();
+        map.put("systemPermissions", systemPermissionDOList);
+        map.put("assignedPermissions", permissionList);
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>(map,"成功",0);
+        return baseReqVo;
+    }
+
+
+
+    @RequestMapping(value = "/role/permissions",method = {RequestMethod.POST})
+    public BaseReqVo listPermissions(@RequestBody PermissionsVO permissionsVO){
+        adminService.updateRolePermissions(permissionsVO);
+        BaseReqVo baseReqVo = new BaseReqVo<>(null, "成功",0);
         return baseReqVo;
     }
 }

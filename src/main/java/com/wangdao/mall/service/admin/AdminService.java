@@ -1,8 +1,6 @@
 package com.wangdao.mall.service.admin;
 
-import com.wangdao.mall.bean.AdminDO;
-import com.wangdao.mall.bean.RoleDO;
-import com.wangdao.mall.bean.StorageDO;
+import com.wangdao.mall.bean.*;
 
 import java.util.List;
 import java.util.Map;
@@ -34,4 +32,11 @@ public interface AdminService {
      int deleteStorage(StorageDO storageDO);
 
      StorageDO updateStorage(StorageDO storageDO);
+
+     List<String> listPermissions(Integer roleId);
+
+     void updateRolePermissions(PermissionsVO permissionsVO);
+
+     List<SystemPermissionDO> systemPermissionsList();
+
 }
