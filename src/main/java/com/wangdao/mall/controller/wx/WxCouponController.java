@@ -8,6 +8,7 @@
 package com.wangdao.mall.controller.wx;
 
 import com.wangdao.mall.bean.BaseReqVo;
+import com.wangdao.mall.bean.CouponUserDO;
 import com.wangdao.mall.service.wx.WxCouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -42,17 +43,35 @@ public class WxCouponController {
     }
 
 
-
     /**
      * 领取优惠券
-     * @param map
+     * @param couponUserDO
      * @return
      */
     @RequestMapping("coupon/receive")
-    public BaseReqVo couponReceive(@RequestBody Map map){  //map里有 couponId
+    public BaseReqVo couponReceive(@RequestBody CouponUserDO couponUserDO){  //map里有 couponId
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
-        int i=wxCouponService.couponReceive(map);
+        Integer couponId = couponUserDO.getCouponId();
+        int i=wxCouponService.couponReceive(couponId);
 
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
+
+
+    /**
+     * 获取我的优惠券列表
+     * @param status
+     * @param page
+     * @param size
+     * @return
+     */
+    @RequestMapping("coupon/mylist")
+    public BaseReqVo couponMylist(Short status,Integer page,Integer size){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        HashMap<String, Object> map = wxCouponService.couponMylist(status,page,size);
+        baseReqVo.setData(map);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
         return baseReqVo;
