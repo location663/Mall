@@ -41,5 +41,8 @@ public interface GrouponDOMapper {
 
     @Select("select user_id as 'userId', order_id as 'orderId' from cskaoyan_mall_groupon where groupon_id = #{id} ")
     List<SubGrouponDTO> listSubGroupon(@Param("id") Integer id);
+
+    @Select("select count(0) from cskaoyan_mall_groupon where groupon_id = #{groupon_id} group by groupon_id")
+    int countJoinersByGrouponID(@Param("groupon_id") Integer grouponId);
 }
 

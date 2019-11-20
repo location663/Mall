@@ -36,38 +36,6 @@ public class WxTopicServiceImpl implements WxTopicService {
     }
 
     /**
-     * 展示专题下的评论
-     */
-    @Autowired
-    CommentDOMapper commentDOMapper;
-    @Autowired
-    UserDOMapper userDOMapper;
-    @Override
-    public TopicListDoBean commentList(String valueId, String type, String showType, String page, String size) {
-        TopicListDoBean topicListDoBean = new TopicListDoBean();
-        List<TopicListDoBean.DataBean> dataBeanList=new ArrayList();
-        CommentDOExample commentDOExample = new CommentDOExample();
-        CommentDOExample.Criteria criteria = commentDOExample.createCriteria();
-        criteria.andTypeEqualTo(Byte.parseByte(type)).andValueIdEqualTo(Integer.parseInt(valueId));
-        PageHelper.startPage(Integer.parseInt(page),Integer.parseInt(size));
-        List<CommentDO> commentDOS = commentDOMapper.selectByExample(commentDOExample);
-        for (CommentDO commentDO : commentDOS) {
-            Integer userId = commentDO.getUserId();
-            String[] picUrls = commentDO.getPicUrls();
-            Date addTime = commentDO.getAddTime();
-            String content = commentDO.getContent();
-            UserDO userDO = userDOMapper.selectByPrimaryKey(userId);
-            TopicListDoBean.DataBean.UserInfoBean userInfoBean = new TopicListDoBean.DataBean.UserInfoBean(userDO.getNickname(), userDO.getAvatar());
-            TopicListDoBean.DataBean dataBean = new TopicListDoBean.DataBean(userInfoBean,addTime.toString(),content,Arrays.asList(picUrls));
-            dataBeanList.add(dataBean);
-        }
-        topicListDoBean.setData(dataBeanList);
-        topicListDoBean.setCount(commentDOS.size());
-        topicListDoBean.setCurrentPage(Integer.parseInt(page));
-        return topicListDoBean;
-    }
-
-    /**
      * 展示专题列表
      * @param page
      * @param size
