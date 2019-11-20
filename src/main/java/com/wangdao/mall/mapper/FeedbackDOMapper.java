@@ -27,4 +27,5 @@ public interface FeedbackDOMapper {
     int updateByPrimaryKeySelective(FeedbackDO record);
 
     int updateByPrimaryKey(FeedbackDO record);
+
 }

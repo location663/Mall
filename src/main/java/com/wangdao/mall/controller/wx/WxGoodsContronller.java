@@ -47,6 +47,7 @@ public class WxGoodsContronller {
     /**
      * WX获取获取显示(搜索keyword)(某类目)(某品牌)(是新品)(是热卖)的商品列表
      * 输入一串空格，没有显示商品，但是返回得成功
+     * 把传过来的keyword关键字存入search_history数据表里
      * @param keyword
      * @param page
      * @param size

@@ -85,7 +85,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from cskaoyan_mall_footprint
     where id = #{id,jdbcType=INTEGER}
@@ -101,10 +101,10 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.wangdao.mall.bean.FootprintDO">
-    insert into cskaoyan_mall_footprint (id, user_id, goods_id, 
+    insert into cskaoyan_mall_footprint (id, user_id, goods_id,
       add_time, update_time, deleted
       )
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, 
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER},
       #{addTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT}
       )
   </insert>
@@ -157,7 +157,8 @@
       <include refid="Example_Where_Clause" />
     </if>
   </select>
-  <update id="updateByExampleSelective" parameterType="map">
+
+    <update id="updateByExampleSelective" parameterType="map">
     update cskaoyan_mall_footprint
     <set>
       <if test="record.id != null">
@@ -225,4 +226,13 @@
       deleted = #{deleted,jdbcType=BIT}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+
+  <select id="selectFootprintVOs" resultType="com.wangdao.mall.bean.FootprintVO">
+      select f.add_time, f.goods_id as goodsId, f.id, g.brief, g.name, g.pic_url as picUrl, g.retail_price as retailPrice
+      from cskaoyan_mall_footprint f
+      left join cskaoyan_mall_goods g
+      on f.goods_id = g.id
+      where f.deleted = 0
+  </select>
 </mapper>

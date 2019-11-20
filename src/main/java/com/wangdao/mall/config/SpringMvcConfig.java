@@ -2,6 +2,7 @@ package com.wangdao.mall.config;
 
 
 import com.wangdao.mall.converter.String2DateConverter;
+import com.wangdao.mall.converter.StringArray2StringConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,7 +25,13 @@ public class SpringMvcConfig implements WebMvcConfigurer {
     @PostConstruct
     public void addConverter(){
         configurableConversionService.addConverter(new String2DateConverter());
+        configurableConversionService.addConverter(new StringArray2StringConverter());
     }
+
+//    @PostConstruct
+//    public void addConverter2(){
+//        configurableConversionService.addConverter(new StringArray2StringConverter());
+//    }
 
     @Bean
     @Primary
