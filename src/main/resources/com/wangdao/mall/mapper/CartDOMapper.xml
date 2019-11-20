@@ -76,7 +76,7 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, user_id, goods_id, goods_sn, goods_name, product_id, price, number, specifications, 
+    id, user_id, goods_id, goods_sn, goods_name, product_id, price, number, specifications,
     checked, pic_url, add_time, update_time, deleted
   </sql>
   <select id="selectByExample" parameterType="com.wangdao.mall.bean.CartDOExample" resultMap="BaseResultMap">
@@ -94,7 +94,7 @@
     </if>
   </select>
   <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
-    select 
+    select
     <include refid="Base_Column_List" />
     from cskaoyan_mall_cart
     where id = #{id,jdbcType=INTEGER}
@@ -110,18 +110,19 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.wangdao.mall.bean.CartDO">
-    insert into cskaoyan_mall_cart (id, user_id, goods_id, 
-      goods_sn, goods_name, product_id, 
-      price, number, specifications, 
-      checked, pic_url, add_time, 
+    insert into cskaoyan_mall_cart (id, user_id, goods_id,
+      goods_sn, goods_name, product_id,
+      price, number, specifications,
+      checked, pic_url, add_time,
       update_time, deleted)
-    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER}, 
-      #{goodsSn,jdbcType=VARCHAR}, #{goodsName,jdbcType=VARCHAR}, #{productId,jdbcType=INTEGER}, 
-      #{price,jdbcType=DECIMAL}, #{number,jdbcType=SMALLINT}, #{specifications,jdbcType=VARCHAR}, 
-      #{checked,jdbcType=BIT}, #{picUrl,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP}, 
+    values (#{id,jdbcType=INTEGER}, #{userId,jdbcType=INTEGER}, #{goodsId,jdbcType=INTEGER},
+      #{goodsSn,jdbcType=VARCHAR}, #{goodsName,jdbcType=VARCHAR}, #{productId,jdbcType=INTEGER},
+      #{price,jdbcType=DECIMAL}, #{number,jdbcType=SMALLINT}, #{specifications,jdbcType=VARCHAR},
+      #{checked,jdbcType=BIT}, #{picUrl,jdbcType=VARCHAR}, #{addTime,jdbcType=TIMESTAMP},
       #{updateTime,jdbcType=TIMESTAMP}, #{deleted,jdbcType=BIT})
   </insert>
   <insert id="insertSelective" parameterType="com.wangdao.mall.bean.CartDO">
+
     insert into cskaoyan_mall_cart
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -243,7 +244,7 @@
         price = #{record.price,jdbcType=DECIMAL},
       </if>
       <if test="record.number != null">
-        number = #{record.number,jdbcType=SMALLINT},
+        `number` = #{record.number,jdbcType=SMALLINT},
       </if>
       <if test="record.specifications != null">
         specifications = #{record.specifications,jdbcType=VARCHAR},
