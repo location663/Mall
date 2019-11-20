@@ -289,4 +289,12 @@
       role_ids = #{roleIds,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="selectPermissionByUsername" resultType="String">
+    select p.permission from cskaoyan_mall_admin a
+        LEFT JOIN mall_admin_role_relation r on a.id = r.admin_id
+        LEFT JOIN mall_role_perm_relation r2 on r2.role_id = r.role_id
+        LEFT JOIN permission p on p.id = r2.perm_id
+        where a.username = #{username}
+  </select>
 </mapper>

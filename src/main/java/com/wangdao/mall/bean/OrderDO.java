@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.HashMap;
+
 @Data
 public class OrderDO {
     private Integer id;
@@ -59,6 +61,23 @@ public class OrderDO {
     private Boolean deleted;
 
 //    private  handleOption;
+
+    public HashMap<Integer, String> statusMap = new HashMap<>();
+
+    {
+        statusMap.put(101,"未付款");
+        statusMap.put(102,"用户取消");
+        statusMap.put(103,"系统取消");
+        statusMap.put(201,"已付款");
+        statusMap.put(202,"申请退款");
+        statusMap.put(203,"已退款");
+        statusMap.put(301,"已发货");
+        statusMap.put(401,"用户收货");
+        statusMap.put(402,"系统收货");
+    }
+
+
+
     public OrderDO() {
     }
 
