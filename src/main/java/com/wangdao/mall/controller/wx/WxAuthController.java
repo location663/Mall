@@ -2,6 +2,7 @@ package com.wangdao.mall.controller.wx;
 
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.UserDO;
+import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.service.wx.WxUserService;
 import com.wangdao.mall.shiro.CustomToken;
 import org.apache.shiro.SecurityUtils;
@@ -70,6 +71,15 @@ public class WxAuthController {
     @RequestMapping("auth/register")
     public BaseReqVo userRegister(@RequestBody UserDO userDO) throws Exception {
         Map map = userService.userRegister(userDO);
+        Subject subject = SecurityUtils.getSubject();
+        CustomToken token = new CustomToken(userDO.getUsername(), userDO.getPassword(), "wx");
+        try {
+            subject.login(token);
+        } catch (AuthenticationException e) {
+            return new BaseReqVo(null, "登录失败", 500);
+        }
+        userService.login();
+//        map1.put("token", request.getSession().getId());
         return new BaseReqVo(map, "成功", 0);
     }
 
@@ -78,7 +88,11 @@ public class WxAuthController {
      * @return
      */
     @RequestMapping("auth/regCaptcha")
-    public BaseReqVo regCaptcha(@RequestBody String mobile){
+    public BaseReqVo regCaptcha(@RequestBody Map<String, String> map) throws WxException {
+        String mobile = map.get("mobile");
+        if (!mobile.matches("^1[3|4|5|7|8][0-9]\\\\d{4,8}$")) {
+            throw new WxException("您输入的手机号有误，请重新输入");
+        }
         userService.getRegCaptcha(mobile);
         return new BaseReqVo(null, "成功", 0);
     }

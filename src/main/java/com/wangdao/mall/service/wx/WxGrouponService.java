@@ -11,4 +11,6 @@ public interface WxGrouponService {
     GrouponDetailVO selectById(Integer grouponId);
 
     Map listByUseridAndShowtype(Integer showType);
+
+    GrouponDetailVO detailGroupon(Integer grouponId);
 }

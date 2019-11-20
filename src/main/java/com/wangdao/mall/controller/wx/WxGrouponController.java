@@ -41,10 +41,16 @@ public class WxGrouponController {
         return baseReqVo;
     }
 
+    /**
+     * 我参与的团购
+     * @param showType
+     * @return
+     */
     @RequestMapping("groupon/my")
     public BaseReqVo myGroupon(Integer showType){
         Map map = grouponService.listByUseridAndShowtype(showType);
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>(map, "成功", 0);
         return baseReqVo;
     }
+
 }

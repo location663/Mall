@@ -153,7 +153,7 @@ public class WxUserServiceImpl implements WxUserService {
         if (userDO1 != null){
             throw new WxException("用户名已存在");
         }
-        if (regMap.get(userDO.getMobile()) == null || regMap.get(userDO.getMobile()).equals(userDO.getCode())){
+        if (regMap.get(userDO.getMobile()) == null || !regMap.get(userDO.getMobile()).equals(userDO.getCode())){
             throw new WxException("您输入的验证码错误");
         }
         userDO.setWeixinOpenid(userDO.getWxCode());
