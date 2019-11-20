@@ -82,4 +82,26 @@ public class WxSearchServiceImpl implements WxSearchService{
         }
         return keywords;
     }
+
+
+    /**
+     * 清除某用户搜索历史记录
+     * @return
+     */
+    @Override
+    public Integer searchClearhistory() {
+        //获取当前用户登录对象
+        UserDO userDO  = (UserDO) SecurityUtils.getSubject().getPrincipal();
+
+        SearchHistoryDO searchHistoryDO = new SearchHistoryDO();
+        searchHistoryDO.setDeleted(true);
+        SearchHistoryDOExample searchHistoryDOExample = new SearchHistoryDOExample();
+        searchHistoryDOExample.createCriteria().andDeletedEqualTo(false).andUserIdEqualTo(userDO.getId());
+
+        //加了Selective会判空，如果有null的属性，就不会执行set,只执行非空的delete属性
+        Integer i = searchHistoryDOMapper.updateByExampleSelective(searchHistoryDO, searchHistoryDOExample);
+
+        List<SearchHistoryDO> searchHistoryDOS = searchHistoryDOMapper.selectByExample(searchHistoryDOExample);
+        return i;
+    }
 }

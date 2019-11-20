@@ -54,4 +54,20 @@ public class WxSearchController {
         baseReqVo.setErrno(0);
         return baseReqVo;
     }
+
+
+    /**
+     * 清除搜索历史记录
+     * @return
+     */
+    @RequestMapping("search/clearhistory")
+    public BaseReqVo searchClearhistory(){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        Integer i = wxSearchService.searchClearhistory();
+
+        baseReqVo.setData(null);
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
 }

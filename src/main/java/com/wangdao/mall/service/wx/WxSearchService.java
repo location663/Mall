@@ -8,4 +8,6 @@ public interface WxSearchService {
 
     ArrayList<String> searchHelper(String keyword);
 
+    Integer searchClearhistory();
+
 }
