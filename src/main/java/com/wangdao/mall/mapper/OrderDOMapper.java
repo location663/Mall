@@ -35,6 +35,6 @@ public interface OrderDOMapper {
 
     List<OrderStatisticsDTO> selectForStatistics();
 
-//    @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_order")
-//    int selectLastInsertId();
+    @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_order")
+    int selectLastInsertId();
 }
