@@ -22,7 +22,7 @@ public class FeedbackDO {
 
     private Boolean hasPicture;
 
-    private String picUrls;
+    private String[] picUrls;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date addTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
@@ -33,7 +33,7 @@ public class FeedbackDO {
     public FeedbackDO() {
     }
 
-    public FeedbackDO(Integer id, Integer userId, String username, String mobile, String feedType, String content, Integer status, Boolean hasPicture, String picUrls, Date addTime, Date updateTime, Boolean deleted) {
+    public FeedbackDO(Integer id, Integer userId, String username, String mobile, String feedType, String content, Integer status, Boolean hasPicture, String[] picUrls, Date addTime, Date updateTime, Boolean deleted) {
         this.id = id;
         this.userId = userId;
         this.username = username;
@@ -112,13 +112,13 @@ public class FeedbackDO {
         this.hasPicture = hasPicture;
     }
 
-    public String getPicUrls() {
+    public String[] getPicUrls() {
         return picUrls;
     }
 
-    public void setPicUrls(String picUrls) {
-        this.picUrls = picUrls == null ? null : picUrls.trim();
-    }
+//    public void setPicUrls(String picUrls) {
+//        this.picUrls = picUrls == null ? null : picUrls.trim();
+//    }
 
     public Date getAddTime() {
         return addTime;
