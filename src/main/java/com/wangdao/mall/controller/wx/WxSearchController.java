@@ -37,4 +37,20 @@ public class WxSearchController {
         baseReqVo.setErrno(0);
         return baseReqVo;
     }
+
+
+    /**
+     * 搜索帮助
+     * @param keyword
+     * @return
+     */
+    @RequestMapping("search/helper")
+    public BaseReqVo searchHelper(String keyword){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        HashMap<String, Object> map = wxSearchService.searchHelper(keyword);
+        baseReqVo.setData(map);
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
 }

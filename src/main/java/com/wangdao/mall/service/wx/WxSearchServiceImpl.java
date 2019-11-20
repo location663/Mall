@@ -46,4 +46,18 @@ public class WxSearchServiceImpl implements WxSearchService{
         map.put("defaultKeyword",hotKeywordList.get(0));
         return map;
     }
+
+
+
+    /**
+     * 搜索帮助
+     * @param keyword
+     * @return
+     */
+    @Override
+    public HashMap<String, Object> searchHelper(String keyword) {
+        HashMap<String, Object> map = new HashMap<>();
+            
+        return map;
+    }
 }

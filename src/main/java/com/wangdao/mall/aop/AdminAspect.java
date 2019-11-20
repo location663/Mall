@@ -32,7 +32,7 @@ public class AdminAspect {
     @Autowired
     HttpServletRequest request;
 
-    @Pointcut("execution(* com.wangdao.mall.controller..*(..)))")
+    @Pointcut("execution(* com.wangdao.mall.controller.admin..*(..)))")
     public void AdminControllerMypointCut(){}
 
 
