@@ -51,6 +51,9 @@ public class WxGoodsServiceImpl implements WxGoodsService {
     @Autowired
     SearchHistoryDOMapper searchHistoryDOMapper;
 
+    @Autowired
+    CollectDOMapper collectDOMapper;
+
 
     /**
      * //WX统计商品总数
@@ -196,7 +199,6 @@ public class WxGoodsServiceImpl implements WxGoodsService {
                 long total5 = userPageInfo5.getTotal();
                 map.put("count", total5);
                 map.put("goodsList", goodsDOList5);
-
             }else {  //categoryId!=0  //说明是只显示全为新品的某类的商品List
                 GoodsDOExample goodsDOExample6 = new GoodsDOExample();
                 goodsDOExample6.createCriteria().andDeletedEqualTo(false).andIsNewEqualTo(true).andCategoryIdEqualTo(categoryId);
@@ -272,9 +274,29 @@ public class WxGoodsServiceImpl implements WxGoodsService {
     @Override
     public HashMap<String, Object> queryWxGoodsDetail(Integer id) {
         HashMap<String, Object> map = new HashMap<>();
+        //获取当前用户登录对象
+        UserDO userDO  = (UserDO) SecurityUtils.getSubject().getPrincipal();
 
-        //封装 userHasCollect ,无登录下全部为0,后续需要改进，判断用户登录情况获取
-        map.put("userHasCollect",0);
+        //封装 userHasCollect   0为没收藏关注，1为收藏关注了
+        if (userDO!=null){
+            //登录状态下，查询collect数据表里是否绑定此用户userid的商品id和delete为false属性
+            CollectDOExample collectDOExample = new CollectDOExample();
+            collectDOExample.createCriteria().andUserIdEqualTo(userDO.getId()).andValueIdEqualTo(id);
+            List<CollectDO> collectDOS1 = collectDOMapper.selectByExample(collectDOExample);
+            if (collectDOS1.size()>0) {
+                for (CollectDO collectDO : collectDOS1) {
+                    if (collectDO.getDeleted()) { //登录状态下，查到表里有收藏此商品,但是已经逻辑delete
+                        map.put("userHasCollect", 0);
+                    }else {
+                        map.put("userHasCollect", 1);//登录状态下，查到表里有收藏此商品,delete为false
+                    }
+                }
+            }else {
+                map.put("userHasCollect",0);  //登录状态下，查到表里没有收藏此商品
+            }
+        }else {
+            map.put("userHasCollect", 0);//无登录状态下全部为0
+        }
 
         //封装 shareImage: ""  不知道是啥，返回空串，后续需要改进
         map.put("shareImage","");

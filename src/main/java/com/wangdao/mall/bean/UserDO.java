@@ -44,6 +44,8 @@ public class UserDO {
 
     private String wxCode;
 
+    private Integer linkGrouponId;
+
     public UserDO() {
     }
 

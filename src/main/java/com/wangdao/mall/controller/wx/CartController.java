@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Security;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,8 @@ public class CartController {
         Integer number=(Integer)map.get("number");
         Integer productId=(Integer)map.get("productId");
         UserDO userDO = (UserDO)SecurityUtils.getSubject().getPrincipal();
-        Integer i=cartService.add(goodsId,number,productId,userDO);
+        cartService.add(goodsId,number,productId,userDO);
+        int i=cartService.goodsCount(userDO);
         return new BaseReqVo<Object>(i,"成功",0);
     }
     @RequestMapping("index")
@@ -80,5 +82,13 @@ public class CartController {
         UserDO userDO = (UserDO)subject.getPrincipal();
         cartService.update(receiveCartDo,userDO);
         return new BaseReqVo<>(null,"成功",0);
+    }
+    @RequestMapping("delete")
+    public BaseReqVo delete(@RequestBody Map map){
+        List<Integer> productIds =(List<Integer>)map.get("productIds");
+        Subject subject = SecurityUtils.getSubject();
+        UserDO userDO = (UserDO)subject.getPrincipal();
+        Map returnmap=cartService.delete(productIds,userDO);
+        return new BaseReqVo<>(returnmap,"成功",0);
     }
 }

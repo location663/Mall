@@ -26,11 +26,6 @@ public class WxTopicController {
         Map map=topicService.topicDetail(id);
         return new BaseReqVo(map,"成功",0);
     }
-    @RequestMapping("comment/list")
-    public BaseReqVo commentList(String valueId,String type,String showType,String page,String size){
-        TopicListDoBean topicListDoBean = topicService.commentList(valueId, type, showType, page, size);
-        return new BaseReqVo(topicListDoBean,"成功",0);
-    }
     @RequestMapping("topic/list")
     public BaseReqVo topicList(String page,String size){
         Map map=topicService.topicList(page,size);

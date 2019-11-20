@@ -7,25 +7,17 @@ import java.util.Date;
 @Data
 public class CommentDO {
     private Integer id;
-
     private Integer valueId;
-
     private Byte type;
-
     private String content;
-
     private Integer userId;
-
     private Boolean hasPicture;
-
     private String[] picUrls;
-
     private Short star;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date addTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date updateTime;
-
     private Boolean deleted;
 
     public CommentDO() {

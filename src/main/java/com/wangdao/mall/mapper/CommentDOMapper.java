@@ -4,10 +4,12 @@ import com.wangdao.mall.bean.CommentDO;
 import com.wangdao.mall.bean.CommentDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface CommentDOMapper {
     long countByExample(CommentDOExample example);
-
+    @Select("select DISTINCT LAST_INSERT_ID() FROM cskaoyan_mall_comment")
+    int selectLastInsert();
     int deleteByExample(CommentDOExample example);
 
     int deleteByPrimaryKey(Integer id);
