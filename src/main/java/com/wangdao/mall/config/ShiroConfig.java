@@ -39,6 +39,15 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/wx/auth/login","anon");
         //filterChainDefinitionMap.put("/user/query","perms[user:query]");
 
+//        filterChainDefinitionMap.put("/wx/cart/**","user");
+//        filterChainDefinitionMap.put("/wx/collect/**","user");
+//        filterChainDefinitionMap.put("/wx/address/**","user");
+//        filterChainDefinitionMap.put("/wx/express/**","user");
+//        filterChainDefinitionMap.put("/wx/order/**","user");
+//        filterChainDefinitionMap.put("/wx/feedback/**","user");
+//        filterChainDefinitionMap.put("/wx/formid/**","user");
+//        filterChainDefinitionMap.put("/wx/user/index","user");
+
         filterChainDefinitionMap.put("/**","anon");
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
         return shiroFilterFactoryBean;
