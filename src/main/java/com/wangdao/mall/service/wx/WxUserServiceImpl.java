@@ -115,7 +115,7 @@ public class WxUserServiceImpl implements WxUserService {
      */
     @Override
     public void getRegCaptcha(String mobile){
-        IAcsClient iAcsClient = aliyunComponent.getiacsClient();
+        IAcsClient iAcsClient = aliyunComponent.getIacsClient();
         CommonRequest request = new CommonRequest();
         request.setMethod(MethodType.POST);
         request.setDomain("dysmsapi.aliyuncs.com");

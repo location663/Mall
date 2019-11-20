@@ -27,7 +27,7 @@ public class AliyunComponent {
         return new OSSClient(oss.getEndPoint(), accessKeyId, accessSecret);
     }
 
-    public IAcsClient getiacsClient(){
+    public IAcsClient getIacsClient(){
         DefaultProfile profile = DefaultProfile.getProfile(sms.getRegionId(), accessKeyId, accessSecret);
         IAcsClient client = new DefaultAcsClient(profile);
         return client;
