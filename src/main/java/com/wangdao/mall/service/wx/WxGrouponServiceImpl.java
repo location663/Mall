@@ -72,7 +72,6 @@ public class WxGrouponServiceImpl implements WxGrouponService {
         UserDO userDO = userDOMapper.selectByPrimaryKey(grouponDO.getCreatorUserId());
         List<UserDO> userDOS = grouponDOMapper.listJoiners(grouponId);
         GrouponRulesDO grouponRulesDO = grouponRulesDOMapper.selectByPrimaryKey(grouponDO.getRulesId());
-
         BaseReqVo orderDetail = orderService.getOrderDetail(grouponDO.getOrderId());
         Map data = (Map) orderDetail.getData();
         Object orderInfo = data.get("orderInfo");
@@ -82,7 +81,6 @@ public class WxGrouponServiceImpl implements WxGrouponService {
             orderGood.setRetailPrice(orderGood.getPrice().doubleValue());
         }
 
-
         grouponDetailVO.setOrderGoods( orderGoods);
         grouponDetailVO.setOrderInfo((OrderInfoVO) orderInfo);
         grouponDetailVO.setCreator(userDO);
@@ -90,7 +88,6 @@ public class WxGrouponServiceImpl implements WxGrouponService {
         grouponDetailVO.setJoiners(userDOS);
         grouponDetailVO.setLinkGrouponId(grouponId);
         grouponDetailVO.setRules(grouponRulesDO);
-
         return grouponDetailVO;
     }
 
@@ -139,9 +136,4 @@ public class WxGrouponServiceImpl implements WxGrouponService {
         return map;
     }
 
-    @Override
-    public GrouponDetailVO detailGroupon(Integer grouponId) {
-
-        return null;
-    }
 }
