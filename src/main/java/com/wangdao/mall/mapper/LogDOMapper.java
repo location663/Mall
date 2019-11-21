@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.LogDO;
 import com.wangdao.mall.bean.LogDOExample;
 import java.util.List;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 public interface LogDOMapper {
     long countByExample(LogDOExample example);
@@ -27,4 +28,7 @@ public interface LogDOMapper {
     int updateByPrimaryKeySelective(LogDO record);
 
     int updateByPrimaryKey(LogDO record);
+
+    @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_log")
+    int selectLastInsertId();
 }

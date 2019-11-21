@@ -289,7 +289,6 @@
       role_ids = #{roleIds,jdbcType=VARCHAR}
     where id = #{id,jdbcType=INTEGER}
   </update>
-
   <select id="selectPermissionByUsername" resultType="String">
     select p.permission from cskaoyan_mall_admin a
         LEFT JOIN mall_admin_role_relation r on a.id = r.admin_id

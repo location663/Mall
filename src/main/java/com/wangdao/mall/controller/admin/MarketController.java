@@ -2,6 +2,8 @@ package com.wangdao.mall.controller.admin;
 
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.service.admin.MarketService;
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,8 @@ public class MarketController {
      */
     @RequestMapping("region/list")
     public BaseReqVo region(){
+        Subject subject = SecurityUtils.getSubject();
+        Object principal = subject.getPrincipal();
         List<RegionVO> regionVOS = marketService.selectRegions();
         BaseReqVo baseReqVo = new BaseReqVo(regionVOS, "成功", 0);
         return baseReqVo;

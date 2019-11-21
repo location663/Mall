@@ -9,10 +9,7 @@ package com.wangdao.mall.service.admin;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wangdao.mall.bean.*;
-import com.wangdao.mall.mapper.AdminDOMapper;
-import com.wangdao.mall.mapper.LogDOMapper;
-import com.wangdao.mall.mapper.RoleDOMapper;
-import com.wangdao.mall.mapper.StorageDOMapper;
+import com.wangdao.mall.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -35,6 +32,12 @@ public class AdminServiceImpl implements AdminService {
 
     @Autowired
     StorageDOMapper storageDOMapper;
+
+    @Autowired
+    PermissionDOMapper permissionDOMapper;
+
+    @Autowired
+    SystemPermissionDOMapper systemPermissionDOMapper;
 
     @Override
     public Map selectAllAdmin(String username,Integer page,Integer limit,String sort,String order) {
@@ -222,6 +225,9 @@ public class AdminServiceImpl implements AdminService {
     public int deleteRole(RoleDO roleDO) {
         roleDO.setDeleted(true);
         int update = roleDOMapper.updateByPrimaryKeySelective(roleDO);
+        PermissionDOExample permissionDOExample = new PermissionDOExample();
+        permissionDOExample.createCriteria().andRoleIdEqualTo(roleDO.getId());
+        permissionDOMapper.deleteByExample(permissionDOExample);
         return update;
     }
 
@@ -274,5 +280,106 @@ public class AdminServiceImpl implements AdminService {
         return null;
     }
 
+    @Override
+    public List<String> listPermissions(Integer roleId) {
+        PermissionDOExample permissionDOExample = new PermissionDOExample();
+        PermissionDOExample.Criteria criteria = permissionDOExample.createCriteria();
+        criteria.andRoleIdEqualTo(roleId).andDeletedEqualTo(false);
+        List<PermissionDO> permissionDOSList = permissionDOMapper.selectByExample(permissionDOExample);
+        List<String> perlist = new ArrayList<>();
+        for (PermissionDO permissionDO : permissionDOSList) {
+            if (!permissionDO.getPermission().equals("*")){
+                perlist.add(permissionDO.getPermission());
+            }else {
+                SystemPermissionDOExample systemPermissionDOExample = new SystemPermissionDOExample();
+                SystemPermissionDOExample.Criteria criteria1 = systemPermissionDOExample.createCriteria();
+                criteria1.andLevelEqualTo("3");
+                List<SystemPermissionDO> systemPermissionDOS = systemPermissionDOMapper.selectByExample(systemPermissionDOExample);
+                for (SystemPermissionDO systemPermissionDO : systemPermissionDOS) {
+                    perlist.add(systemPermissionDO.getId());
+                }
+            }
+        }
+        return perlist;
+    }
 
+    /**
+     * 此方法与上面的方法共同完成显示
+     * @return
+     */
+    @Override
+    public List<SystemPermissionDO> systemPermissionsList() {
+        SystemPermissionDOExample systemPermissionDOExample = new SystemPermissionDOExample();
+        List<SystemPermissionDO> systemPermissionDOList = systemPermissionDOMapper.selectByExample(systemPermissionDOExample);
+        List<SystemPermissionDO> systemPermissionsList1 = new ArrayList<>();
+        List<SystemPermissionDO> systemPermissionsList2 = new ArrayList<>();
+        List<SystemPermissionDO> systemPermissionsList3 = new ArrayList<>();
+        for (SystemPermissionDO systemPermissionDO : systemPermissionDOList) {
+            if (systemPermissionDO.getLevel().equals("3")){
+                systemPermissionsList3.add(systemPermissionDO);
+            }
+        }
+        for (SystemPermissionDO systemPermissionDO : systemPermissionDOList) {
+            if (systemPermissionDO.getLevel().equals("2")){
+                systemPermissionsList2.add(systemPermissionDO);
+            }
+        }
+        for (SystemPermissionDO systemPermissionDO : systemPermissionDOList) {
+            if (systemPermissionDO.getLevel().equals("1")){
+                systemPermissionsList1.add(systemPermissionDO);
+            }
+        }
+
+        for (SystemPermissionDO systemPermission3 : systemPermissionsList3) {
+            for (SystemPermissionDO systemPermission2 : systemPermissionsList2) {
+                if (systemPermission3.getpId().equals(systemPermission2.getsId())){
+                    systemPermission2.getChildren().add(systemPermission3);
+                }
+            }
+        }
+        for (SystemPermissionDO permission2 : systemPermissionsList2) {
+            for (SystemPermissionDO permission1 : systemPermissionsList1) {
+                if (permission2.getpId().equals(permission1.getsId())){
+                    permission1.getChildren().add(permission2);
+                }
+            }
+        }
+        return systemPermissionsList1;
+    }
+
+    /**
+     * 更新权限
+     * @param permissionsVO
+     * @return
+     */
+    @Override
+    public void updateRolePermissions(PermissionsVO permissionsVO) {
+        PermissionDOExample permissionDOExample = new PermissionDOExample();
+        PermissionDOExample.Criteria criteria = permissionDOExample.createCriteria();
+        criteria.andRoleIdEqualTo(permissionsVO.getRoleId());
+        permissionDOMapper.deleteByExample(permissionDOExample);
+        List<String> permissions = permissionsVO.getPermissions();
+        for (String permission : permissions) {
+            PermissionDO permissionDO = new PermissionDO();
+            permissionDO.setRoleId(permissionsVO.getRoleId());
+            permissionDO.setPermission(permission);
+            permissionDO.setAddTime(new Date(System.currentTimeMillis()));
+            permissionDO.setUpdateTime(new Date(System.currentTimeMillis()));
+            permissionDO.setDeleted(false);
+            permissionDOMapper.insert(permissionDO);
+        }
+    }
+
+
+    @Override
+    public List<String> selectPermsLeft(Integer roleId) {
+        List<String> permsList = adminDOMapper.selectPermsLeft(roleId);
+        return permsList;
+    }
+
+    @Override
+    public String selectRoleName(Integer roleId) {
+        String roleName = adminDOMapper.selectRoleName(roleId);
+        return roleName;
+    }
 }

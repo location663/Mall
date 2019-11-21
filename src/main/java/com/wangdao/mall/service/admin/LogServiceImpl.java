@@ -24,4 +24,17 @@ public class LogServiceImpl implements LogService {
     public void insertLog(LogDO logDO) {
         logDOMapper.insertSelective(logDO);
     }
+
+    @Override
+    public Integer selectLastInsertId() {
+        Integer id = logDOMapper.selectLastInsertId();
+        return id;
+    }
+
+    @Override
+    public String searchLastadmin(Integer id) {
+        LogDO logDO = logDOMapper.selectByPrimaryKey(id);
+        String admin = logDO.getAdmin();
+        return admin;
+    }
 }
