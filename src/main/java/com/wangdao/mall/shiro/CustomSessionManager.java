@@ -18,7 +18,7 @@ public class CustomSessionManager extends DefaultWebSessionManager {
         String Adminheader = request.getHeader("X-Litemall-Admin-Token");
         if (header != null && !"".equals(header)){
             return header;
-        }else if (Adminheader != null && !"".equals(header)){
+        }else if (Adminheader != null && !"".equals(Adminheader)){
             return Adminheader;
         }
         return super.getSessionId(request, response);

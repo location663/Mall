@@ -58,6 +58,7 @@ public class AdminAspect {
      */
     @AfterReturning("AdminControllerMypointCut()")
     public void myAfterReturning(){
+        request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         if (request.getRequestURI().contains("login")){
             String admin = (String) request.getSession().getAttribute("admin");
             logDO.setAdmin(admin);
