@@ -14,11 +14,13 @@ import com.wangdao.mall.mapper.*;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.stream.events.Comment;
 import java.util.*;
 
 @Service
+@Transactional
 public class WxGoodsServiceImpl implements WxGoodsService {
 
     @Autowired

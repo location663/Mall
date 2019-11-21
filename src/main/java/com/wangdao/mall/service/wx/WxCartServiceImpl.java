@@ -14,6 +14,7 @@ import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class WxCartServiceImpl implements WxCartService {
     CartDOExample cartDOExample=new CartDOExample();
     @Autowired

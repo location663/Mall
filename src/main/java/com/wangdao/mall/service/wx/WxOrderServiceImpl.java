@@ -10,11 +10,13 @@ import com.wangdao.mall.service.util.GetOrderHandleOption;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.*;
 
 @Service
+@Transactional
 public class WxOrderServiceImpl implements WxOrderService {
 
     @Autowired

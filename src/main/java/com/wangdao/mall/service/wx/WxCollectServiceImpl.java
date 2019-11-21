@@ -18,10 +18,12 @@ import com.wangdao.mall.mapper.GoodsDOMapper;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
+@Transactional
 public class WxCollectServiceImpl implements WxCollectService {
 
     @Autowired

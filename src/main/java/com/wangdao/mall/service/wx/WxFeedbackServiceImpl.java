@@ -8,6 +8,7 @@ import com.wangdao.mall.mapper.FootprintDOMapper;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <h3>Mall</h3>
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
  * @date : 2019-11-20 11:50
  **/
 @Service
+@Transactional
 public class WxFeedbackServiceImpl implements WxFeedbackService{
     @Autowired
     FeedbackDOMapper feedbackDOMapper;
