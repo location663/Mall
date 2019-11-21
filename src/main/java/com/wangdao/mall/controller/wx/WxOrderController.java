@@ -2,12 +2,15 @@ package com.wangdao.mall.controller.wx;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wangdao.mall.bean.BaseReqVo;
+import com.wangdao.mall.bean.OrderGoodsDO;
+import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.service.wx.WxOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpSession;
 import java.util.Map;
 
 @RestController
@@ -42,8 +45,11 @@ public class WxOrderController {
     }
 
     @RequestMapping("order/prepay")
-    public BaseReqVo orderPrepay(@RequestBody Map<String, Object> map){
+    public BaseReqVo orderPrepay(@RequestBody Map<String, Object> map) throws WxException {
         BaseReqVo baseReqVo = wxOrderService.orderPrepay(map);
+//        if (baseReqVo.getErrno() == 0){
+//            throw new WxException("支付成功");
+//        }
         return baseReqVo;
     }
 
@@ -63,6 +69,12 @@ public class WxOrderController {
     public BaseReqVo deleteOrder(@RequestBody Map<String, Object> map){
         BaseReqVo baseReqVo = wxOrderService.deleteOrder(map);
         return baseReqVo;
+    }
+
+    @RequestMapping("order/goods")
+    public BaseReqVo goodsOrder(Integer orderId, Integer goodsId){
+        OrderGoodsDO orderGoodsDO = wxOrderService.goodsOrder(orderId, goodsId);
+        return new BaseReqVo(orderGoodsDO, "成功", 0);
     }
 
 }

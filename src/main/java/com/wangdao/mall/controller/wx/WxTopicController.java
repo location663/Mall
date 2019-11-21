@@ -6,13 +6,11 @@
  **/
 package com.wangdao.mall.controller.wx;
 import com.wangdao.mall.bean.BaseReqVo;
-import com.wangdao.mall.bean.TopicListDoBean;
 import com.wangdao.mall.service.wx.WxTopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 

@@ -10,5 +10,9 @@ public interface WxCouponService {
 
     int couponReceive(Integer couponId);
 
+    Integer couponExchange(String code);
+
     HashMap<String, Object> couponMylist(Short status, Integer page, Integer size);
+
+
 }
