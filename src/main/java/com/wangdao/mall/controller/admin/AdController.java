@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.StorageDO;
 import com.wangdao.mall.service.admin.AdService;
 import com.wangdao.mall.service.util.StorageUtils;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,6 +38,7 @@ public class AdController {
      * @return
      */
     @RequestMapping("ad/list")
+//    @RequiresPermissions(value = {"admin:ad:list"})
     public BaseReqVo getAdList(Integer page, Integer limit, String name, String content){
         Map<String, Object> map = adDOService.queryAdDOs(page, limit, name, content);
         BaseReqVo<Map<String, Object>> baseReqVo = new BaseReqVo();

@@ -3,15 +3,18 @@ package com.wangdao.mall.service.admin;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wangdao.mall.bean.*;
+import com.wangdao.mall.exception.SystemBusyBxception;
 import com.wangdao.mall.mapper.*;
 
 import com.wangdao.mall.service.util.StorageUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.SQLException;
 import java.util.*;
 import java.sql.Date;
 
@@ -46,6 +49,8 @@ public class MarketServiceImpl implements MarketService{
     @Autowired
     KeywordDOMapper keywordDOMapper;
 
+    @Autowired
+    GoodsProductDOMapper goodsProductDOMapper;
 
 
     /**
@@ -399,10 +404,30 @@ public class MarketServiceImpl implements MarketService{
         return keywordDO1;
     }
 
-//    @Override
-//    public int refundOrder(Integer orderId, Integer refundMoney) {
-//
-//    }
+    @Override
+    public int refundOrder(Integer orderId, Integer refundMoney) throws SystemBusyBxception {
+        //先查询订单状态
+        int status = orderDOMapper.selectStatusByOrderId(orderId);
+        if(status != 202){//202为申请退款状态
+            throw new IllegalStateException("当前订单状态不支持退款");
+        }
+        //修改order_status为203已退款状态
+        int update = orderDOMapper.updateStatusByOrderId(orderId);
+        //恢复库存数量
+        // 查询order orderGoods goodsProduct表
+        if(update == 1){
+            List<OrderGoodsDO> orderGoodsDOList = orderGoodsDOMapper.selectByOrderId(orderId);
+            for (OrderGoodsDO orderGoodsDO : orderGoodsDOList) {
+                Integer productId = orderGoodsDO.getProductId();
+                Short number = orderGoodsDO.getNumber();
+                int updateNumber = goodsProductDOMapper.updateNumberByProductId(productId, number);
+                if(updateNumber != 1){
+                 throw new SystemBusyBxception("系统繁忙，请稍后再试1");
+                }
+            }
+        }
+        return update;
+    }
 
     /**
      * 行政区域中间方法

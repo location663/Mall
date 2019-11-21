@@ -89,6 +89,18 @@ service.interceptors.response.use(
         type: 'error'
     })
     return Promise.reject('error')
+}  else if (res.errno === 703) {
+    MessageBox.alert('当前订单状态不支持退款', '失败', {
+        confirmButtonText: '确定',
+        type: 'error'
+    })
+    return Promise.reject('error')
+}  else if (res.errno === 704) {
+    MessageBox.alert('系统繁忙，请稍后再试', '失败', {
+        confirmButtonText: '确定',
+        type: 'error'
+    })
+    return Promise.reject('error')
 } else if (res.errno !== 0) {
     // 非5xx的错误属于业务错误，留给具体页面处理
     return Promise.reject(response)
