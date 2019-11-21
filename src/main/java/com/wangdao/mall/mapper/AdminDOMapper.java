@@ -34,4 +34,14 @@ public interface AdminDOMapper {
 
     List<String> selectPermissionByUsername(@Param("username") String username);
 
+    @Select("select " +
+            "s.api " +
+            "from cskaoyan_mall_system_permissions AS s " +
+            "left JOIN cskaoyan_mall_permission AS p " +
+            "on p.permission = s.id " +
+            "where role_id = #{roleid}")
+    List<String> selectPermsLeft(Integer roleId);
+
+    @Select("select name from cskaoyan_mall_role where id = #{roleId}")
+    String selectRoleName(Integer roleId);
 }

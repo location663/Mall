@@ -8,5 +8,7 @@ public interface WxCouponService {
     HashMap<String, Object> queryCouponList(Integer page, Integer size);
 
 
-    int couponReceive(Map map);
+    int couponReceive(Integer couponId);
+
+    HashMap<String, Object> couponMylist(Short status, Integer page, Integer size);
 }

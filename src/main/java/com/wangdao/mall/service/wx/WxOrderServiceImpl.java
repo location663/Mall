@@ -108,9 +108,9 @@ public class WxOrderServiceImpl implements WxOrderService {
         //待评价订单商品数量
         orderDO.setComments((short)cartDOList.size());
 //        CommentDOExample commentDOExample = new CommentDOExample();
-//        commentDOExample.createCriteria().andValueIdEqualTo(cartDO.getGoodsId()).andDeletedEqualTo(false);
-//        List<CommentDO> commentDOList = commentDOMapper.selectByExample(commentDOExample);
-//        if (commentDOList == null){
+////        commentDOExample.createCriteria().andValueIdEqualTo(cartDO.getGoodsId()).andDeletedEqualTo(false);
+////        List<CommentDO> commentDOList = commentDOMapper.selectByExample(commentDOExample);
+////        if (commentDOList == null){
 //            orderDO.setComments((short) 1);
 //        }else {
 //            orderDO.setComments((short) 0);

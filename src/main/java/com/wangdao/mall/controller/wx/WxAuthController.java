@@ -43,7 +43,6 @@ public class WxAuthController {
         }
         Map map = userService.login();
         map.put("token", request.getSession().getId());
-
         return new BaseReqVo(map, "成功", 0);
     }
 
@@ -101,5 +100,8 @@ public class WxAuthController {
         return new BaseReqVo(null, "成功", 0);
     }
 
-
+    @RequestMapping("filter/redirect")
+    public BaseReqVo filterRedirect()  {
+        return new BaseReqVo(null, "您还未登陆", 501);
+    }
 }
