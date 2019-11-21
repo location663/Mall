@@ -92,6 +92,10 @@ public class WxCouponServiceImpl implements WxCouponService {
         //先获取将要领取此优惠券的对象
         CouponDO couponDO = couponDOMapper.selectByPrimaryKey(couponId);
 
+        if (couponDO.getTotal()<0){  //可被领取数量不足，不能领取
+            return 0;
+        }
+
         if (couponDO.getType()==2){  //如果是2，只能通过优惠券码兑换
             return 0;
         }else if (couponDO.getType()==1){  //如果是1，则是注册新用户才能领取赠券
@@ -139,7 +143,7 @@ public class WxCouponServiceImpl implements WxCouponService {
 
         //使用 Selective 插入，对象某属性没赋值或者为null时，不会把这个属性插入
         i=couponUserDOMapper.insertSelective(couponUserDO);
-        if (couponDO.getTotal()!=0 && i==1){  //领取成功，原优惠券可被领取数量减1
+        if (couponDO.getTotal()>0 && i==1){  //领取成功，原优惠券可被领取数量减1
             couponDO.setTotal(couponDO.getTotal()-1);
             if (couponDO.getTotal()==0){   //先减少优惠券数量，如果减到最后为0，需要赋值为-1
                 couponDO.setTotal(-1);
