@@ -15,6 +15,9 @@ import java.util.Map;
 public class HomeCatalogServiceImpl implements HomeCatalogService {
 
     @Autowired
+    SystemDOMapper systemDOMapper;
+
+    @Autowired
     TopicDOMapper topicDOMapper;
 
     @Autowired
@@ -45,26 +48,41 @@ public class HomeCatalogServiceImpl implements HomeCatalogService {
         GoodsDOExample goodsDOExample = new GoodsDOExample();
 
         // 取出热卖商品
-        goodsDOExample.createCriteria().andIsHotEqualTo(true).andDeletedEqualTo(false);
-        List<GoodsDO> hotGoodsDOList = goodsDOMapper.selectByExample(goodsDOExample);
-        goodsDOExample.clear();
+        int hotKeyValue =Integer.valueOf(systemDOMapper.selectByPrimaryKey(9).getKeyValue());
+        List<GoodsDO> hotGoodsDOList = null;
+        if (hotKeyValue != 0) {
+            PageHelper.startPage(1, hotKeyValue);
+            goodsDOExample.createCriteria().andIsHotEqualTo(true).andDeletedEqualTo(false);
+            hotGoodsDOList = goodsDOMapper.selectByExample(goodsDOExample);
+            goodsDOExample.clear();
+        }
 
         //取出新品
-        goodsDOExample.createCriteria().andIsNewEqualTo(true).andDeletedEqualTo(false);
-        List<GoodsDO> newGoodsDOList = goodsDOMapper.selectByExample(goodsDOExample);
-        goodsDOExample.clear();
+        int newKeyValue = Integer.valueOf(systemDOMapper.selectByPrimaryKey(2).getKeyValue());
+        List<GoodsDO> newGoodsDOList = null;
+        if (newKeyValue != 0) {
+            PageHelper.startPage(1, newKeyValue);
+            goodsDOExample.createCriteria().andIsNewEqualTo(true).andDeletedEqualTo(false);
+            newGoodsDOList = goodsDOMapper.selectByExample(goodsDOExample);
+            goodsDOExample.clear();
+        }
 
         //所有优惠券信息
         CouponDOExample couponDOExample = new CouponDOExample();
-        couponDOExample.createCriteria().andDeletedEqualTo(false);
+        couponDOExample.createCriteria().andDeletedEqualTo(false).andTotalGreaterThanOrEqualTo(0);
         List<CouponDO> couponDOList = couponDOMapper.selectByExample(couponDOExample);
         couponDOExample.clear();
 
         //所有类目信息
-        CategoryDOExample categoryDOExample = new CategoryDOExample();
-        categoryDOExample.createCriteria().andDeletedEqualTo(false).andLevelEqualTo("L1");
-        List<CategoryDO> categoryDOList = categoryDOMapper.selectByExample(categoryDOExample);
-        categoryDOExample.clear();
+        int categoryKeyValue = Integer.valueOf(systemDOMapper.selectByPrimaryKey(13).getKeyValue());
+        List<CategoryDO> categoryDOList = null;
+        if (categoryKeyValue != 0) {
+            PageHelper.startPage(1, categoryKeyValue);
+            CategoryDOExample categoryDOExample = new CategoryDOExample();
+            categoryDOExample.createCriteria().andDeletedEqualTo(false).andLevelEqualTo("L1");
+            categoryDOList = categoryDOMapper.selectByExample(categoryDOExample);
+            categoryDOExample.clear();
+        }
 
         //团购信息
         GrouponDOExample grouponDOExample = new GrouponDOExample();
@@ -73,25 +91,33 @@ public class HomeCatalogServiceImpl implements HomeCatalogService {
         List<GrouponRecordVO> grouponRecordVOList = getGrouponRecordVOList(grouponDOList);
         grouponDOExample.clear();
 
-        PageHelper.startPage(1,6);
         //广告信息
         AdDOExample adDOExample = new AdDOExample();
         adDOExample.createCriteria().andDeletedEqualTo(false);
         List<AdDO> adDOList = adDOMapper.selectByExample(adDOExample);
         adDOExample.clear();
 
-        PageHelper.startPage(1,6);
         //品牌制造商
-        BrandDOExample brandDOExample = new BrandDOExample();
-        brandDOExample.createCriteria().andDeletedEqualTo(false);
-        List<BrandDO> brandDOList = brandDOMapper.selectByExample(brandDOExample);
-        brandDOExample.clear();
+        int brandKeyValue = Integer.valueOf(systemDOMapper.selectByPrimaryKey(15).getKeyValue());
+        List<BrandDO> brandDOList = null;
+        if (brandKeyValue != 0) {
+            PageHelper.startPage(1, (brandKeyValue));
+            BrandDOExample brandDOExample = new BrandDOExample();
+            brandDOExample.createCriteria().andDeletedEqualTo(false);
+            brandDOList = brandDOMapper.selectByExample(brandDOExample);
+            brandDOExample.clear();
+        }
 
         //标题信息
-        TopicDOExample topicDOExample = new TopicDOExample();
-        topicDOExample.createCriteria().andDeletedEqualTo(false);
-        List<TopicDO> topicDOList = topicDOMapper.selectByExample(topicDOExample);
-        topicDOExample.clear();
+        int topicKeyValue = Integer.valueOf(systemDOMapper.selectByPrimaryKey(16).getKeyValue());
+        List<TopicDO> topicDOList = null;
+        if (topicKeyValue != 0){
+            PageHelper.startPage(1,topicKeyValue);
+            TopicDOExample topicDOExample = new TopicDOExample();
+            topicDOExample.createCriteria().andDeletedEqualTo(false);
+            topicDOList = topicDOMapper.selectByExample(topicDOExample);
+            topicDOExample.clear();
+        }
 
         //各类目下的商品
         List<CategoryGoodsVO> categoryGoodsVOList = getCategoryGoodsVOList(categoryDOList);
@@ -115,41 +141,44 @@ public class HomeCatalogServiceImpl implements HomeCatalogService {
      */
     public List<CategoryGoodsVO> getCategoryGoodsVOList(List<CategoryDO> list){
         List<CategoryGoodsVO> categoryGoodsVOList = new ArrayList<>();
-        for (CategoryDO categoryDO : list) {
-            List<GoodsDO> goodsDOList = new ArrayList<>();
-            CategoryGoodsVO categoryGoodsVO = new CategoryGoodsVO();
-            categoryGoodsVO.setId(categoryDO.getId());
-            categoryGoodsVO.setName(categoryDO.getName());
+        if (list != null) {
+            for (CategoryDO categoryDO : list) {
+                List<GoodsDO> goodsDOList = new ArrayList<>();
+                CategoryGoodsVO categoryGoodsVO = new CategoryGoodsVO();
+                categoryGoodsVO.setId(categoryDO.getId());
+                categoryGoodsVO.setName(categoryDO.getName());
 //            List<GoodsDO> goodsDOList = goodsDOMapper.selectByCategoryDOList(categoryDO.getName());
 //            categoryGoodsVO.setGoodsList(goodsDOList);
 //            categoryGoodsVOList.add(categoryGoodsVO);
 
-            CategoryDOExample categoryDOExample = new CategoryDOExample();
-            categoryDOExample.createCriteria().andPidEqualTo(categoryDO.getId());
-            List<CategoryDO> categoryDOS = categoryDOMapper.selectByExample(categoryDOExample);
-            for (CategoryDO aDo : categoryDOS) {
-                GoodsDOExample goodsDOExample = new GoodsDOExample();
-                goodsDOExample.createCriteria().andCategoryIdEqualTo(aDo.getId());
-                List<GoodsDO> goodsDOList1 = goodsDOMapper.selectByExample(goodsDOExample);
-                goodsDOList.addAll(goodsDOList1);
-            }
-            int i = 0;
-            List<GoodsDO> resultList = new ArrayList<>();
-            for (GoodsDO goodsDO : goodsDOList) {
-                resultList.add(goodsDO);
-                if (i >= 3){
-                    break;
+                CategoryDOExample categoryDOExample = new CategoryDOExample();
+                categoryDOExample.createCriteria().andPidEqualTo(categoryDO.getId());
+                List<CategoryDO> categoryDOS = categoryDOMapper.selectByExample(categoryDOExample);
+                for (CategoryDO aDo : categoryDOS) {
+                    GoodsDOExample goodsDOExample = new GoodsDOExample();
+                    goodsDOExample.createCriteria().andCategoryIdEqualTo(aDo.getId());
+                    List<GoodsDO> goodsDOList1 = goodsDOMapper.selectByExample(goodsDOExample);
+                    goodsDOList.addAll(goodsDOList1);
                 }
-                i++;
-            }
-            categoryGoodsVO.setGoodsList(resultList);
-            categoryGoodsVOList.add(categoryGoodsVO);
+                int i = 0;
+                String goodsKeyValue = systemDOMapper.selectByPrimaryKey(11).getKeyValue();
+                List<GoodsDO> resultList = new ArrayList<>();
+                for (GoodsDO goodsDO : goodsDOList) {
+                    if (i >= Integer.valueOf(goodsKeyValue)) {
+                        break;
+                    }
+                    resultList.add(goodsDO);
+                    i++;
+                }
+                categoryGoodsVO.setGoodsList(resultList);
+                categoryGoodsVOList.add(categoryGoodsVO);
 
 //            GoodsDOExample goodsDOExample = new GoodsDOExample();
 //            goodsDOExample.createCriteria().andCategoryIdEqualTo(categoryDO.getId()).andDeletedEqualTo(false);
 //            List<GoodsDO> goodsDOList = goodsDOMapper.selectByExample(goodsDOExample);
 //            categoryGoodsVO.setGoodsDOList(goodsDOList);
 //            categoryGoodsVOList.add(categoryGoodsVO);
+            }
         }
         return categoryGoodsVOList;
     }

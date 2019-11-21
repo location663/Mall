@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -98,6 +99,24 @@ public class WxCouponController {
         if (i==0){
             throw new WxException("领取失败");
         }
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
+
+
+    /**
+     * 当前订单可用优惠券列表
+     * @param cartId
+     * @param grouponRulesId
+     * @return
+     */
+    @RequestMapping("coupon/selectlist")
+    public BaseReqVo couponSelectlist(Integer cartId,Integer grouponRulesId){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        List<Map> mapList =wxCouponService.couponSelectlist(cartId,grouponRulesId);
+
+        baseReqVo.setData(mapList);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
         return baseReqVo;

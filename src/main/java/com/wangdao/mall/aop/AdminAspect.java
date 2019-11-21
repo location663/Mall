@@ -70,7 +70,7 @@ public class AdminAspect {
 
 
     /**
-     * 异常日志
+     * 异常日志g
      */
     @AfterThrowing("AdminControllerMypointCut()")
     public void myafterThrowing() {

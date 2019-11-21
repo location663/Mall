@@ -30,8 +30,12 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //认证失败重定向的url
+<<<<<<< HEAD
 //        shiroFilterFactoryBean.setLoginUrl("/admin/redirect");
 
+=======
+        //shiroFilterFactoryBean.setLoginUrl("/auth/login");
+>>>>>>> 8a691d928a8097c97e816071c3ffa9b40e185220
         shiroFilterFactoryBean.setLoginUrl("/wx/filter/redirect");
 
         //配置的是拦截器 shiro提供的filter

@@ -34,6 +34,9 @@ public class GetOrderHandleOption {
             case 402:
                 handleOption = new OrderHandleOption(false,true,false,true,false,true,false);
                 break;
+            case 0:
+                handleOption = new OrderHandleOption(false,false,false,true,false,true,false);
+                break;
         }
         return handleOption;
     }
