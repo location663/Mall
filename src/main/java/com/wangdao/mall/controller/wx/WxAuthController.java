@@ -3,8 +3,10 @@ package com.wangdao.mall.controller.wx;
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.UserDO;
 import com.wangdao.mall.exception.WxException;
+import com.wangdao.mall.service.util.encryptutil.Md5Utils;
 import com.wangdao.mall.service.wx.WxUserService;
 import com.wangdao.mall.shiro.CustomToken;
+import org.apache.ibatis.annotations.Param;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.subject.Subject;
@@ -32,6 +34,7 @@ public class WxAuthController {
     @RequestMapping("auth/login")
     public BaseReqVo wxLogin(@RequestBody UserDO userDO, HttpServletRequest request){
         Subject subject = SecurityUtils.getSubject();
+//        CustomToken token = new CustomToken(userDO.getUsername(), Md5Utils.getMultiMd5(userDO.getPassword()), "wx");
         CustomToken token = new CustomToken(userDO.getUsername(), userDO.getPassword(), "wx");
         try {
             subject.login(token);
@@ -72,6 +75,7 @@ public class WxAuthController {
     public BaseReqVo userRegister(@RequestBody UserDO userDO) throws Exception {
         Map map = userService.userRegister(userDO);
         Subject subject = SecurityUtils.getSubject();
+//        CustomToken token = new CustomToken(userDO.getUsername(), Md5Utils.getMultiMd5(userDO.getPassword()), "wx");
         CustomToken token = new CustomToken(userDO.getUsername(), userDO.getPassword(), "wx");
         try {
             subject.login(token);
@@ -96,4 +100,6 @@ public class WxAuthController {
         userService.getRegCaptcha(mobile);
         return new BaseReqVo(null, "成功", 0);
     }
+
+
 }

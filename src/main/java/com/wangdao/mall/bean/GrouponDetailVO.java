@@ -9,7 +9,6 @@ public class GrouponDetailVO {
     private GrouponDO groupon;
     private Integer linkGrouponId;
     private List<UserDO> joiners;
-    private OrderDO orderInfo;
     private List<OrderGoodsDO> orderGoods;
     private List<GoodsDO> goodsList;
     private GrouponRulesDO rules;
@@ -21,4 +20,5 @@ public class GrouponDetailVO {
     private Integer orderId;
     private String orderSn;
     private String orderStatusText;
+    private OrderInfoVO orderInfo;
 }

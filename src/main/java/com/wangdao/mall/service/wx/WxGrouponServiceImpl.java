@@ -37,6 +37,9 @@ public class WxGrouponServiceImpl implements WxGrouponService {
     @Autowired
     OrderGoodsDOMapper orderGoodsDOMapper;
 
+    @Autowired
+    WxOrderServiceImpl orderService;
+
     /**
      * 团购列表
      * @param pageDTO
@@ -69,22 +72,25 @@ public class WxGrouponServiceImpl implements WxGrouponService {
         UserDO userDO = userDOMapper.selectByPrimaryKey(grouponDO.getCreatorUserId());
         List<UserDO> userDOS = grouponDOMapper.listJoiners(grouponId);
         GrouponRulesDO grouponRulesDO = grouponRulesDOMapper.selectByPrimaryKey(grouponDO.getRulesId());
-        GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(grouponRulesDO.getGoodsId());
-        OrderGoodsDOExample orderGoodsDOExample = new OrderGoodsDOExample();
-        orderGoodsDOExample.createCriteria().andDeletedEqualTo(false).andOrderIdEqualTo(grouponDO.getOrderId());
-        List<OrderGoodsDO> orderGoodsDOS = orderGoodsDOMapper.selectByExample(orderGoodsDOExample);
-        for (OrderGoodsDO orderGoodsDO : orderGoodsDOS) {
-            orderGoodsDO.setRetailPrice(orderGoodsDO.getPrice().doubleValue());
-            String specifications = orderGoodsDO.getSpecifications();
-            String[] strings = new String2ArrayTypeHandler().parseString2Array(specifications);
-            orderGoodsDO.setGoodsSpecificationValues(strings);
+
+        BaseReqVo orderDetail = orderService.getOrderDetail(grouponDO.getOrderId());
+        Map data = (Map) orderDetail.getData();
+        Object orderInfo = data.get("orderInfo");
+        List<OrderGoodsDO> orderGoods = (List<OrderGoodsDO>)data.get("orderGoods");
+        for (OrderGoodsDO orderGood : orderGoods) {
+            orderGood.setGoodsSpecificationValues(orderGood.getSpecifications());
+            orderGood.setRetailPrice(orderGood.getPrice().doubleValue());
         }
+
+
+        grouponDetailVO.setOrderGoods( orderGoods);
+        grouponDetailVO.setOrderInfo((OrderInfoVO) orderInfo);
         grouponDetailVO.setCreator(userDO);
         grouponDetailVO.setGroupon(grouponDO);
         grouponDetailVO.setJoiners(userDOS);
         grouponDetailVO.setLinkGrouponId(grouponId);
-        grouponDetailVO.setOrderGoods(orderGoodsDOS);
         grouponDetailVO.setRules(grouponRulesDO);
+
         return grouponDetailVO;
     }
 
