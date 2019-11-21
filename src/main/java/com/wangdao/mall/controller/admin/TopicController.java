@@ -3,6 +3,8 @@ package com.wangdao.mall.controller.admin;
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.TopicDO;
 import com.wangdao.mall.service.admin.TopicDOService;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +26,8 @@ public class TopicController {
     TopicDOService topicDOService;
 
     @RequestMapping("topic/list")
+    @RequiresPermissions(value = {"admin:topic:list","admin:topic:update","admin:topic:delete",
+            "admin:topic:create"},logical = Logical.OR)
     public BaseReqVo queryTopicList(Integer page, Integer limit, String title, String subtitle){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         Map<String, Object> map = topicDOService.queryTopocList(page, limit, title, subtitle);
@@ -34,6 +38,7 @@ public class TopicController {
     }
 
     @RequestMapping("topic/create")
+    @RequiresPermissions(value = {"admin:topic:create"})
     public BaseReqVo createTopic(@RequestBody TopicDO topicDO){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         TopicDO topicDO1 = topicDOService.creatTopic(topicDO);
@@ -44,6 +49,7 @@ public class TopicController {
     }
 
     @RequestMapping("topic/update")
+    @RequiresPermissions(value = {"admin:topic:update"})
     public BaseReqVo updateTopic(@RequestBody TopicDO topicDO){
         TopicDO topicDO1 = topicDOService.updateTopic(topicDO);
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
@@ -54,6 +60,7 @@ public class TopicController {
     }
 
     @RequestMapping("topic/delete")
+    @RequiresPermissions(value = {"admin:topic:delete"})
     public BaseReqVo deleteTopic(@RequestBody TopicDO topicDO){
         int delete = topicDOService.deleteTopic(topicDO);
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();

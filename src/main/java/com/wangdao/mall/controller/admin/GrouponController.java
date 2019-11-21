@@ -4,6 +4,8 @@ import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.GrouponRulesDO;
 import com.wangdao.mall.bean.RequestPageDTO;
 import com.wangdao.mall.service.admin.GrouponService;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +23,7 @@ public class GrouponController {
 
     /**
      * 团购活动列表
-     * @param pageDTO
+     * @param
      * @return
      */
 //    @RequestMapping("groupon/listRecord")
@@ -31,6 +33,8 @@ public class GrouponController {
 //        return baseReqVo;
 //    }
     @RequestMapping("groupon/listRecord")
+    @RequiresPermissions(value = {"admin:groupon:list","admin:groupon:update","admin:groupon:delete",
+            "admin:groupon:create","admin:groupon:read"},logical = Logical.OR)
     public BaseReqVo queryGrouponList(Integer page, Integer limit, Integer goodsId){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         Map<String, Object> map = grouponService.queryGrouponList(page, limit, goodsId);
