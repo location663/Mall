@@ -48,6 +48,8 @@ public class AuthController {
         CustomToken admin = new CustomToken(adminDO.getUsername(), adminDO.getPassword(), "admin");
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         request.getSession().setAttribute("admin", adminDO.getUsername());
+        String remoteIp = request.getRemoteAddr();
+        int i =adminService.updateLoginTimeAndIp(adminDO,remoteIp);
         try {
             subject.login(admin);
         } catch (AuthenticationException e) {

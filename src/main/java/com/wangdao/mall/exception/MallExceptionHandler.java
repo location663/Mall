@@ -2,6 +2,8 @@ package com.wangdao.mall.exception;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.wangdao.mall.bean.BaseReqVo;
+import org.apache.shiro.authz.AuthorizationException;
+import org.apache.shiro.authz.UnauthorizedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -26,10 +28,9 @@ public class MallExceptionHandler {
         return new BaseReqVo(null , e.getMessage(), 702);
     }
 
-
-    @ExceptionHandler(AuthenticationException.class)
-    public BaseReqVo Authhentication(AuthenticationException e){
-        return new BaseReqVo(null, null, 901);
+    @ExceptionHandler(AuthorizationException.class)
+    public BaseReqVo authors(AuthorizationException e){
+        return new BaseReqVo(null, "", 506);
     }
 
 }

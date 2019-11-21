@@ -10,7 +10,7 @@ import java.util.Map;
 
 public interface WxOrderService {
 
-    BaseReqVo submitOrder(Map<String, Object> map) throws JsonProcessingException;
+    BaseReqVo submitOrder(Map<String, Object> map) throws JsonProcessingException, WxException;
 
     BaseReqVo getOrderList(Integer showType, Integer page, Integer size);
 

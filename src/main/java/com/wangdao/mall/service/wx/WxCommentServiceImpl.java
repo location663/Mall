@@ -41,6 +41,9 @@ public class WxCommentServiceImpl implements WxCommentService {
             Integer userId = commentDO.getUserId();
             String[] picUrls = commentDO.getPicUrls();
             Date addTime = commentDO.getAddTime();
+            addTime.setMinutes(0);
+            addTime.setHours(0);
+            addTime.setSeconds(0);
             String content = commentDO.getContent();
             UserDO userDO = userDOMapper.selectByPrimaryKey(userId);
             TopicListDoBean.DataBean.UserInfoBean userInfoBean = new TopicListDoBean.DataBean.UserInfoBean(userDO.getNickname(), userDO.getAvatar());
