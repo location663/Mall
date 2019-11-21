@@ -93,6 +93,7 @@ public class AdminServiceImpl implements AdminService {
         }
 
         adminDO.setAddTime(new Date(System.currentTimeMillis()));
+        adminDO.setUpdateTime(new Date(System.currentTimeMillis()));
         int i = adminDOMapper.insertSelective(adminDO);      // 做 “增” 的操作
         AdminDOExample adminDOExample = new AdminDOExample();
         adminDOExample.createCriteria().andUsernameEqualTo(adminDO.getUsername()).andPasswordEqualTo(adminDO.getPassword()).andDeletedEqualTo(false);
