@@ -9,6 +9,7 @@ import com.wangdao.mall.service.util.StorageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
@@ -398,6 +399,11 @@ public class MarketServiceImpl implements MarketService{
         return keywordDO1;
     }
 
+//    @Override
+//    public int refundOrder(Integer orderId, Integer refundMoney) {
+//
+//    }
+
     /**
      * 行政区域中间方法
      * @param id
@@ -432,5 +438,27 @@ public class MarketServiceImpl implements MarketService{
         categoryDOExample.createCriteria().andPidEqualTo(pid).andLevelEqualTo(level).andDeletedEqualTo(false);
         List<CategoryDO> categoryDOList = categoryDOMapper.selectByExample(categoryDOExample);
         return categoryDOList;
+    }
+
+    /**
+     * 订单发货
+     * @param map
+     * @return
+     */
+    @Override
+    public int updateOrderShip(Map<String, Object> map) {
+        Integer orderId = (Integer) map.get("orderId");
+        String shipChannel = (String) map.get("shipChannel");
+        String shipSn = (String) map.get("shipSn");
+
+        OrderDO orderDO = new OrderDO();
+        orderDO.setId(orderId);
+        orderDO.setUpdateTime(new java.util.Date());
+        orderDO.setShipSn(shipSn);
+        orderDO.setShipTime(new java.util.Date());
+        orderDO.setShipChannel(shipChannel);
+        orderDO.setOrderStatus((short) 301);
+        int res = orderDOMapper.updateByPrimaryKeySelective(orderDO);
+        return res;
     }
 }

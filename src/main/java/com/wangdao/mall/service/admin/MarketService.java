@@ -48,4 +48,8 @@ public interface MarketService {
     int deleteKeyword(KeywordDO keywordDO);
 
     KeywordDO updateKeyword(KeywordDO keywordDO);
+
+//    int refundOrder(Integer orderId, Integer refundMoney);
+
+    int updateOrderShip(Map<String, Object> map);
 }

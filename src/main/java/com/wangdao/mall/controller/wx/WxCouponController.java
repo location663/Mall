@@ -8,6 +8,7 @@
 package com.wangdao.mall.controller.wx;
 
 import com.wangdao.mall.bean.BaseReqVo;
+import com.wangdao.mall.bean.CouponDO;
 import com.wangdao.mall.bean.CouponUserDO;
 import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.service.wx.WxCouponService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -76,6 +78,45 @@ public class WxCouponController {
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         HashMap<String, Object> map = wxCouponService.couponMylist(status,page,size);
         baseReqVo.setData(map);
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
+
+
+
+
+    /**
+     * 兑换优惠券
+     * @param couponDO
+     * @return
+     */
+    @RequestMapping("coupon/exchange")
+    public BaseReqVo couponExchange(@RequestBody CouponDO couponDO) throws WxException {
+        String code = couponDO.getCode();  //只用到传过来的兑换码code
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        Integer i = wxCouponService.couponExchange(code);
+        if (i==0){
+            throw new WxException("领取失败");
+        }
+        baseReqVo.setErrmsg("成功");
+        baseReqVo.setErrno(0);
+        return baseReqVo;
+    }
+
+
+    /**
+     * 当前订单可用优惠券列表
+     * @param cartId
+     * @param grouponRulesId
+     * @return
+     */
+    @RequestMapping("coupon/selectlist")
+    public BaseReqVo couponSelectlist(Integer cartId,Integer grouponRulesId){
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        List<Map> mapList =wxCouponService.couponSelectlist(cartId,grouponRulesId);
+
+        baseReqVo.setData(mapList);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
         return baseReqVo;

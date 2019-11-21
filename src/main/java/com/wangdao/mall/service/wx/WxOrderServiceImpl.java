@@ -730,4 +730,21 @@ public class WxOrderServiceImpl implements WxOrderService {
         orderDOMapper.updateByPrimaryKeySelective(orderDO);
         return new BaseReqVo(null,"成功",0);
     }
+
+    /**
+     * 评价页订单
+     * @param orderId
+     * @param goodsId
+     * @return
+     */
+    @Override
+    public OrderGoodsDO goodsOrder(Integer orderId, Integer goodsId) {
+        OrderGoodsDOExample orderGoodsDOExample = new OrderGoodsDOExample();
+        orderGoodsDOExample.createCriteria().andDeletedEqualTo(false)
+                .andOrderIdEqualTo(orderId).andGoodsIdEqualTo(goodsId);
+        List<OrderGoodsDO> orderGoodsDOS = orderGoodsDOMapper.selectByExample(orderGoodsDOExample);
+        OrderGoodsDO orderGoodsDO = orderGoodsDOS.get(0);
+        orderGoodsDO.setGoodsSpecificationValues(orderGoodsDO.getSpecifications());
+        return orderGoodsDO;
+    }
 }

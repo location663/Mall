@@ -54,6 +54,9 @@ public class WxGoodsServiceImpl implements WxGoodsService {
     @Autowired
     CollectDOMapper collectDOMapper;
 
+    @Autowired
+    GrouponRulesDOMapper grouponRulesDOMapper;
+
 
     /**
      * //WX统计商品总数
@@ -305,11 +308,21 @@ public class WxGoodsServiceImpl implements WxGoodsService {
         GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(id);
         map.put("info",goodsDO);
 
-        //封装团购商品列表groupon[]  后续根据情况需要改进
-        GrouponDOExample grouponDOExample = new GrouponDOExample();
-        grouponDOExample.createCriteria().andDeletedEqualTo(false);
-        List<GrouponDO> grouponDOS = grouponDOMapper.selectByExample(grouponDOExample);
-        map.put("groupon",grouponDOS);
+        //封装groupon[] 当前商品的团购规则表 注意团购过期时间 和delete
+        ArrayList<GrouponRulesDO> grouponRulesDOS = new ArrayList<>();
+
+        GrouponRulesDOExample grouponRulesDOExample = new GrouponRulesDOExample();
+        grouponRulesDOExample.createCriteria().andDeletedEqualTo(false).andGoodsIdEqualTo(id);
+        List<GrouponRulesDO> grouponRulesDOList = grouponRulesDOMapper.selectByExample(grouponRulesDOExample);
+
+        for (GrouponRulesDO grouponRulesDO : grouponRulesDOList) {
+            if (grouponRulesDO.getExpireTime() != null) {    //应该检查是否过期
+                if (!(new Date().after(grouponRulesDO.getExpireTime()))) {  //没过期
+                    grouponRulesDOS.add(grouponRulesDO);
+                }
+            }
+        }
+        map.put("groupon",grouponRulesDOS);
 
         //封装全部问答 issue 后续根据情况需要改进
         IssueDOExample issueDOExample = new IssueDOExample();
