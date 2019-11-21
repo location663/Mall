@@ -159,11 +159,11 @@ public class WxCartServiceImpl implements WxCartService {
         if(cartId==0) {
             Map index = index(userDO);
             Map cartTotal = (Map) index.get("cartTotal");
-            totalPrice = (Integer) cartTotal.get("checkedGoodsCount");
+            totalPrice = (Integer) cartTotal.get("checkedGoodsAmount");
             dataBean.setGoodsTotalPrice(totalPrice);
             //查询checkedgoodslist
             cartDOExample.clear();
-            cartDOExample.createCriteria().andCheckedEqualTo(true).andDeletedEqualTo(true).andUserIdEqualTo(userDO.getId());
+            cartDOExample.createCriteria().andCheckedEqualTo(true).andDeletedEqualTo(false).andUserIdEqualTo(userDO.getId());
             List<CartDO> cartDOS = cartDOMapper.selectByExample(cartDOExample);
             dataBean.setCheckedGoodsList(cartDOS);
         }
