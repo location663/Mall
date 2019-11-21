@@ -54,8 +54,8 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/wx/coupon/selectlist", "user");
         filterChainDefinitionMap.put("/wx/coupon/receive", "user");
         filterChainDefinitionMap.put("/wx/coupon/exchange", "user");
-        filterChainDefinitionMap.put("/wx/storage/upload", "user");
-        filterChainDefinitionMap.put("/wx/user/index", "user");
+//        filterChainDefinitionMap.put("/wx/storage/upload", "user");
+//        filterChainDefinitionMap.put("/wx/user/index", "user");
 
         filterChainDefinitionMap.put("/wx/cart/index", "user");
         filterChainDefinitionMap.put("/wx/cart/add", "user");

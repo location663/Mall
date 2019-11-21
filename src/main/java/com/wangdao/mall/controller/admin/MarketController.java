@@ -176,6 +176,23 @@ public class MarketController {
     }
 
     /**
+     * 订单发货
+     * @param map
+     * @return
+     */
+    @RequestMapping("order/ship")
+    public BaseReqVo orderDetail(@RequestBody Map<String, Object> map){
+        int res = marketService.updateOrderShip(map);
+        if (res == 1) {
+            BaseReqVo baseReqVo = new BaseReqVo(null, "成功", 0);
+            return baseReqVo;
+        } else{
+            BaseReqVo baseReqVo = new BaseReqVo(null, "失败", 505);
+            return baseReqVo;
+        }
+    }
+
+    /**
      * 通用问题列表
      * @param requestPageDTO
      * @return
@@ -270,4 +287,12 @@ public class MarketController {
         BaseReqVo baseReqVo = new BaseReqVo(keywordDO1, "成功", 0);
         return baseReqVo;
     }
+
+//    @RequestMapping("order/refund")
+//    public BaseReqVo refundOrder(@RequestBody Map<String, Integer> map){
+//        Integer orderId = map.get("orderId");
+//        Integer refundMoney = map.get("refundMoney");
+//        int refund = marketService.refundOrder(orderId, refundMoney);
+//    }
+
 }

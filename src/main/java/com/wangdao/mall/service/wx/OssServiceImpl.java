@@ -36,8 +36,9 @@ public class OssServiceImpl implements OssService{
         String endPoint = aliyunComponent.getOss().getEndPoint();
 
         String originalFilename = file.getOriginalFilename();
+        String substring = originalFilename.substring(originalFilename.lastIndexOf("."));
         //存到服务器上的文件名
-        String key = UUID.randomUUID().toString().replaceAll("-", "") + originalFilename;
+        String key = UUID.randomUUID().toString().replaceAll("-", "") + substring;
         InputStream inputStream = null;
         try {
             inputStream = file.getInputStream();

@@ -48,8 +48,10 @@ public class WxUserServiceImpl implements WxUserService {
      * @return
      */
     @Override
-    public Map login() {
+    public Map login(String lastLoginIp) {
         UserDO userDO  = (UserDO) SecurityUtils.getSubject().getPrincipal();
+        userDO.setLastLoginIp(lastLoginIp);
+        userDO.setLastLoginTime(new Date());
         HashMap<Object, Object> map2 = new HashMap<>();
         map2.put("avatarUrl", userDO.getAvatar());
         map2.put("nickName", userDO.getNickname());
@@ -182,6 +184,9 @@ public class WxUserServiceImpl implements WxUserService {
         userDO.setWeixinOpenid(userDO.getWxCode());
         userDO.setAddTime(new Date());
         userDO.setUpdateTime(new Date());
+        userDO.setNickname(userDO.getUsername());
+        userDO.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
+        userDO.setStatus((byte) 0);
 //        userDO.setPassword(Md5Utils.getMultiMd5(userDO.getPassword()));
         userDOMapper.insertSelective(userDO);
         HashMap<String, Object> map = new HashMap<>();

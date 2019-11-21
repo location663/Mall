@@ -6,7 +6,7 @@ import com.wangdao.mall.exception.WxException;
 import java.util.Map;
 
 public interface WxUserService {
-    Map login();
+    Map login(String lastLoginIp);
 
     Map userIndex();
 
