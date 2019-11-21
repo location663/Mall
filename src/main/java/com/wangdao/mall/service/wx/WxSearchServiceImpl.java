@@ -49,11 +49,9 @@ public class WxSearchServiceImpl implements WxSearchService{
                 map1.put("keyword",searchHistoryDO.getKeyword());
                 historyKeywordList.add(map1);
             }
-        }else {
-            map.put("historyKeywordList",historyKeywordList);//用户未登录，直接返回空List
         }
 
-
+        map.put("historyKeywordList",historyKeywordList);//用户未登录，直接返回空List
         //封装 defaultKeyword
         KeywordDOExample keywordDOExample = new KeywordDOExample();
         //必须是"isHot"=true和"deleted"=false
