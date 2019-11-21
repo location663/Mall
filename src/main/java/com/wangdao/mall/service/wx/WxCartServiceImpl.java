@@ -167,7 +167,7 @@ public class WxCartServiceImpl implements WxCartService {
         dataBean.setActualPrice(totalPrice - dataBean.getGrouponPrice() - dataBean.getCouponPrice());
         //查询邮费
         SystemDO systemDO = systemDOMapper.selectByPrimaryKey(5);
-        if(dataBean.getActualPrice()<= Integer.parseInt(systemDO.getKeyValue())){
+        if(dataBean.getActualPrice()<= Double.valueOf(systemDO.getKeyValue())){
             dataBean.setFreightPrice(8);
         }else {
             dataBean.setFreightPrice(0);
