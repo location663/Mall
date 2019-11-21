@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.wangdao.mall.bean.*;
+import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,12 +37,17 @@ public class WxCartServiceImpl implements WxCartService {
     @Autowired
     CouponDOMapper couponDOMapper;
     @Autowired
+    CouponUserDOMapper couponUserDOMapper;
+    @Autowired
     SystemDOMapper systemDOMapper;
     @Autowired
     GrouponRulesDOMapper grouponRulesDOMapper;
     @Override
-    public void add(Integer goodsId, Integer number, Integer productId, UserDO userDO) {
+    public void add(Integer goodsId, Integer number, Integer productId, UserDO userDO) throws WxException {
         GoodsProductDO productDO = productDOMapper.selectByPrimaryKey(productId);
+        if(number>productDO.getNumber()){
+            throw new WxException("库存不足");
+        }
         GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(productDO.getGoodsId());
         CartDO cartDO = null;
         try {
@@ -84,17 +90,20 @@ public class WxCartServiceImpl implements WxCartService {
         for (CartDO cartDO : cartDOS1) {
             ccount+=(cartDO.getPrice().intValue()*cartDO.getNumber());
         }
-        map.put("checkedGoodsAmount",cAmount);
-        map.put("checkedGoodsCount",ccount);
-        map.put("goodsAmount",amount);
-        map.put("goodsCount",count);
+        map.put("checkedGoodsAmount",ccount);
+        map.put("checkedGoodsCount",cAmount);
+        map.put("goodsAmount",count);
+        map.put("goodsCount",amount);
         returnmap.put("cartTotal",map);
         return returnmap;
     }
 
     @Override
-    public Integer fastAdd(Integer goodsId, Integer number, Integer productId, UserDO userDO) {
+    public Integer fastAdd(Integer goodsId, Integer number, Integer productId, UserDO userDO) throws WxException {
         GoodsProductDO productDO = productDOMapper.selectByPrimaryKey((productId));
+        if(number>productDO.getNumber()){
+            throw new WxException("库存不足");
+        }
         GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(productDO.getGoodsId());
         CartDO cartDO = null;
         try {
@@ -133,9 +142,11 @@ public class WxCartServiceImpl implements WxCartService {
         dataBean.setAddressId(addressId);
         //查询优惠卷
         dataBean.setCouponId(couponId);
-        CouponDO couponDO = couponDOMapper.selectByPrimaryKey(couponId);
-        if(couponDO!=null){
-        dataBean.setCouponPrice(couponDO.getTotal());}
+        CouponUserDO couponUserDO = couponUserDOMapper.selectByPrimaryKey(couponId);
+        if(couponUserDO!=null){
+            CouponDO couponDO = couponDOMapper.selectByPrimaryKey(couponUserDO.getCouponId());
+            dataBean.setCouponPrice(couponDO.getDiscount().doubleValue());
+        }
         //查询团购
         GrouponRulesDO grouponRulesDO = grouponRulesDOMapper.selectByPrimaryKey(grouponRulesId);
         if(grouponRulesDO!=null){
@@ -152,7 +163,7 @@ public class WxCartServiceImpl implements WxCartService {
             dataBean.setGoodsTotalPrice(totalPrice);
             //查询checkedgoodslist
             cartDOExample.clear();
-            cartDOExample.createCriteria().andCheckedEqualTo(true);
+            cartDOExample.createCriteria().andCheckedEqualTo(true).andDeletedEqualTo(true).andUserIdEqualTo(userDO.getId());
             List<CartDO> cartDOS = cartDOMapper.selectByExample(cartDOExample);
             dataBean.setCheckedGoodsList(cartDOS);
         }

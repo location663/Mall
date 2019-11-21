@@ -19,6 +19,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("wx/comment")
 public class WxCommentController {
@@ -36,4 +38,9 @@ public class WxCommentController {
         CommentDO commentDO1=commentService.post(commentDO,userDO);
         return new BaseReqVo(commentDO1,"成功",0);
     }
+   @RequestMapping("count")
+    public BaseReqVo count(Integer valueId,Integer type){
+        Map map=commentService.count(valueId,type);
+        return new BaseReqVo<>(map,"成功",0);
+   }
 }
