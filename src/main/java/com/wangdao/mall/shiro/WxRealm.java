@@ -35,8 +35,8 @@ public class WxRealm extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        UserDO primaryPrincipal = (UserDO) principalCollection.getPrimaryPrincipal();
-        String username = primaryPrincipal.getUsername();
+//        UserDO primaryPrincipal = (UserDO) principalCollection.getPrimaryPrincipal();
+//        String username = primaryPrincipal.getUsername();
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
 //        List<String> permissions = userMapper.selectPermissionByUsername(username);
 

@@ -42,4 +42,6 @@ public interface AdminService {
      List<String> selectPermsLeft(Integer roleId);
 
      String selectRoleName(Integer roleId);
+
+    int updateLoginTimeAndIp(AdminDO adminDO,String remoteIp);
 }

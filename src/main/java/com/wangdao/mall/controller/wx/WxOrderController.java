@@ -21,7 +21,7 @@ public class WxOrderController {
     WxOrderService wxOrderService;
 
     @RequestMapping("order/submit")
-    public BaseReqVo submitOrder(@RequestBody Map<String, Object> map) throws JsonProcessingException {
+    public BaseReqVo submitOrder(@RequestBody Map<String, Object> map) throws JsonProcessingException, WxException {
         BaseReqVo baseReqVo = wxOrderService.submitOrder(map);
         return baseReqVo;
     }
