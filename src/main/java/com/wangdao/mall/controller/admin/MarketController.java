@@ -1,6 +1,7 @@
 package com.wangdao.mall.controller.admin;
 
 import com.wangdao.mall.bean.*;
+import com.wangdao.mall.exception.SystemBusyBxception;
 import com.wangdao.mall.service.admin.MarketService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -288,11 +289,15 @@ public class MarketController {
         return baseReqVo;
     }
 
-//    @RequestMapping("order/refund")
-//    public BaseReqVo refundOrder(@RequestBody Map<String, Integer> map){
-//        Integer orderId = map.get("orderId");
-//        Integer refundMoney = map.get("refundMoney");
-//        int refund = marketService.refundOrder(orderId, refundMoney);
-//    }
+    @RequestMapping("order/refund")
+    public BaseReqVo refundOrder(@RequestBody Map<String, Integer> map) throws SystemBusyBxception {
+        Integer orderId = map.get("orderId");
+        Integer refundMoney = map.get("refundMoney");
+        int refund = marketService.refundOrder(orderId, refundMoney);
+        if(refund != 1){
+            return new BaseReqVo(null, "系统繁忙", 704);
+        }
+        return new BaseReqVo(null, "成功",0);
+    }
 
 }

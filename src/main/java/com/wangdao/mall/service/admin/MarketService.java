@@ -1,6 +1,7 @@
 package com.wangdao.mall.service.admin;
 
 import com.wangdao.mall.bean.*;
+import com.wangdao.mall.exception.SystemBusyBxception;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -49,7 +50,7 @@ public interface MarketService {
 
     KeywordDO updateKeyword(KeywordDO keywordDO);
 
-//    int refundOrder(Integer orderId, Integer refundMoney);
+    int refundOrder(Integer orderId, Integer refundMoney) throws SystemBusyBxception;
 
     int updateOrderShip(Map<String, Object> map);
 }
