@@ -9,6 +9,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
 @SpringBootApplication
 @MapperScan(basePackages = "com.wangdao.mall.mapper")
+@EnableAspectJAutoProxy
 public class MallApplication {
 
     public static void main(String[] args) {

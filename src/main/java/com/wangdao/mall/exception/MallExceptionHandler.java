@@ -27,4 +27,9 @@ public class MallExceptionHandler {
     }
 
 
+    @ExceptionHandler(AuthenticationException.class)
+    public BaseReqVo Authhentication(AuthenticationException e){
+        return new BaseReqVo(null, null, 901);
+    }
+
 }

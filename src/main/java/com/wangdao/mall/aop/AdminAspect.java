@@ -38,22 +38,24 @@ public class AdminAspect {
 
     @Before("AdminControllerMypointCut()")
     public void mybefore(JoinPoint joinPoint) throws Throwable {
-        String admin = null;
         logDO = new LogDO();
         request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        admin = request.getHeader("X-Litemall-Admin-Token");
+        String admin = (String)request.getSession().getAttribute("admin");
+        logDO.setAdmin(admin);
         logDO.setIp(getRemoteIp(request));
         logDO.setAction(getAction(request));
-        logDO.setStatus(true);
         logDO.setAddTime(new Date(System.currentTimeMillis()));
         logDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        logDO.setStatus(true);
         logDO.setDeleted(false);
         logDO.setType(getActionType(request));
-        if (admin != null) {
-            logDO.setAdmin(admin);
-        } else {
-            logDO.setAdmin("");
-        }
+        logDO.setResult("成功");
+        logDO.setComment("");
+//        if (request.getRequestURI().contains("logout")) {
+//            request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//            String admin1 = (String) request.getSession().getAttribute("admin");
+//            logDO.setAdmin(admin1);
+//        }
     }
 
     /**
@@ -61,10 +63,12 @@ public class AdminAspect {
      */
     @AfterReturning("AdminControllerMypointCut()")
     public void myAfterReturning(){
-        if (!request.getRequestURI().contains("list")){
-            if (!request.getMethod().equals("OPTIONS")){
-                logService.insertLog(logDO);
-            }
+        if (request.getRequestURI().contains("login")){
+            String admin = (String) request.getSession().getAttribute("admin");
+            logDO.setAdmin(admin);
+        }
+        if (!request.getMethod().equals("OPTIONS")){
+            logService.insertLog(logDO);
         }
     }
 
@@ -76,7 +80,8 @@ public class AdminAspect {
     public void myafterThrowing() {
         logDO.setStatus(false);
         String requestURI = request.getRequestURI();
-        String admin = request.getParameter("token");
+        String admin = (String)request.getSession().getAttribute("admin");
+        logDO.setAdmin(admin);
         if (requestURI != null) {
             if (requestURI.contains("login")) {
                 logDO.setComment("帐号或密码错误");
@@ -95,9 +100,7 @@ public class AdminAspect {
                 logDO.setComment("查询异常");
             }
         }
-        if (!request.getRequestURI().contains("list")) {
-            logService.insertLog(logDO);
-        }
+        logService.insertLog(logDO);
     }
 
 
@@ -133,22 +136,28 @@ public class AdminAspect {
             return "编辑管理员";
         } else if (requestURI.contains("admin/delete")) {
             return "删除管理员";
-        }else if (requestURI.contains("config/order")){
-            return "订单配置";
         }else if (requestURI.contains("role/create")){
             return "创建管理权限";
         }else if (requestURI.contains("role/update")){
             return "编辑管理权限";
         }else if (requestURI.contains("role/delete")){
             return "删除管理权限";
+        }else if (requestURI.contains("config/order") && request.getMethod().equals("GET")){
+            return "查询订单配置";
+        }else if (requestURI.contains("config/order") && request.getMethod().equals("POST")){
+            return "编辑订单配置";
         }else if (requestURI.contains("config/express") && request.getMethod().equals("GET")){
-            return "获取运费配置";
+            return "查询运费配置";
         }else if (requestURI.contains("config/express") && request.getMethod().equals("POST")){
-            return "运费配置";
-        }else if (requestURI.contains("config/mall")){
-            return "商城配置" ;
-        }else if (requestURI.contains("config/wx")){
-            return "小程序配置";
+            return "编辑运费配置";
+        }else if (requestURI.contains("config/mall") && request.getMethod().equals("GET")){
+            return "查询商城配置" ;
+        }else if (requestURI.contains("config/mall") && request.getMethod().equals("POST")){
+            return "编辑商城配置";
+        }else if (requestURI.contains("config/wx") && request.getMethod().equals("GET")){
+            return "查询小程序配置";
+        }else if (requestURI.contains("config/wx") && request.getMethod().equals("POST")){
+            return "编辑小程序配置";
         }else if (requestURI.contains("create")) {
             return "创建";
         } else if (requestURI.contains("logout")) {
@@ -160,7 +169,7 @@ public class AdminAspect {
         } else if (requestURI.contains("read")) {
             return "查看详情";
         } else {
-            return "登录";
+            return "浏览";
         }
     }
 

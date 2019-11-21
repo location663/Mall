@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
+
 @Data
 public class PermissionDO {
     private Integer id;
@@ -11,8 +13,10 @@ public class PermissionDO {
     private Integer roleId;
 
     private String permission;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date addTime;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date updateTime;
 
@@ -77,4 +81,5 @@ public class PermissionDO {
     public void setDeleted(Boolean deleted) {
         this.deleted = deleted;
     }
+
 }
