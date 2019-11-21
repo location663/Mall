@@ -37,6 +37,8 @@ public class WxCartServiceImpl implements WxCartService {
     @Autowired
     CouponDOMapper couponDOMapper;
     @Autowired
+    CouponUserDOMapper couponUserDOMapper;
+    @Autowired
     SystemDOMapper systemDOMapper;
     @Autowired
     GrouponRulesDOMapper grouponRulesDOMapper;
@@ -140,9 +142,11 @@ public class WxCartServiceImpl implements WxCartService {
         dataBean.setAddressId(addressId);
         //查询优惠卷
         dataBean.setCouponId(couponId);
-        CouponDO couponDO = couponDOMapper.selectByPrimaryKey(couponId);
-        if(couponDO!=null){
-        dataBean.setCouponPrice(couponDO.getTotal());}
+        CouponUserDO couponUserDO = couponUserDOMapper.selectByPrimaryKey(couponId);
+        if(couponUserDO!=null){
+            CouponDO couponDO = couponDOMapper.selectByPrimaryKey(couponUserDO.getCouponId());
+            dataBean.setCouponPrice(couponDO.getDiscount().doubleValue());
+        }
         //查询团购
         GrouponRulesDO grouponRulesDO = grouponRulesDOMapper.selectByPrimaryKey(grouponRulesId);
         if(grouponRulesDO!=null){
@@ -159,7 +163,7 @@ public class WxCartServiceImpl implements WxCartService {
             dataBean.setGoodsTotalPrice(totalPrice);
             //查询checkedgoodslist
             cartDOExample.clear();
-            cartDOExample.createCriteria().andCheckedEqualTo(true).andDeletedEqualTo(true);
+            cartDOExample.createCriteria().andCheckedEqualTo(true).andDeletedEqualTo(true).andUserIdEqualTo(userDO.getId());
             List<CartDO> cartDOS = cartDOMapper.selectByExample(cartDOExample);
             dataBean.setCheckedGoodsList(cartDOS);
         }
