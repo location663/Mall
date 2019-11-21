@@ -5,6 +5,8 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
+
 @Data
 public class OrderGoodsDO {
     private Integer id;
@@ -34,6 +36,10 @@ public class OrderGoodsDO {
     private Date updateTime;
 
     private Boolean deleted;
+
+    private String[] goodsSpecificationValues;
+
+    private Double retailPrice;
 
     public OrderGoodsDO() {
     }

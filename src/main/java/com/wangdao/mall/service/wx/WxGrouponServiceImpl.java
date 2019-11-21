@@ -2,6 +2,7 @@ package com.wangdao.mall.service.wx;
 
 import com.github.pagehelper.PageHelper;
 import com.wangdao.mall.bean.*;
+import com.wangdao.mall.handler.String2ArrayTypeHandler;
 import com.wangdao.mall.mapper.*;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,12 @@ public class WxGrouponServiceImpl implements WxGrouponService {
     @Autowired
     OrderDOMapper orderDOMapper;
 
+    @Autowired
+    OrderGoodsDOMapper orderGoodsDOMapper;
+
+    @Autowired
+    WxOrderServiceImpl orderService;
+
     /**
      * 团购列表
      * @param pageDTO
@@ -60,8 +67,31 @@ public class WxGrouponServiceImpl implements WxGrouponService {
      */
     @Override
     public GrouponDetailVO selectById(Integer grouponId) {
+        GrouponDetailVO grouponDetailVO = new GrouponDetailVO();
         GrouponDO grouponDO = grouponDOMapper.selectByPrimaryKey(grouponId);
-        return null;
+        UserDO userDO = userDOMapper.selectByPrimaryKey(grouponDO.getCreatorUserId());
+        List<UserDO> userDOS = grouponDOMapper.listJoiners(grouponId);
+        GrouponRulesDO grouponRulesDO = grouponRulesDOMapper.selectByPrimaryKey(grouponDO.getRulesId());
+
+        BaseReqVo orderDetail = orderService.getOrderDetail(grouponDO.getOrderId());
+        Map data = (Map) orderDetail.getData();
+        Object orderInfo = data.get("orderInfo");
+        List<OrderGoodsDO> orderGoods = (List<OrderGoodsDO>)data.get("orderGoods");
+        for (OrderGoodsDO orderGood : orderGoods) {
+            orderGood.setGoodsSpecificationValues(orderGood.getSpecifications());
+            orderGood.setRetailPrice(orderGood.getPrice().doubleValue());
+        }
+
+
+        grouponDetailVO.setOrderGoods( orderGoods);
+        grouponDetailVO.setOrderInfo((OrderInfoVO) orderInfo);
+        grouponDetailVO.setCreator(userDO);
+        grouponDetailVO.setGroupon(grouponDO);
+        grouponDetailVO.setJoiners(userDOS);
+        grouponDetailVO.setLinkGrouponId(grouponId);
+        grouponDetailVO.setRules(grouponRulesDO);
+
+        return grouponDetailVO;
     }
 
     /**
