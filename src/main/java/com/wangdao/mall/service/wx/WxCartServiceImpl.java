@@ -88,10 +88,10 @@ public class WxCartServiceImpl implements WxCartService {
         for (CartDO cartDO : cartDOS1) {
             ccount+=(cartDO.getPrice().intValue()*cartDO.getNumber());
         }
-        map.put("checkedGoodsAmount",cAmount);
-        map.put("checkedGoodsCount",ccount);
-        map.put("goodsAmount",amount);
-        map.put("goodsCount",count);
+        map.put("checkedGoodsAmount",ccount);
+        map.put("checkedGoodsCount",cAmount);
+        map.put("goodsAmount",count);
+        map.put("goodsCount",amount);
         returnmap.put("cartTotal",map);
         return returnmap;
     }

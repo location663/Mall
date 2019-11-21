@@ -67,6 +67,7 @@ public class CartController {
         }
         cartService.checked(products,truechecked);
         Map index = cartService.index(userDO);
+
         return new BaseReqVo<>(index,"成功",0);
     }
     @RequestMapping("checkout")
