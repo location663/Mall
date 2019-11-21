@@ -40,7 +40,6 @@ public class WxAuthController {
         }
         Map map = userService.login();
         map.put("token", request.getSession().getId());
-
         return new BaseReqVo(map, "成功", 0);
     }
 
