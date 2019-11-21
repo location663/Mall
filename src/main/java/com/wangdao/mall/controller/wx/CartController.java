@@ -95,7 +95,7 @@ public class CartController {
     public BaseReqVo goodsCount(){
         Subject subject = SecurityUtils.getSubject();
         UserDO userDO = (UserDO)subject.getPrincipal();
-        if(userDO==null){
+        if (userDO == null){
             return new BaseReqVo<>(0,"成功",0);
         }
         int i = cartService.goodsCount(userDO);

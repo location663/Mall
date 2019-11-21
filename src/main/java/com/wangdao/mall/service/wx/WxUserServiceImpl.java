@@ -12,6 +12,7 @@ import com.wangdao.mall.mapper.CommentDOMapper;
 import com.wangdao.mall.mapper.OrderDOMapper;
 import com.wangdao.mall.mapper.OrderGoodsDOMapper;
 import com.wangdao.mall.mapper.UserDOMapper;
+import com.wangdao.mall.service.util.encryptutil.Md5Utils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -159,6 +160,7 @@ public class WxUserServiceImpl implements WxUserService {
         userDO.setWeixinOpenid(userDO.getWxCode());
         userDO.setAddTime(new Date());
         userDO.setUpdateTime(new Date());
+//        userDO.setPassword(Md5Utils.getMultiMd5(userDO.getPassword()));
         userDOMapper.insertSelective(userDO);
         HashMap<String, Object> map = new HashMap<>();
         map.put("userInfo", userDO);
