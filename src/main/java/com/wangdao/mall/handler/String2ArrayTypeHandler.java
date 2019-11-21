@@ -59,7 +59,7 @@ public class String2ArrayTypeHandler implements TypeHandler<String[]> {
         return null;
     }
 
-    private String[] parseString2Array(String arrayString){
+    public String[] parseString2Array(String arrayString){
         ObjectMapper objectMapper = new ObjectMapper();
         String[] strings = new String[0];
         try {

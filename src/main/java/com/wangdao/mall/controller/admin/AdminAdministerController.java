@@ -500,6 +500,10 @@ public class AdminAdministerController {
     @RequestMapping(value = "/role/permissions",method = {RequestMethod.POST})
     @RequiresPermissions(value = {"admin:role:permissions"})
     public BaseReqVo listPermissions(@RequestBody PermissionsVO permissionsVO){
+        if (permissionsVO.getRoleId().equals(1)){
+            BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "你不能修改超级管理员的权限", 500);
+            return baseReqVo;
+        }
         adminService.updateRolePermissions(permissionsVO);
         BaseReqVo baseReqVo = new BaseReqVo<>(null, "成功",0);
         return baseReqVo;

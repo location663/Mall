@@ -91,4 +91,14 @@ public class CartController {
         Map returnmap=cartService.delete(productIds,userDO);
         return new BaseReqVo<>(returnmap,"成功",0);
     }
+    @RequestMapping("goodscount")
+    public BaseReqVo goodsCount(){
+        Subject subject = SecurityUtils.getSubject();
+        UserDO userDO = (UserDO)subject.getPrincipal();
+        if (userDO == null){
+            return new BaseReqVo<>(0,"成功",0);
+        }
+        int i = cartService.goodsCount(userDO);
+        return new BaseReqVo<>(i,"成功",0);
+    }
 }
