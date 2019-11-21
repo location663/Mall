@@ -11,20 +11,6 @@ import java.util.Date;
 
 @SpringBootTest
 class MallApplicationTests {
-
-    @Autowired
-    AliyunComponent aliyunComponent;
-
-
-    @Test
-    public void myTest() {
-//        Calendar ca = Calendar.getInstance();
-//        ca.setTime(new Date());
-//        System.out.println("ca初始化：" + ca.getTime());
-//        ca.add(Calendar.DATE, 1);
-//        System.out.println("增加天数以后的日期：" + ca.getTime());
-
-    }
 }
 
 

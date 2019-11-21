@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +46,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/admin/list")
+    @RequiresPermissions(value = {"admin:admin:list","admin:admin:update","damin:admin:read","admin:admin:delete","admin:admin:create"},logical = Logical.OR)
     public BaseReqVo selectAllAdmin(String username,Integer page,Integer limit,String sort,String order){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         Map<String, Object> map = adminService.selectAllAdmin(username,page,limit,sort,order);
@@ -59,6 +63,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/role/options")
+    @RequiresPermissions(value = {"admin:admin:list","admin:admin:update","damin:admin:read","admin:admin:delete","admin:admin:create"},logical = Logical.OR)
     public BaseReqVo selectAllAdminRole(){
         List<Map> list = adminService.selectAllAdminRole();
         BaseReqVo<List<Map>> baseReqVo = new BaseReqVo<>(list, "成功", 0);
@@ -101,6 +106,7 @@ public class AdminAdministerController {
       * 更新 11、16 21：33 新增用户名长度判断且只在controller层
      */
     @RequestMapping("/admin/create")
+    @RequiresPermissions(value = {"admin:admin:create"})
     public BaseReqVo createNewAdmin(@RequestBody AdminDO adminDO){
         if (adminDO.getUsername().length() <= 3){
             BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "管理员名称不符合规定", 601);
@@ -142,7 +148,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/admin/update")
-//    @RequiresPermissions(value = {"admin:admin:update"},logical = Logical.AND)
+    @RequiresPermissions(value = {"admin:admin:update"})
     public BaseReqVo updateAdmin(@RequestBody AdminDO adminDO){
         AdminDO adminDOAfterUpdate = adminService.updateAdmin(adminDO);
         if (adminDOAfterUpdate != null){
@@ -167,7 +173,14 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/admin/delete")
+    @RequiresPermissions(value = {"admin:admin:delete"})
     public BaseReqVo deleteAdmin(@RequestBody AdminDO adminDO){
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        String adminName = (String) request.getSession().getAttribute("admin");
+        if (adminName.equals(adminDO.getUsername())){
+            BaseReqVo<Object> baseReqVoError = new BaseReqVo<>(null, "管理员不能删除自己帐号", 604);
+            return baseReqVoError;
+        }
         int result = adminService.deleteAdmin(adminDO);
         if (result != 0){
             BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "成功", 0);
@@ -221,6 +234,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/log/list")
+    @RequiresPermissions(value = {"admin:log:list"})
     public BaseReqVo selectAllLogList(String name,Integer page,Integer limit,String sort,String order){
         Map<String, Object> map = adminService.selectAllLogList(name,page,limit,sort,order);
         BaseReqVo<Map<String, Object>> baseReqVo = new BaseReqVo<>(map, "成功", 0);
@@ -238,6 +252,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/role/list")
+    @RequiresPermissions(value = {"admin:role:list","admin:role:update","admin:role:read","admin:role:delete","admin:role:permission:get","admin:role:create","admin:role:permission:update"},logical = Logical.OR)
     public BaseReqVo selectAllRoleList(String name,Integer page,Integer limit,String sort,String order){
         Map<String,Object> map = adminService.selectAllRoleList(name,page,limit,sort,order);
         BaseReqVo<Map<String, Object>> baseReqVo = new BaseReqVo<>(map, "成功", 0);
@@ -267,6 +282,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/role/create")
+    @RequiresPermissions(value = {"admin:role:create"})
     public BaseReqVo createNewRole(@RequestBody RoleDO roleDO){
         RoleDO roleDOAfterCreate = adminService.createNewRole(roleDO);
         if (roleDOAfterCreate != null){
@@ -301,6 +317,7 @@ public class AdminAdministerController {
      * 这个接口：更新失败的时候并不发送数据到后端，似乎是在前端完成了重名校验
      */
     @RequestMapping("/role/update")
+    @RequiresPermissions(value = {"admin:role:update"})
     public BaseReqVo updateRole(@RequestBody RoleDO roleDO){
         RoleDO roleDOAfterUpdate = adminService.updateRole(roleDO);
         if (roleDOAfterUpdate != null){
@@ -332,6 +349,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/role/delete")
+    @RequiresPermissions(value = {"admin:role:delete"})
     public BaseReqVo deleteRole(@RequestBody RoleDO roleDO){
         int result = adminService.deleteRole(roleDO);
         if (result != 0){
@@ -385,6 +403,7 @@ public class AdminAdministerController {
      *  key 有问题
      */
     @RequestMapping("/storage/list")
+    @RequiresPermissions(value = {"admin:storage:list","admin:storage:update","admin:storage:read","admin:storage:delete","admin:storage:create"},logical = Logical.OR)
     public BaseReqVo selectAllStorageList(String name,String key,Integer page,Integer limit,String sort,String order){
         Map<String,Object> map = adminService.selectAllStorageList(name,key,page,limit,sort,order);
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>(map, "成功", 0);
@@ -409,6 +428,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/storage/delete")
+    @RequiresPermissions(value = {"admin:storage:delete"})
     public BaseReqVo deleteStorage(@RequestBody StorageDO storageDO){
         int result = adminService.deleteStorage(storageDO);
         if (result != 0){
@@ -456,6 +476,7 @@ public class AdminAdministerController {
      *
      */
     @RequestMapping("/storage/update")
+    @RequiresPermissions(value = {"admin:storage:update"})
     public BaseReqVo updateStorage(@RequestBody StorageDO storageDO){
         StorageDO storageDOAfterUpdate = adminService.updateStorage(storageDO);
         if (storageDOAfterUpdate != null){
@@ -473,7 +494,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping(value = "/role/permissions",method = {RequestMethod.GET})
-//    @RequiresPermissions(value = {"*"})
+    @RequiresPermissions(value = {"admin:role:permission:get","admin:role:permission:update"},logical = Logical.OR)
     public BaseReqVo listPermissionsByRoleId(Integer roleId){
         List<String> permissionList = adminService.listPermissions(roleId);
         List<SystemPermissionDO> systemPermissionDOList = adminService.systemPermissionsList();
@@ -485,9 +506,13 @@ public class AdminAdministerController {
     }
 
 
-
     @RequestMapping(value = "/role/permissions",method = {RequestMethod.POST})
+    @RequiresPermissions(value = {"admin:role:permission:update"})
     public BaseReqVo listPermissions(@RequestBody PermissionsVO permissionsVO){
+        if (permissionsVO.getRoleId().equals(1)){
+            BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "你不能修改超级管理员的权限", 500);
+            return baseReqVo;
+        }
         adminService.updateRolePermissions(permissionsVO);
         BaseReqVo baseReqVo = new BaseReqVo<>(null, "成功",0);
         return baseReqVo;
