@@ -7,6 +7,7 @@ import com.wangdao.mall.bean.*;
 import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.mapper.*;
 import com.wangdao.mall.service.util.GetOrderHandleOption;
+import org.apache.catalina.User;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -729,5 +730,22 @@ public class WxOrderServiceImpl implements WxOrderService {
         OrderGoodsDO orderGoodsDO = orderGoodsDOS.get(0);
         orderGoodsDO.setGoodsSpecificationValues(orderGoodsDO.getSpecifications());
         return orderGoodsDO;
+    }
+
+    @Override
+    public int insertComment(CommentDO commentDO) {
+        UserDO userDO = (UserDO) SecurityUtils.getSubject().getPrincipal();
+        commentDO.setType((byte) 3);
+        commentDO.setValueId(commentDO.getOrderGoodsId());
+        commentDO.setUserId(userDO.getId());
+        if (commentDO.getPicUrls().length == 0){
+            commentDO.setHasPicture(false);
+        } else {
+            commentDO.setHasPicture(true);
+        }
+        commentDO.setAddTime(new Date());
+        commentDO.setUpdateTime(new Date());
+        int res = commentDOMapper.insertSelective(commentDO);
+        return res;
     }
 }

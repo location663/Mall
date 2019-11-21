@@ -2,6 +2,7 @@ package com.wangdao.mall.service.wx;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wangdao.mall.bean.BaseReqVo;
+import com.wangdao.mall.bean.CommentDO;
 import com.wangdao.mall.bean.OrderGoodsDO;
 import com.wangdao.mall.exception.WxException;
 
@@ -26,4 +27,6 @@ public interface WxOrderService {
     BaseReqVo deleteOrder(Map<String, Object> map);
 
     OrderGoodsDO goodsOrder(Integer orderId, Integer goodsId);
+
+    int insertComment(CommentDO commentDO);
 }

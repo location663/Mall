@@ -2,6 +2,7 @@ package com.wangdao.mall.controller.wx;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wangdao.mall.bean.BaseReqVo;
+import com.wangdao.mall.bean.CommentDO;
 import com.wangdao.mall.bean.OrderGoodsDO;
 import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.service.wx.WxOrderService;
@@ -75,6 +76,12 @@ public class WxOrderController {
     public BaseReqVo goodsOrder(Integer orderId, Integer goodsId){
         OrderGoodsDO orderGoodsDO = wxOrderService.goodsOrder(orderId, goodsId);
         return new BaseReqVo(orderGoodsDO, "成功", 0);
+    }
+
+    @RequestMapping("order/comment")
+    public BaseReqVo orderComment(@RequestBody CommentDO commentDO){
+        int res = wxOrderService.insertComment(commentDO);
+        return new BaseReqVo(res, "成功", 0);
     }
 
 }
