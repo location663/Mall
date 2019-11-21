@@ -801,7 +801,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         commentDO.setAddTime(new Date());
         commentDO.setUpdateTime(new Date());
         int res = commentDOMapper.insertSelective(commentDO);
-        orderDOMapper.updateStatusByOrderId(commentDO.getOrderGoodsId(), 0);
+        orderDOMapper.updateStatusAndCommentsByOrderId(commentDO.getOrderGoodsId(), 0);
         return res;
     }
 }
