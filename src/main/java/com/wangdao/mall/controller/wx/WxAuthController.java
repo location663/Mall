@@ -33,6 +33,7 @@ public class WxAuthController {
     @RequestMapping("auth/login")
     public BaseReqVo wxLogin(@RequestBody UserDO userDO, HttpServletRequest request){
         Subject subject = SecurityUtils.getSubject();
+//        CustomToken token = new CustomToken(userDO.getUsername(), Md5Utils.getMultiMd5(userDO.getPassword()), "wx");
         CustomToken token = new CustomToken(userDO.getUsername(), userDO.getPassword(), "wx");
         try {
             subject.login(token);
@@ -41,7 +42,6 @@ public class WxAuthController {
         }
         Map map = userService.login();
         map.put("token", request.getSession().getId());
-
         return new BaseReqVo(map, "成功", 0);
     }
 
@@ -73,6 +73,7 @@ public class WxAuthController {
     public BaseReqVo userRegister(@RequestBody UserDO userDO) throws Exception {
         Map map = userService.userRegister(userDO);
         Subject subject = SecurityUtils.getSubject();
+//        CustomToken token = new CustomToken(userDO.getUsername(), Md5Utils.getMultiMd5(userDO.getPassword()), "wx");
         CustomToken token = new CustomToken(userDO.getUsername(), userDO.getPassword(), "wx");
         try {
             subject.login(token);
@@ -98,25 +99,31 @@ public class WxAuthController {
         return new BaseReqVo(null, "成功", 0);
     }
 
+
     /**重置账户密码，默认根据手机号来唯一标识账户，但数据库里老师留了很多账号手机号一样，不用这些数据
      * @return
      */
-        @RequestMapping("auth/reset")
-        public BaseRespVo resetPassword(@RequestBody Map<String, String> map) throws WxException {
-            /*获取短信验证码
-        * 密码MD5加密
-        * 存入数据库
-        * */
+    @RequestMapping("auth/reset")
+    public BaseRespVo resetPassword(@RequestBody Map<String, String> map) throws WxException {
+        /*获取短信验证码
+         * 密码MD5加密
+         * 存入数据库
+         * */
         String mobile = map.get("mobile");
         String code = map.get("code");
         String password = map.get("password");
-        if(!mobile.matches("^[1][3,4,5,7,8][0-9]{9}$")) {
+        if (!mobile.matches("^[1][3,4,5,7,8][0-9]{9}$")) {
             throw new WxException("您输入的手机号有误，请重新输入");
         }
         int reset = userService.resetPassword(mobile, code, password);
-        if(reset != 1){
+        if (reset != 1) {
             throw new WxException("系统繁忙，请稍后再试");
         }
         return BaseRespVo.ok("重置密码成功");
+    }
+
+    @RequestMapping("filter/redirect")
+    public BaseReqVo filterRedirect()  {
+        return new BaseReqVo(null, "您还未登陆", 501);
     }
 }

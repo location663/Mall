@@ -17,7 +17,6 @@ import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -183,6 +182,7 @@ public class WxUserServiceImpl implements WxUserService {
         userDO.setWeixinOpenid(userDO.getWxCode());
         userDO.setAddTime(new Date());
         userDO.setUpdateTime(new Date());
+//        userDO.setPassword(Md5Utils.getMultiMd5(userDO.getPassword()));
         userDOMapper.insertSelective(userDO);
         HashMap<String, Object> map = new HashMap<>();
         map.put("userInfo", userDO);
