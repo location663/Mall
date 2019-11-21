@@ -2,6 +2,7 @@ package com.wangdao.mall.service.wx;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.wangdao.mall.bean.BaseReqVo;
+import com.wangdao.mall.exception.WxException;
 
 import java.util.Map;
 
@@ -15,7 +16,7 @@ public interface WxOrderService {
 
     BaseReqVo CancelOrder(Map<String, Object> map);
 
-    BaseReqVo orderPrepay(Map<String, Object> map);
+    BaseReqVo orderPrepay(Map<String, Object> map) throws WxException;
 
     BaseReqVo orderRefund(Map<String, Object> map);
 

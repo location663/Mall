@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.pagehelper.PageHelper;
 import com.wangdao.mall.bean.*;
+import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.mapper.*;
 import com.wangdao.mall.service.util.GetOrderHandleOption;
 import org.apache.shiro.SecurityUtils;
@@ -58,7 +59,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         UserDO userDO  = (UserDO) SecurityUtils.getSubject().getPrincipal();
 
         //订单状态
-        orderDO.setOrderStatus((short) 201);
+        orderDO.setOrderStatus((short) 101);
 
         //用户积分
         orderDO.setIntegralPrice(BigDecimal.valueOf(0));
@@ -98,11 +99,11 @@ public class WxOrderServiceImpl implements WxOrderService {
         //配送费用
         SystemDO systemDOMin = systemDOMapper.selectByPrimaryKey(5);
         String keyValue = systemDOMin.getKeyValue();
-        if (orderDO.getGoodsPrice().doubleValue() > Integer.valueOf(keyValue)){
+        if (orderDO.getGoodsPrice().doubleValue() > Double.valueOf(keyValue)){
             orderDO.setFreightPrice(BigDecimal.valueOf(0));
         }else {
             SystemDO systemDOValue = systemDOMapper.selectByPrimaryKey(7);
-            orderDO.setFreightPrice(BigDecimal.valueOf(Integer.valueOf(systemDOValue.getKeyValue())));
+            orderDO.setFreightPrice(BigDecimal.valueOf(Double.valueOf(systemDOValue.getKeyValue())));
         }
 
         //待评价订单商品数量
@@ -167,17 +168,15 @@ public class WxOrderServiceImpl implements WxOrderService {
 
 
         //订单关闭时间
-        if(cartId != 0) {
-            SystemDO systemDO = systemDOMapper.selectByPrimaryKey(1);
-            String orderUnpaid = systemDO.getKeyValue();
+        SystemDO systemDO = systemDOMapper.selectByPrimaryKey(1);
+        String orderUnpaid = systemDO.getKeyValue();
 
-            Date date = new Date();
-            Calendar c = Calendar.getInstance();
-            c.setTime(date);
-            c.add(Calendar.MINUTE, Integer.valueOf(orderUnpaid));
-            date = c.getTime();
-            orderDO.setEndTime(date);
-        }
+        Date date = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.MINUTE, Integer.valueOf(orderUnpaid));
+        date = c.getTime();
+        orderDO.setEndTime(date);
 
         //创建时间
         orderDO.setAddTime(new Date());
@@ -200,7 +199,6 @@ public class WxOrderServiceImpl implements WxOrderService {
         int i = orderDOMapper.selectLastInsertId();
         orderDO.setOrderSn(String.valueOf(i));
         orderDO.setPayId(String.valueOf(i));
-        orderDO.setShipSn(String.valueOf(i));
         orderDO.setId(i);
         orderDOMapper.updateByPrimaryKeySelective(orderDO);
 
@@ -249,6 +247,15 @@ public class WxOrderServiceImpl implements WxOrderService {
 
             //order_goods表商品货品的图片
             orderGoodsDO.setPicUrl(cartDO.getPicUrl());
+
+            //生成订单后减少库存中商品的数量
+            Integer productId = cartDO.getProductId();
+            Integer number = goodsProductDOMapper.selectByPrimaryKey(productId).getNumber();
+            number = number - cartDO.getNumber();
+            GoodsProductDO goodsProductDO = new GoodsProductDO();
+            goodsProductDO.setId(productId);
+            goodsProductDO.setNumber(number);
+            goodsProductDOMapper.updateByPrimaryKeySelective(goodsProductDO);
 
             //插入order_goods表中
             orderGoodsDOMapper.insertSelective(orderGoodsDO);
@@ -305,11 +312,18 @@ public class WxOrderServiceImpl implements WxOrderService {
 //        orderGoodsDO.setDeleted(false);
 
         //逻辑删除cart表中已被选中的购物车信息
-        CartDO cartDO = new CartDO();
-        cartDO.setDeleted(true);
-        CartDOExample cartDOExample = new CartDOExample();
-        cartDOExample.createCriteria().andDeletedEqualTo(false).andCheckedEqualTo(true);
-        cartDOMapper.updateByExampleSelective(cartDO,cartDOExample);
+        if (cartId == 0) {
+            CartDO cartDO = new CartDO();
+            cartDO.setDeleted(true);
+            CartDOExample cartDOExample = new CartDOExample();
+            cartDOExample.createCriteria().andDeletedEqualTo(false).andCheckedEqualTo(true);
+            cartDOMapper.updateByExampleSelective(cartDO, cartDOExample);
+        }else {
+            CartDO cartDO = new CartDO();
+            cartDO.setId(cartId);
+            cartDO.setDeleted(true);
+            cartDOMapper.updateByPrimaryKeySelective(cartDO);
+        }
 
         //返回结果
         Map<String, Object> dateMap = new HashMap<>();
@@ -613,6 +627,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         OrderDO orderDO = new OrderDO();
         orderDO.setId(orderId);
         orderDO.setOrderStatus((short)102);
+        orderDO.setUpdateTime(new Date());
         orderDOMapper.updateByPrimaryKeySelective(orderDO);
         return new BaseReqVo(null,"成功",0);
     }
@@ -623,13 +638,32 @@ public class WxOrderServiceImpl implements WxOrderService {
      * @return
      */
     @Override
-    public BaseReqVo orderPrepay(Map<String, Object> map) {
-        Integer orderId = (Integer) map.get("orderId");
-        OrderDO orderDO = new OrderDO();
-        orderDO.setId(orderId);
-        orderDO.setOrderStatus((short)201);
-        orderDOMapper.updateByPrimaryKeySelective(orderDO);
-        return new BaseReqVo(null,"成功",0);
+    public BaseReqVo orderPrepay(Map<String, Object> map) throws WxException {
+        if (map.get("orderId") instanceof Integer){
+            return new BaseReqVo(null,"订单不能支付",724);
+        }
+        Map<String, Object> map1 = new HashMap<>();
+        map1.put("timeStamp","100");
+        map1.put("nonceStr","100");
+        map1.put("packageValue","100");
+        map1.put("signType","100");
+        map1.put("paySign","100");
+        Integer orderId = Integer.valueOf((String) map.get("orderId"));
+        OrderDO orderDO = orderDOMapper.selectByPrimaryKey(orderId);
+        if (new Date().after(orderDO.getEndTime())) {
+            OrderDO orderDOTime = new OrderDO();
+            orderDOTime.setId(orderId);
+            orderDOTime.setOrderStatus((short)103);
+            orderDOTime.setUpdateTime(new Date());
+            orderDOMapper.updateByPrimaryKeySelective(orderDOTime);
+            throw new WxException("订单时间已过");
+        }
+        OrderDO orderDOSucceed = new OrderDO();
+        orderDOSucceed.setId(orderId);
+        orderDOSucceed.setOrderStatus((short)201);
+        orderDOSucceed.setUpdateTime(new Date());
+        orderDOMapper.updateByPrimaryKeySelective(orderDOSucceed);
+        return new BaseReqVo(map1,"成功",0);
     }
 
     /**
@@ -643,6 +677,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         OrderDO orderDO = new OrderDO();
         orderDO.setId(orderId);
         orderDO.setOrderStatus((short)102);
+        orderDO.setUpdateTime(new Date());
         orderDOMapper.updateByPrimaryKeySelective(orderDO);
         return new BaseReqVo(null,"成功",0);
     }
@@ -658,6 +693,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         OrderDO orderDO = new OrderDO();
         orderDO.setId(orderId);
         orderDO.setOrderStatus((short)401);
+        orderDO.setUpdateTime(new Date());
         orderDOMapper.updateByPrimaryKeySelective(orderDO);
         return new BaseReqVo(null,"成功",0);
     }
@@ -673,6 +709,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         OrderDO orderDO = new OrderDO();
         orderDO.setId(orderId);
         orderDO.setDeleted(true);
+        orderDO.setUpdateTime(new Date());
         orderDOMapper.updateByPrimaryKeySelective(orderDO);
         return new BaseReqVo(null,"成功",0);
     }
