@@ -50,6 +50,10 @@ public class WxCouponServiceImpl implements WxCouponService {
                     if (couponDO.getEndTime() != null) {    //有设置优惠券有效时间应该检查是否过期
                         if (!(new Date().after(couponDO.getEndTime()))) {  //没过期
                             data.add(couponDO);
+                        }else {
+                            couponDO.setStatus(Short.valueOf(String.valueOf(2)));
+                            couponDO.setUpdateTime(new Date());
+                            int i = couponDOMapper.updateByPrimaryKey(couponDO);//过期了得改掉status为2
                         }
                     } else {  //没有设置优惠券有效时间，直接显示
                         data.add(couponDO);
@@ -116,7 +120,20 @@ public class WxCouponServiceImpl implements WxCouponService {
             CouponUserDOExample couponUserDOExample1 = new CouponUserDOExample();
             couponUserDOExample1.createCriteria().andDeletedEqualTo(false).andCouponIdEqualTo(couponId).andUserIdEqualTo(userDO.getId()).andStatusEqualTo(Short.valueOf(String.valueOf(0)));
             List<CouponUserDO> couponUserDOList1 = couponUserDOMapper.selectByExample(couponUserDOExample1);
-            if (couponUserDOList1.size()>=couponDO.getLimit()){  //用户最大化领取够了这张券，不能再领取了
+            ArrayList<CouponUserDO> couponUserDOArrayList3 = new ArrayList<>();
+            for (CouponUserDO couponUserDO : couponUserDOList1) {
+                if (couponUserDO.getEndTime()!=null) {
+                    if (!(new Date().after(couponUserDO.getEndTime()))) {  //没过期
+                        couponUserDOArrayList3.add(couponUserDO);
+                    } else {
+                        couponUserDO.setStatus(Short.valueOf(String.valueOf(2)));
+                        couponUserDO.setUpdateTime(new Date());
+                        int i1 = couponUserDOMapper.updateByPrimaryKey(couponUserDO); //过期了得改掉status为2
+                    }
+                }
+            }
+
+            if (couponUserDOArrayList3.size()>=couponDO.getLimit()){  //用户最大化领取够了这张券，不能再领取了
                 return 0;
             }
         }
@@ -155,7 +172,99 @@ public class WxCouponServiceImpl implements WxCouponService {
 
 
 
+
     /**
+     * 兑换优惠券
+     * 找到code对的对象，判断 total 可被领取数量(领取了要减1);判断delete; 判断 limit 每人可领取数量; 才能领取
+     * status: 使用状态, 如果是0则未使用；如果是1则已使用；如果是2则已过期；如果是3则已经下架,(使用了就改为1)；
+     * @param code  兑换码
+     * @return
+     */
+    @Override
+    public Integer couponExchange(String code) {
+        Integer i = 0;
+        //获取当前用户登录对象
+        UserDO userDO  = (UserDO) SecurityUtils.getSubject().getPrincipal();
+
+        //先获取将要领取此优惠券的对象
+        CouponDOExample couponDOExample1 = new CouponDOExample();
+        couponDOExample1.createCriteria().andCodeEqualTo(code);
+        List<CouponDO> couponDOList = couponDOMapper.selectByExample(couponDOExample1);
+
+        if (couponDOList.size()==0){ //查无此优惠券
+            return 0;
+        }
+
+        for (CouponDO couponDO : couponDOList) {
+            if (couponDO.getTotal()<0){  //优惠券都被领取光了，无法领取
+                return 0;
+            }
+
+            if (couponDO.getDeleted()){  //此优惠券已经逻辑删除，无法领取
+                return 0;
+            }
+
+            if (couponDO.getLimit()>0){  //限制领取数量Limit
+                //通过coupon_id查询用户有效 CouponUserDO 优惠券的数量，以便于限制领取limit数量
+                CouponUserDOExample couponUserDOExample1 = new CouponUserDOExample();
+                couponUserDOExample1.createCriteria().andDeletedEqualTo(false).andCouponIdEqualTo(couponDO.getId()).andUserIdEqualTo(userDO.getId()).andStatusEqualTo(Short.valueOf(String.valueOf(0)));
+                List<CouponUserDO> couponUserDOList1 = couponUserDOMapper.selectByExample(couponUserDOExample1);
+                ArrayList<CouponUserDO> couponUserDOArrayList = new ArrayList<>();
+                for (CouponUserDO couponUserDO : couponUserDOList1) {
+                    if (couponUserDO.getEndTime()!=null) {
+                        if (!(new Date().after(couponUserDO.getEndTime()))) {  //没过期
+                            couponUserDOArrayList.add(couponUserDO);
+                        } else {
+                            couponUserDO.setStatus(Short.valueOf(String.valueOf(2)));
+                            couponUserDO.setUpdateTime(new Date());
+                            int i1 = couponUserDOMapper.updateByPrimaryKey(couponUserDO); //过期了得改掉status为2
+                        }
+                    }
+                }
+
+                if (couponUserDOArrayList.size()>=couponDO.getLimit()){  //用户最大化领取够了这张券，不能再领取了
+                    return 0;
+                }
+            }
+
+            CouponUserDO couponUserDO = new CouponUserDO();
+            couponUserDO.setUserId(userDO.getId());
+            couponUserDO.setCouponId(couponDO.getId());
+            couponUserDO.setStatus(couponDO.getStatus());
+
+            if (couponDO.getTimeType()==1) {   //如果TimeType是1，则start_time和end_time是直接赋值优惠券couponDO的属性
+                couponUserDO.setStartTime(couponDO.getStartTime());
+                couponUserDO.setEndTime(couponDO.getEndTime());
+            }else if (couponDO.getDays()!=null){  //如果TimeType是0，则start_time是new Date(),end_time是new Date() 加上days
+                Calendar ca = Calendar.getInstance();
+                ca.setTime(new Date());
+                couponUserDO.setStartTime(ca.getTime());
+                ca.add(Calendar.DATE, couponDO.getDays());
+                couponUserDO.setEndTime(ca.getTime());
+            }
+
+            couponUserDO.setAddTime(new Date());
+            couponUserDO.setUpdateTime(new Date());
+            couponUserDO.setDeleted(false);
+
+            //使用 Selective 插入，对象某属性没赋值或者为null时，不会把这个属性插入
+            i=couponUserDOMapper.insertSelective(couponUserDO);
+            if (couponDO.getTotal()>0 && i==1){  //领取成功，原优惠券可被领取数量减1
+                couponDO.setTotal(couponDO.getTotal()-1);
+                if (couponDO.getTotal()==0){   //先减少优惠券数量，如果减到最后为0，需要赋值为-1
+                    couponDO.setTotal(-1);
+                }
+                int j = couponDOMapper.updateByPrimaryKey(couponDO); //更新优惠券可领取数量状态
+            }
+        }
+        return i;
+    }
+
+
+
+    /**
+     * status为0，但是已经过期;需要改进
+     *
      * 获取我的优惠券列表
      * (type 优惠券赠送类型，如果是0则通用券，用户领取；如果是1，则是注册赠券；如果是2，则是优惠券码兑换)
      *
@@ -190,6 +299,10 @@ public class WxCouponServiceImpl implements WxCouponService {
                         if (couponUserDO.getEndTime() != null) {    //有设置优惠券有效时间应该检查是否过期
                             if (!(new Date().after(couponUserDO.getEndTime()))) {  //没过期
                                 couponUserDOArrayList.add(couponUserDO);
+                            }else {
+                                couponUserDO.setStatus(Short.valueOf(String.valueOf(2)));
+                                couponUserDO.setUpdateTime(new Date());
+                                int updateStatusNum = couponUserDOMapper.updateByPrimaryKey(couponUserDO); //过期了得改掉status为2
                             }
                         } else {  //没有设置优惠券有效时间，直接显示
                             couponUserDOArrayList.add(couponUserDO);
@@ -262,4 +375,7 @@ public class WxCouponServiceImpl implements WxCouponService {
 
         return map;
     }
+
+
+
 }
