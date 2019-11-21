@@ -7,6 +7,7 @@ import com.wangdao.mall.bean.StateDo;
 import com.wangdao.mall.bean.OrderStatisticsDTO;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 public interface OrderDOMapper {
     long countByExample(OrderDOExample example);
@@ -37,4 +38,7 @@ public interface OrderDOMapper {
 
     @Select("select DISTINCT LAST_INSERT_ID() from cskaoyan_mall_order")
     int selectLastInsertId();
+
+    @Update("update cskaoyan_mall_order set order_status = #{status}, comments = (comments - 1) where id = #{orderId} ")
+    int updateStatusByOrderId(@Param("orderId") Integer orderGoodsId, @Param("status") int i);
 }

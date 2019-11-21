@@ -732,11 +732,17 @@ public class WxOrderServiceImpl implements WxOrderService {
         return orderGoodsDO;
     }
 
+    /**
+     * 插入评价
+     * @param commentDO
+     * @return
+     */
     @Override
     public int insertComment(CommentDO commentDO) {
         UserDO userDO = (UserDO) SecurityUtils.getSubject().getPrincipal();
-        commentDO.setType((byte) 3);
-        commentDO.setValueId(commentDO.getOrderGoodsId());
+        commentDO.setType((byte) 0);
+        OrderGoodsDO orderGoodsDO = orderGoodsDOMapper.selectByPrimaryKey(commentDO.getOrderGoodsId());
+        commentDO.setValueId(orderGoodsDO.getGoodsId());
         commentDO.setUserId(userDO.getId());
         if (commentDO.getPicUrls().length == 0){
             commentDO.setHasPicture(false);
@@ -746,6 +752,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         commentDO.setAddTime(new Date());
         commentDO.setUpdateTime(new Date());
         int res = commentDOMapper.insertSelective(commentDO);
+        orderDOMapper.updateStatusByOrderId(commentDO.getOrderGoodsId(), 0);
         return res;
     }
 }

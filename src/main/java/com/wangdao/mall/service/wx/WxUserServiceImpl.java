@@ -99,7 +99,7 @@ public class WxUserServiceImpl implements WxUserService {
                         uncomment--;
                     }
                 }*/
-                uncomment += orderDO.getComments();
+                uncomment++;
             }
         }
         map2.put("uncomment", uncomment);
