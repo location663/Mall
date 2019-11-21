@@ -165,19 +165,19 @@ public class WxOrderServiceImpl implements WxOrderService {
         //微信付款时间
         orderDO.setPayTime(new Date());
 
-        //发货快递公司
-        orderDO.setShipChannel("顺丰");
 
         //订单关闭时间
-        SystemDO systemDO = systemDOMapper.selectByPrimaryKey(1);
-        String orderUnpaid = systemDO.getKeyValue();
+        if(cartId != 0) {
+            SystemDO systemDO = systemDOMapper.selectByPrimaryKey(1);
+            String orderUnpaid = systemDO.getKeyValue();
 
-        Date date = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(date);
-        c.add(Calendar.MINUTE, Integer.valueOf(orderUnpaid));
-        date = c.getTime();
-        orderDO.setEndTime(date);
+            Date date = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(date);
+            c.add(Calendar.MINUTE, Integer.valueOf(orderUnpaid));
+            date = c.getTime();
+            orderDO.setEndTime(date);
+        }
 
         //创建时间
         orderDO.setAddTime(new Date());
