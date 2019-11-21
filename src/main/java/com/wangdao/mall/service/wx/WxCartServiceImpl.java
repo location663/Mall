@@ -10,6 +10,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import com.wangdao.mall.bean.*;
+import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -40,8 +41,11 @@ public class WxCartServiceImpl implements WxCartService {
     @Autowired
     GrouponRulesDOMapper grouponRulesDOMapper;
     @Override
-    public void add(Integer goodsId, Integer number, Integer productId, UserDO userDO) {
+    public void add(Integer goodsId, Integer number, Integer productId, UserDO userDO) throws WxException {
         GoodsProductDO productDO = productDOMapper.selectByPrimaryKey(productId);
+        if(number>productDO.getNumber()){
+            throw new WxException("库存不足");
+        }
         GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(productDO.getGoodsId());
         CartDO cartDO = null;
         try {
@@ -93,8 +97,11 @@ public class WxCartServiceImpl implements WxCartService {
     }
 
     @Override
-    public Integer fastAdd(Integer goodsId, Integer number, Integer productId, UserDO userDO) {
+    public Integer fastAdd(Integer goodsId, Integer number, Integer productId, UserDO userDO) throws WxException {
         GoodsProductDO productDO = productDOMapper.selectByPrimaryKey((productId));
+        if(number>productDO.getNumber()){
+            throw new WxException("库存不足");
+        }
         GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(productDO.getGoodsId());
         CartDO cartDO = null;
         try {
@@ -152,7 +159,7 @@ public class WxCartServiceImpl implements WxCartService {
             dataBean.setGoodsTotalPrice(totalPrice);
             //查询checkedgoodslist
             cartDOExample.clear();
-            cartDOExample.createCriteria().andCheckedEqualTo(true);
+            cartDOExample.createCriteria().andCheckedEqualTo(true).andDeletedEqualTo(true);
             List<CartDO> cartDOS = cartDOMapper.selectByExample(cartDOExample);
             dataBean.setCheckedGoodsList(cartDOS);
         }
