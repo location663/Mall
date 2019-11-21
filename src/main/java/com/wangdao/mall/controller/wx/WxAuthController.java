@@ -53,9 +53,33 @@ public class WxAuthController {
         return new BaseReqVo(null, "成功", 0);
     }
 
+    /**
+     * 用户个人页面
+     * @return
+     */
     @RequestMapping("user/index")
     public BaseReqVo userIndex(){
         Map map = userService.userIndex();
         return new BaseReqVo(map, "成功", 0);
+    }
+
+    /**
+     * 用户注册
+     * @return
+     */
+    @RequestMapping("auth/register")
+    public BaseReqVo userRegister(@RequestBody UserDO userDO) throws Exception {
+        Map map = userService.userRegister(userDO);
+        return new BaseReqVo(map, "成功", 0);
+    }
+
+    /**
+     * 获取验证码
+     * @return
+     */
+    @RequestMapping("auth/regCaptcha")
+    public BaseReqVo regCaptcha(@RequestBody String mobile){
+        userService.getRegCaptcha(mobile);
+        return new BaseReqVo(null, "成功", 0);
     }
 }

@@ -10,6 +10,7 @@ package com.wangdao.mall.aop;
 import com.wangdao.mall.bean.LogDO;
 import com.wangdao.mall.service.admin.LogService;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,17 +38,24 @@ public class AdminAspect {
 
     @Before("AdminControllerMypointCut()")
     public void mybefore(JoinPoint joinPoint) throws Throwable {
-        String admin = null;
         logDO = new LogDO();
         request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-        logDO.setAdmin(request.getHeader("X-Litemall-Admin-Token"));
+        String admin = (String)request.getSession().getAttribute("admin");
+        logDO.setAdmin(admin);
         logDO.setIp(getRemoteIp(request));
         logDO.setAction(getAction(request));
-        logDO.setStatus(true);
         logDO.setAddTime(new Date(System.currentTimeMillis()));
         logDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        logDO.setStatus(true);
         logDO.setDeleted(false);
         logDO.setType(getActionType(request));
+        logDO.setResult("成功");
+        logDO.setComment("");
+//        if (request.getRequestURI().contains("logout")) {
+//            request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+//            String admin1 = (String) request.getSession().getAttribute("admin");
+//            logDO.setAdmin(admin1);
+//        }
     }
 
     /**
@@ -55,10 +63,12 @@ public class AdminAspect {
      */
     @AfterReturning("AdminControllerMypointCut()")
     public void myAfterReturning(){
-        if (!request.getRequestURI().contains("list")){
-            if (!request.getMethod().equals("OPTIONS")){
-                logService.insertLog(logDO);
-            }
+        if (request.getRequestURI().contains("login")){
+            String admin = (String) request.getSession().getAttribute("admin");
+            logDO.setAdmin(admin);
+        }
+        if (!request.getMethod().equals("OPTIONS")){
+            logService.insertLog(logDO);
         }
     }
 
@@ -70,6 +80,8 @@ public class AdminAspect {
     public void myafterThrowing() {
         logDO.setStatus(false);
         String requestURI = request.getRequestURI();
+        String admin = (String)request.getSession().getAttribute("admin");
+        logDO.setAdmin(admin);
         if (requestURI != null) {
             if (requestURI.contains("login")) {
                 logDO.setComment("帐号或密码错误");
@@ -88,9 +100,7 @@ public class AdminAspect {
                 logDO.setComment("查询异常");
             }
         }
-        if (!request.getRequestURI().contains("list")) {
-            logService.insertLog(logDO);
-        }
+        logService.insertLog(logDO);
     }
 
 
@@ -159,13 +169,12 @@ public class AdminAspect {
         } else if (requestURI.contains("read")) {
             return "查看详情";
         } else {
-            return "其它";
+            return "浏览";
         }
     }
 
     /**
      * 获得Type类型
-     * 但是我没有写 代号为 3（其它操作） 的类型
      * @param request
      * @return
      */
@@ -180,10 +189,9 @@ public class AdminAspect {
                 requestURI.contains("role/delete")  ||
                 requestURI.contains("logout")       ||
                 requestURI.contains("config/mall")  ||
-                requestURI.contains("confix/wx")    ||
-                requestURI.contains("config/express")){
+                requestURI.contains("confix/wx")){
                 return 1;
-        }else if (requestURI.contains("config/order")){
+        }else if (requestURI.contains("config/order") || requestURI.contains("config/express")){
             return 2;
         }
         return 0;

@@ -15,9 +15,15 @@ public class MallExceptionHandler {
         return new BaseReqVo(null , null, 702);
     }
 
+
     @ExceptionHandler(InvalidFormatException.class)
-    public BaseReqVo InvalidFormat(InvalidFormatException e){
-        return new BaseReqVo(null , null, 601);
+    public BaseReqVo invalidFormat(InvalidFormatException e){
+        return new BaseReqVo(null , "您输入有误，请重新输入", 601);
+    }
+
+    @ExceptionHandler(WxException.class)
+    public BaseReqVo wxHandler(NoSuchGoodsException e){
+        return new BaseReqVo(null , e.getMessage(), 702);
     }
 
     @ExceptionHandler(AuthenticationException.class)

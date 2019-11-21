@@ -3,6 +3,7 @@ package com.wangdao.mall.service.wx;
 import com.github.pagehelper.PageHelper;
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.GrouponDOMapper;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,28 @@ public class WxGrouponServiceImpl implements WxGrouponService {
     @Override
     public GrouponDetailVO selectById(Integer grouponId) {
         GrouponDO grouponDO = grouponDOMapper.selectByPrimaryKey(grouponId);
+        return null;
+    }
+
+    /**
+     * 展示用户的团购
+     * @param showType 0表示该用户发起的团购，1表示该用户参加的团购
+     * @return
+     */
+    @Override
+    public Map listByUseridAndShowtype(Integer showType) {
+        UserDO userDO = (UserDO) SecurityUtils.getSubject().getPrincipal();
+
+        GrouponDOExample grouponDOExample = new GrouponDOExample();
+        GrouponDOExample.Criteria criteria = grouponDOExample.createCriteria()
+                .andDeletedEqualTo(false).andUserIdEqualTo(userDO.getId());
+
+        if (showType == 0){
+            criteria.andCreatorUserIdEqualTo(userDO.getId());
+        } else {
+            criteria.andCreatorUserIdNotEqualTo(userDO.getId());
+        }
+
         return null;
     }
 }

@@ -225,6 +225,9 @@ public class AdminServiceImpl implements AdminService {
     public int deleteRole(RoleDO roleDO) {
         roleDO.setDeleted(true);
         int update = roleDOMapper.updateByPrimaryKeySelective(roleDO);
+        PermissionDOExample permissionDOExample = new PermissionDOExample();
+        permissionDOExample.createCriteria().andRoleIdEqualTo(roleDO.getId());
+        permissionDOMapper.deleteByExample(permissionDOExample);
         return update;
     }
 
@@ -344,7 +347,6 @@ public class AdminServiceImpl implements AdminService {
         return systemPermissionsList1;
     }
 
-
     /**
      * 更新权限
      * @param permissionsVO
@@ -369,4 +371,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
 
+    @Override
+    public List<String> selectPermsLeft(Integer roleId) {
+        List<String> permsList = adminDOMapper.selectPermsLeft(roleId);
+        return permsList;
+    }
+
+    @Override
+    public String selectRoleName(Integer roleId) {
+        String roleName = adminDOMapper.selectRoleName(roleId);
+        return roleName;
+    }
 }

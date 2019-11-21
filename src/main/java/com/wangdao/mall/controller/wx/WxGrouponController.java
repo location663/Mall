@@ -40,4 +40,11 @@ public class WxGrouponController {
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>(grouponDetailVO, "成功", 0);
         return baseReqVo;
     }
+
+    @RequestMapping("groupon/my")
+    public BaseReqVo myGroupon(Integer showType){
+        Map map = grouponService.listByUseridAndShowtype(showType);
+        BaseReqVo<Object> baseReqVo = new BaseReqVo<>(map, "成功", 0);
+        return baseReqVo;
+    }
 }

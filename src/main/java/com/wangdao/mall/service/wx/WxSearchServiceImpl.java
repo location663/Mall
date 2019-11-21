@@ -7,9 +7,10 @@
 
 package com.wangdao.mall.service.wx;
 
-import com.wangdao.mall.bean.KeywordDO;
-import com.wangdao.mall.bean.KeywordDOExample;
+import com.wangdao.mall.bean.*;
 import com.wangdao.mall.mapper.KeywordDOMapper;
+import com.wangdao.mall.mapper.SearchHistoryDOMapper;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,17 +24,33 @@ public class WxSearchServiceImpl implements WxSearchService{
     @Autowired
     KeywordDOMapper keywordDOMapper;
 
+    @Autowired
+    SearchHistoryDOMapper searchHistoryDOMapper;
+
     /**
-     * 搜索关键字 "historyKeywordList": []需要待改进
+     * 搜索关键字  必须是"isHot"=true和"deleted"=false   "historyKeywordList": []如果用户未登录，直接返回空List
      * @return
      */
     @Override
     public HashMap<String, Object> searchIndex() {
         HashMap<String, Object> map = new HashMap<>();
 
-        //封装 historyKeywordList: [] 需要待改进 暂时返回空
+        //获取当前用户登录对象
+        UserDO userDO  = (UserDO) SecurityUtils.getSubject().getPrincipal();
+
+        //封装 historyKeywordList: []
         ArrayList<Object> historyKeywordList = new ArrayList<>();
-        map.put("historyKeywordList",historyKeywordList);
+        if (userDO!=null){  //用户已经登录
+            SearchHistoryDOExample searchHistoryDOExample = new SearchHistoryDOExample();
+            searchHistoryDOExample.createCriteria().andDeletedEqualTo(false).andUserIdEqualTo(userDO.getId());
+            List<SearchHistoryDO> searchHistoryDOS = searchHistoryDOMapper.selectByExample(searchHistoryDOExample);
+            for (SearchHistoryDO searchHistoryDO : searchHistoryDOS) {
+                HashMap<String, Object> map1 = new HashMap<>();
+                map1.put("keyword",searchHistoryDO.getKeyword());
+                historyKeywordList.add(map1);
+            }
+        }
+        map.put("historyKeywordList",historyKeywordList);//用户未登录，直接返回空List
 
         //封装 defaultKeyword
         KeywordDOExample keywordDOExample = new KeywordDOExample();
@@ -45,5 +62,46 @@ public class WxSearchServiceImpl implements WxSearchService{
         //封装热搜 hotKeywordList 暂时默认为Keyword里第一个
         map.put("defaultKeyword",hotKeywordList.get(0));
         return map;
+    }
+
+
+
+    /**
+     * 搜索帮助
+     * @param keyword
+     * @return
+     */
+    @Override
+    public ArrayList<String> searchHelper(String keyword) {
+        ArrayList<String> keywords = new ArrayList<>();
+        KeywordDOExample keywordDOExample = new KeywordDOExample();
+        keywordDOExample.createCriteria().andDeletedEqualTo(false).andKeywordLike("%"+keyword+"%");
+        List<KeywordDO> keywordDOList = keywordDOMapper.selectByExample(keywordDOExample);
+        for (KeywordDO keywordDO : keywordDOList) {
+            keywords.add(keywordDO.getKeyword());
+        }
+        return keywords;
+    }
+
+
+    /**
+     * 清除某用户搜索历史记录
+     * @return
+     */
+    @Override
+    public Integer searchClearhistory() {
+        //获取当前用户登录对象
+        UserDO userDO  = (UserDO) SecurityUtils.getSubject().getPrincipal();
+
+        SearchHistoryDO searchHistoryDO = new SearchHistoryDO();
+        searchHistoryDO.setDeleted(true);
+        SearchHistoryDOExample searchHistoryDOExample = new SearchHistoryDOExample();
+        searchHistoryDOExample.createCriteria().andDeletedEqualTo(false).andUserIdEqualTo(userDO.getId());
+
+        //加了Selective会判空，如果有null的属性，就不会执行set,只执行非空的delete属性
+        Integer i = searchHistoryDOMapper.updateByExampleSelective(searchHistoryDO, searchHistoryDOExample);
+
+        List<SearchHistoryDO> searchHistoryDOS = searchHistoryDOMapper.selectByExample(searchHistoryDOExample);
+        return i;
     }
 }

@@ -23,6 +23,13 @@ public class AddressDO {
     private String mobile;
 
     private Boolean isDefault;
+
+    private String areaName;
+
+    private String cityName;
+
+    private String provinceName;
+
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
     private Date addTime;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")

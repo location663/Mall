@@ -39,4 +39,7 @@ public interface AdminService {
 
      List<SystemPermissionDO> systemPermissionsList();
 
+     List<String> selectPermsLeft(Integer roleId);
+
+     String selectRoleName(Integer roleId);
 }

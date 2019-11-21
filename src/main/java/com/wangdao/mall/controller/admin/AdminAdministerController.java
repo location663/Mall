@@ -9,6 +9,8 @@ package com.wangdao.mall.controller.admin;
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.service.admin.AdminService;
 import com.wangdao.mall.service.util.StorageUtils;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -140,6 +142,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/admin/update")
+//    @RequiresPermissions(value = {"admin:admin:update"},logical = Logical.AND)
     public BaseReqVo updateAdmin(@RequestBody AdminDO adminDO){
         AdminDO adminDOAfterUpdate = adminService.updateAdmin(adminDO);
         if (adminDOAfterUpdate != null){
@@ -470,6 +473,7 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping(value = "/role/permissions",method = {RequestMethod.GET})
+//    @RequiresPermissions(value = {"*"})
     public BaseReqVo listPermissionsByRoleId(Integer roleId){
         List<String> permissionList = adminService.listPermissions(roleId);
         List<SystemPermissionDO> systemPermissionDOList = adminService.systemPermissionsList();

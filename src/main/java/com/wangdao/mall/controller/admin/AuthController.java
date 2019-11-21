@@ -4,22 +4,38 @@ package com.wangdao.mall.controller.admin;
 import com.wangdao.mall.bean.AdminDO;
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.InfoData;
+import com.wangdao.mall.service.admin.AdminService;
 import com.wangdao.mall.service.admin.DashboardService;
 import com.wangdao.mall.shiro.CustomToken;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.*;
 
 @RestController
 @RequestMapping("admin")
 public class AuthController {
+
+    @Autowired
+    AdminService adminService;
+
+    /**
+     * 统计 goods,order,product,user的数量
+     */
+    @Autowired
+    DashboardService dashboardService;
 
     /**
      * 登录模块
@@ -30,6 +46,8 @@ public class AuthController {
         BaseReqVo baseReqVo = new BaseReqVo();
         Subject subject = SecurityUtils.getSubject();
         CustomToken admin = new CustomToken(adminDO.getUsername(), adminDO.getPassword(), "admin");
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+        request.getSession().setAttribute("admin", adminDO.getUsername());
         try {
             subject.login(admin);
         } catch (AuthenticationException e) {
@@ -42,10 +60,8 @@ public class AuthController {
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
         return baseReqVo;
-
-//        baseReqVo.setData("4b7d719e-53b7-4019-9677-6309b2445b45");
-
     }
+
 
     /**
      *
@@ -70,6 +86,9 @@ public class AuthController {
      *        },
      * 	"errmsg": "成功"
      * }
+     * //        ArrayList<String> roles = new ArrayList<>();
+     * //        roles.add("超级管理员");
+     * //        infoData.setRoles(roles);
      * @param token
      * @return
      */
@@ -78,32 +97,29 @@ public class AuthController {
         Subject subject = SecurityUtils.getSubject();
         AdminDO principal = (AdminDO) subject.getPrincipal();
         InfoData infoData = new InfoData();
-//        infoData.setAvatar(principal.getAvatar());
-//        infoData.setName(principal.getUsername());
-//        Integer[] roleIds = principal.getRoleIds();
-//
-        ArrayList<String> perms = new ArrayList<>();
-
-
-
-//        InfoData data = new InfoData();
-//        infoData.setAvatar("https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif");
-//        infoData.setName("songge");
-
-//        ArrayList<String> perms = new ArrayList<>();
-        perms.add("*");
-        infoData.setPerms(perms);
-
-        ArrayList<String> roles = new ArrayList<>();
-        roles.add("超级管理员");
-        infoData.setRoles(roles);
-
+        infoData.setAvatar(principal.getAvatar());
+        infoData.setName(principal.getUsername());
+        Integer[] roleIds = principal.getRoleIds();
+        ArrayList<String> permsList = new ArrayList<>();
+        ArrayList<String> roleList = new ArrayList<>();
+        for (Integer roleId : roleIds) {
+            List<String> perms = adminService.selectPermsLeft(roleId);
+            permsList.addAll(perms);
+            String roleName = adminService.selectRoleName(roleId);
+            roleList.add(roleName);
+        }
+        if (permsList.size() == 0){
+            permsList.add("*");
+        }
+        infoData.setRoles(roleList);
+        infoData.setPerms(permsList);
         BaseReqVo baseReqVo = new BaseReqVo();
         baseReqVo.setData(infoData);
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
         return baseReqVo;
     }
+
 
     @RequestMapping("/auth/logout")
     public BaseReqVo logouut(){
@@ -114,11 +130,6 @@ public class AuthController {
         return  baseReqVo;
     }
 
-    /**
-     * 统计 goods,order,product,user的数量
-     */
-    @Autowired
-    DashboardService dashboardService;
     @RequestMapping("dashboard")
     public BaseReqVo dashboard(){
         BaseReqVo baseReqVo = new BaseReqVo();
