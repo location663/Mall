@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Date;
 import java.util.*;
 
 @Service
@@ -94,6 +93,7 @@ public class AdminServiceImpl implements AdminService {
 
         adminDO.setAddTime(new Date(System.currentTimeMillis()));
         adminDO.setUpdateTime(new Date(System.currentTimeMillis()));
+        adminDO.setLastLoginTime(new Date(System.currentTimeMillis()));
         int i = adminDOMapper.insertSelective(adminDO);      // 做 “增” 的操作
         AdminDOExample adminDOExample = new AdminDOExample();
         adminDOExample.createCriteria().andUsernameEqualTo(adminDO.getUsername()).andPasswordEqualTo(adminDO.getPassword()).andDeletedEqualTo(false);
@@ -371,7 +371,6 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-
     @Override
     public List<String> selectPermsLeft(Integer roleId) {
         List<String> permsList = adminDOMapper.selectPermsLeft(roleId);
@@ -382,5 +381,18 @@ public class AdminServiceImpl implements AdminService {
     public String selectRoleName(Integer roleId) {
         String roleName = adminDOMapper.selectRoleName(roleId);
         return roleName;
+    }
+
+    @Override
+    public int updateLoginTimeAndIp(AdminDO adminDO,String remoteIp) {
+        String username = adminDO.getUsername();
+        String password = adminDO.getPassword();
+        AdminDOExample adminDOExample = new AdminDOExample();
+        adminDOExample.createCriteria().andUsernameEqualTo(username).andPasswordEqualTo(password).andDeletedEqualTo(false);
+        AdminDO adminDO1 = new AdminDO();
+        adminDO1.setLastLoginTime(new Date());
+        adminDO1.setLastLoginIp(remoteIp);
+        int i = adminDOMapper.updateByExampleSelective(adminDO1,adminDOExample);
+        return i;
     }
 }

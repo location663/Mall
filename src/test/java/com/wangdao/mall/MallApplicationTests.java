@@ -13,13 +13,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class MallApplicationTests {
 
-    @Autowired
-    AliyunComponent aliyunComponent;
+//    @Autowired
+//    AliyunComponent aliyunComponent;
 
-    @Test
-    public void myTest(){
-
-    }
+//    @Test
+//    public void myTest(){
+//
+//    }
 }
 
 

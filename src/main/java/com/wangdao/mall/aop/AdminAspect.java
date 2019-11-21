@@ -51,11 +51,6 @@ public class AdminAspect {
         logDO.setType(getActionType(request));
         logDO.setResult("成功");
         logDO.setComment("");
-//        if (request.getRequestURI().contains("logout")) {
-//            request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
-//            String admin1 = (String) request.getSession().getAttribute("admin");
-//            logDO.setAdmin(admin1);
-//        }
     }
 
     /**
@@ -130,11 +125,11 @@ public class AdminAspect {
         String requestURI = request.getRequestURI();
         if (requestURI.contains("login")) {
             return "登录";
-        } else if (requestURI.contains("admin/create")) {
+        }else if (requestURI.contains("admin/create")) {
             return "创建管理员";
-        } else if (requestURI.contains("admin/update")) {
+        }else if (requestURI.contains("admin/update")) {
             return "编辑管理员";
-        } else if (requestURI.contains("admin/delete")) {
+        }else if (requestURI.contains("admin/delete")) {
             return "删除管理员";
         }else if (requestURI.contains("role/create")){
             return "创建管理权限";
@@ -160,16 +155,70 @@ public class AdminAspect {
             return "编辑小程序配置";
         }else if (requestURI.contains("create")) {
             return "创建";
-        } else if (requestURI.contains("logout")) {
+        }else if (requestURI.contains("logout")) {
             return "退出";
-        } else if (requestURI.contains("update")) {
+        }else if (requestURI.contains("update")) {
             return "编辑";
-        } else if (requestURI.contains("delete")) {
+        }else if (requestURI.contains("delete")) {
             return "删除";
-        } else if (requestURI.contains("read")) {
+        }else if (requestURI.contains("read")) {
             return "查看详情";
-        } else {
-            return "浏览";
+        }else if (requestURI.contains("/user/list")){
+            return "浏览会员管理";
+        }else if (requestURI.contains("/address/list")){
+            return "浏览收货地址";
+        }else if (requestURI.contains("/collect/list")){
+            return "浏览会员收藏";
+        }else if (requestURI.contains("/footprint/list")){
+            return "浏览会员足迹";
+        }else if (requestURI.contains("/history/list")){
+            return "浏览搜索历史";
+        }else if (requestURI.contains("/feedback/list")){
+            return "浏览意见反馈";
+        }else if (requestURI.contains("/region/list")){
+            return "浏览行政区域";
+        }else if (requestURI.contains("/brand/list")){
+            return "浏览品牌制造商";
+        }else if (requestURI.contains("/category/list")){
+            return "浏览商品类名";
+        }else if (requestURI.contains("/order/list")){
+            return "浏览订单管理";
+        }else if (requestURI.contains("/issue/list")){
+            return "浏览通用问题";
+        }else if (requestURI.contains("/keyword/list")){
+            return "浏览关键词";
+        }else if (requestURI.contains("/goods/list")){
+            return "浏览商品列表";
+        }else if (requestURI.contains("/goods/catAndBrand")){
+            return "浏览商品上架";
+        }else if (requestURI.contains("/comment/list")){
+            return "浏览商品评论";
+        }else if (requestURI.contains("/ad/list")){
+            return "浏览广告管理";
+        }else if (requestURI.contains("/coupon/list")){
+            return "浏览优惠券管理";
+        }else if (requestURI.contains("/topic/list")){
+            return "浏览专题管理";
+        }else if (requestURI.contains("/groupon/list")){
+            return "浏览团购规则";
+        }else if (requestURI.contains("/groupon/listRecord")){
+            return "浏览团购活动";
+        }else if (requestURI.contains("/admin/list")){
+            return "浏览管理员";
+        }else if (requestURI.contains("/log/list")){
+            return "浏览操作日志";
+        }else if (requestURI.contains("/role/list")){
+            return "浏览角色管理";
+        }else if (requestURI.contains("/storage/list")){
+            return "浏览对象存储";
+        }else if (requestURI.contains("/stat/user")){
+            return "浏览用户统计";
+        }else if (requestURI.contains("/stat/order")){
+            return "浏览订单统计";
+        }else if (requestURI.contains("/stat/goods")){
+            return "浏览商品统计";
+        }else {
+            return "进入管理界面";
         }
     }
 
@@ -181,16 +230,16 @@ public class AdminAspect {
     public static int getActionType(HttpServletRequest request){
         String requestURI = request.getRequestURI();
         if (requestURI.contains("login") ||
-                requestURI.contains("admin/create") ||
-                requestURI.contains("admin/update") ||
-                requestURI.contains("admin/delete") ||
-                requestURI.contains("role/create")  ||
-                requestURI.contains("role/update")  ||
-                requestURI.contains("role/delete")  ||
-                requestURI.contains("logout")       ||
-                requestURI.contains("config/mall")  ||
-                requestURI.contains("confix/wx")){
-                return 1;
+            requestURI.contains("admin/create") ||
+            requestURI.contains("admin/update") ||
+            requestURI.contains("admin/delete") ||
+            requestURI.contains("role/create")  ||
+            requestURI.contains("role/update")  ||
+            requestURI.contains("role/delete")  ||
+            requestURI.contains("logout")       ||
+            requestURI.contains("config/mall")  ||
+            requestURI.contains("confix/wx")){
+            return 1;
         }else if (requestURI.contains("config/order") || requestURI.contains("config/express")){
             return 2;
         }
