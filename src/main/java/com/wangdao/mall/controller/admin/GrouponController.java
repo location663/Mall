@@ -33,8 +33,7 @@ public class GrouponController {
 //        return baseReqVo;
 //    }
     @RequestMapping("groupon/listRecord")
-    @RequiresPermissions(value = {"admin:groupon:list","admin:groupon:update","admin:groupon:delete",
-            "admin:groupon:create","admin:groupon:read"},logical = Logical.OR)
+    @RequiresPermissions("admin:groupon:read")
     public BaseReqVo queryGrouponList(Integer page, Integer limit, Integer goodsId){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         Map<String, Object> map = grouponService.queryGrouponList(page, limit, goodsId);
@@ -50,6 +49,8 @@ public class GrouponController {
      * @return
      */
     @RequestMapping("groupon/list")
+    @RequiresPermissions(value = {"admin:groupon:read","admin:groupon:update","admin:groupon:delete"
+            ,"admin:groupon:create","admin:groupon:list"}, logical = Logical.OR)
     public BaseReqVo grouponRulesList(RequestPageDTO pageDTO){
         Map map = grouponService.listGrouponRules(pageDTO);
         BaseReqVo<Map> baseReqVo = new BaseReqVo<>(map, "成功", 0);
@@ -63,6 +64,7 @@ public class GrouponController {
      * @throws Exception
      */
     @RequestMapping("groupon/create")
+    @RequiresPermissions("admin:groupon:create")
     public BaseReqVo grouponRulesCreate(@RequestBody GrouponRulesDO grouponRulesDO) throws Exception {
         if (grouponRulesDO.getExpireTime().before(new Date())){
             return new BaseReqVo(null, null, 701);
@@ -79,6 +81,7 @@ public class GrouponController {
      * @throws Exception
      */
     @RequestMapping("groupon/update")
+    @RequiresPermissions("admin:groupon:update")
     public BaseReqVo grouponRulesUpdate(@RequestBody GrouponRulesDO grouponRulesDO) throws Exception {
         if (grouponRulesDO.getExpireTime().before(new Date()) || grouponRulesDO.getExpireTime().before(grouponRulesDO.getAddTime())){
             return new BaseReqVo(null, null, 701);
@@ -99,6 +102,7 @@ public class GrouponController {
      * @return
      */
     @RequestMapping("groupon/delete")
+    @RequiresPermissions("admin:groupon:delete")
     public BaseReqVo grouponRulesDelete(@RequestBody GrouponRulesDO grouponRulesDO){
         int res = grouponService.deleteGrouponRules(grouponRulesDO);
         BaseReqVo<Object> baseReqVo;

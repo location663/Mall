@@ -12,5 +12,4 @@ public interface WxGrouponService {
 
     Map listByUseridAndShowtype(Integer showType);
 
-    GrouponDetailVO detailGroupon(Integer grouponId);
 }
