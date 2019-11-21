@@ -8,6 +8,7 @@ import com.wangdao.mall.bean.FootprintVO;
 import com.wangdao.mall.mapper.FootprintDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.Map;
  * @date : 2019-11-19 22:45
  **/
 @Service
+@Transactional
 public class WxFootprintServiceImpl implements WxFootprintService{
     @Autowired
     FootprintDOMapper footprintDOMapper;

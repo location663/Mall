@@ -6,7 +6,6 @@ import com.wangdao.mall.bean.RequestPageDTO;
 import java.util.Map;
 
 public interface GrouponService {
-//    Map listGrouponRecord(RequestPageDTO pageDTO);
 
     Map listGrouponRules(RequestPageDTO pageDTO);
 

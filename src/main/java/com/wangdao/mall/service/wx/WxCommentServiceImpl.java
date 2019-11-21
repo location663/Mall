@@ -15,11 +15,13 @@ import com.wangdao.mall.mapper.CommentDOMapper;
 import com.wangdao.mall.mapper.UserDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.xml.crypto.Data;
 import java.util.*;
 
 @Service
+@Transactional
 public class WxCommentServiceImpl implements WxCommentService {
     /**
      * 展示专题下的评论
