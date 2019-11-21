@@ -6,13 +6,11 @@
  **/
 package com.wangdao.mall.controller.wx;
 import com.wangdao.mall.bean.BaseReqVo;
-import com.wangdao.mall.bean.TopicListDoBean;
 import com.wangdao.mall.service.wx.WxTopicService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -28,16 +26,7 @@ public class WxTopicController {
         Map map=topicService.topicDetail(id);
         return new BaseReqVo(map,"成功",0);
     }
-<<<<<<< HEAD
 
-    @RequestMapping("comment/list")
-    public BaseReqVo commentList(String valueId,String type,String showType,String page,String size){
-        TopicListDoBean topicListDoBean = topicService.commentList(valueId, type, showType, page, size);
-        return new BaseReqVo(topicListDoBean,"成功",0);
-    }
-
-=======
->>>>>>> 1ab9c9bfc98a0423c797d478464ef1d3a050ba63
     @RequestMapping("topic/list")
     public BaseReqVo topicList(String page,String size){
         Map map=topicService.topicList(page,size);

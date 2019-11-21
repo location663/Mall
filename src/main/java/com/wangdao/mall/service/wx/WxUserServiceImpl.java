@@ -12,6 +12,7 @@ import com.wangdao.mall.mapper.CommentDOMapper;
 import com.wangdao.mall.mapper.OrderDOMapper;
 import com.wangdao.mall.mapper.OrderGoodsDOMapper;
 import com.wangdao.mall.mapper.UserDOMapper;
+import com.wangdao.mall.service.util.wx.Md5Utils;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -139,6 +140,29 @@ public class WxUserServiceImpl implements WxUserService {
         } catch (ClientException e) {
             e.printStackTrace();
         }
+    }
+
+    /**根据手机号查询数据库，重置密码
+     * @param mobile
+     * @param code
+     * @param password
+     * @return
+     */
+    @Override
+    public int resetPassword(String mobile, String code, String password) throws WxException {
+        int check = userDOMapper.checkAccountExistByMobile(mobile);
+        if(check == 0){
+            throw new WxException("未查询到该手机号绑定的账户");
+        }
+        //检测输入的验证码和发送的验证码是否一致
+        String s = regMap.get(mobile);
+        if(!code.equals(s)){
+            throw new WxException("验证码输入错误");
+        }
+        //把密码用MD5加密
+        String md5Password = Md5Utils.getMd5(password);
+        int update = userDOMapper.updatePasswordByMobile(mobile, md5Password);
+        return update;
     }
 
     /**
