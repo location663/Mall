@@ -40,7 +40,7 @@ public class WxAuthController {
         } catch (AuthenticationException e) {
             return new BaseReqVo(null, "登录失败", 500);
         }
-        Map map = userService.login();
+        Map map = userService.login(request.getRemoteAddr());
         map.put("token", request.getSession().getId());
         return new BaseReqVo(map, "成功", 0);
     }
@@ -70,7 +70,7 @@ public class WxAuthController {
      * @return
      */
     @RequestMapping("auth/register")
-    public BaseReqVo userRegister(@RequestBody UserDO userDO) throws Exception {
+    public BaseReqVo userRegister(@RequestBody UserDO userDO, HttpServletRequest request) throws Exception {
         Map map = userService.userRegister(userDO);
         Subject subject = SecurityUtils.getSubject();
 //        CustomToken token = new CustomToken(userDO.getUsername(), Md5Utils.getMultiMd5(userDO.getPassword()), "wx");
@@ -80,7 +80,7 @@ public class WxAuthController {
         } catch (AuthenticationException e) {
             return new BaseReqVo(null, "登录失败", 500);
         }
-        userService.login();
+        userService.login(request.getRemoteAddr());
 //        map1.put("token", request.getSession().getId());
         return new BaseReqVo(map, "成功", 0);
     }
