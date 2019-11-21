@@ -14,7 +14,6 @@ import java.util.Set;
 
 public interface WxTopicService {
     Map topicDetail(String id);
-    TopicListDoBean commentList(String valueId, String type, String showType, String page, String size);
     Map topicList(String page, String size);
     Set topicRelated(Integer id);
 }
