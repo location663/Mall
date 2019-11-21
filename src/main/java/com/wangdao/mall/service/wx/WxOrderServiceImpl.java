@@ -19,6 +19,9 @@ import java.util.*;
 public class WxOrderServiceImpl implements WxOrderService {
 
     @Autowired
+    CouponUserDOMapper couponUserDOMapper;
+
+    @Autowired
     GoodsProductDOMapper goodsProductDOMapper;
 
     @Autowired
@@ -202,6 +205,19 @@ public class WxOrderServiceImpl implements WxOrderService {
         orderDO.setPayId(String.valueOf(i));
         orderDO.setId(i);
         orderDOMapper.updateByPrimaryKeySelective(orderDO);
+
+        //修改优惠券信息
+        if (orderDO.getCouponPrice() != BigDecimal.valueOf(0)) {
+            Integer id = userDO.getId();
+            CouponUserDOExample couponUserDOExample = new CouponUserDOExample();
+            couponUserDOExample.createCriteria().andUserIdEqualTo(id).andCouponIdEqualTo(couponId).andDeletedEqualTo(false);
+            CouponUserDO couponUserDO = new CouponUserDO();
+            couponUserDO.setStatus((short) 1);
+            couponUserDO.setUsedTime(new Date());
+            couponUserDO.setOrderId(i);
+            couponUserDO.setUpdateTime(new Date());
+            couponUserDOMapper.updateByExampleSelective(couponUserDO, couponUserDOExample);
+        }
 
         //order_goods表对象
         List<OrderGoodsDO> orderGoodsDOList = new ArrayList<>();
@@ -694,6 +710,7 @@ public class WxOrderServiceImpl implements WxOrderService {
         OrderDO orderDO = new OrderDO();
         orderDO.setId(orderId);
         orderDO.setOrderStatus((short)401);
+        orderDO.setConfirmTime(new Date());
         orderDO.setUpdateTime(new Date());
         orderDOMapper.updateByPrimaryKeySelective(orderDO);
         return new BaseReqVo(null,"成功",0);

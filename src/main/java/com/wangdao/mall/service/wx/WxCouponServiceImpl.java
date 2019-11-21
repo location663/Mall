@@ -10,8 +10,10 @@ package com.wangdao.mall.service.wx;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wangdao.mall.bean.*;
+import com.wangdao.mall.mapper.CartDOMapper;
 import com.wangdao.mall.mapper.CouponDOMapper;
 import com.wangdao.mall.mapper.CouponUserDOMapper;
+import com.wangdao.mall.mapper.GrouponRulesDOMapper;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,11 @@ public class WxCouponServiceImpl implements WxCouponService {
     @Autowired
     CouponUserDOMapper couponUserDOMapper;
 
+    @Autowired
+    CartDOMapper cartDOMapper;
+
+    @Autowired
+    GrouponRulesDOMapper grouponRulesDOMapper;
 
     /**
      * 优惠券列表  (每页只显示10张优惠券)(有desc关键字)(endTime对比new Date，过期了则不显示)
@@ -377,5 +384,78 @@ public class WxCouponServiceImpl implements WxCouponService {
     }
 
 
+    /**
+     * 当前用户 当前订单可用优惠券列表  只做goods_type==0
+     * goods_type  商品限制类型，如果0则全商品，如果是1则是类目限制，如果是2则是商品限制。
+     * goods_value 商品限制值，goods_type如果是0则空集合，如果是1则是类目集合，如果是2则是商品集合。
+     * 找出符合 goods_type 的 status是0 的 delete为false 的 car总金额达到满减条件的 优惠券
+     *
+     * 先获取我的user_ID优惠券里 未用status==0 存在的delete==false 可用的start_time开始时间大于当前 未过期的当前时间大于end_time
+     * 再获取: 通用goods_type==0优惠券，如果购物车总价格达到满减条件，返回此优惠券  (min 最少消费金额才能使用优惠券。)
+     *
+     * checked 购物车中商品是否选择状态
+     * @param cartId
+     * @param grouponRulesId
+     * @return
+     */
+    @Override
+    public List<Map> couponSelectlist(Integer cartId, Integer grouponRulesId) {
+        ArrayList<Map> mapArrayList = new ArrayList<>();
+        //获取当前用户登录对象
+        UserDO userDO  = (UserDO) SecurityUtils.getSubject().getPrincipal();
 
+        //获取user_ID 下 cart里所有商品总价格,每条购物车商品价格= price * number
+        Double cartPrice=0.0;
+        if (cartId>0) {
+            CartDO cartDO = cartDOMapper.selectByPrimaryKey(cartId);
+            cartPrice = (cartDO.getNumber() * cartDO.getPrice().doubleValue());
+        }else {
+            CartDOExample cartDOExample = new CartDOExample();
+            cartDOExample.createCriteria().andDeletedEqualTo(false).andUserIdEqualTo(userDO.getId()).andCheckedEqualTo(true);
+            List<CartDO> cartDOS = cartDOMapper.selectByExample(cartDOExample);
+            for (CartDO cartDO : cartDOS) {
+                cartPrice = cartPrice + (cartDO.getNumber() * cartDO.getPrice().doubleValue());
+            }
+        }
+
+        Double grouponRulesDiscount=0.0;
+        if (grouponRulesId>0) {
+            GrouponRulesDO grouponRulesDO = grouponRulesDOMapper.selectByPrimaryKey(grouponRulesId);
+            grouponRulesDiscount = grouponRulesDO.getDiscount().doubleValue();
+        }
+
+        ArrayList<CouponUserDO> couponUserDOArrayList = new ArrayList<>();
+        //先获取我的user_ID优惠券里 未用status==0 存在的delete==false
+        CouponUserDOExample couponUserDOExample = new CouponUserDOExample();
+        couponUserDOExample.createCriteria().andDeletedEqualTo(false).andUserIdEqualTo(userDO.getId()).andStatusEqualTo(Short.valueOf(String.valueOf(0)));
+        List<CouponUserDO> couponUserDOList = couponUserDOMapper.selectByExample(couponUserDOExample);
+        for (CouponUserDO couponUserDO : couponUserDOList) {
+            if (couponUserDO.getStartTime()!=null && couponUserDO.getEndTime()!=null){
+                if (!(new Date().after(couponUserDO.getEndTime())) && new Date().after(couponUserDO.getStartTime()) ) {  //没过期
+                    couponUserDOArrayList.add(couponUserDO);//可用的start_time开始时间大于当前 未过期的当前时间大于end_time
+                }
+            }
+        }
+
+        for (CouponUserDO couponUserDO : couponUserDOArrayList) {
+            CouponDO couponDO = couponDOMapper.selectByPrimaryKey(couponUserDO.getCouponId());
+            if (couponDO!=null){
+                Double v = cartPrice - grouponRulesDiscount;
+                if (v >= (couponDO.getMin()).doubleValue()){
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("id",couponUserDO.getId());
+                    map.put("name",couponDO.getName());
+                    map.put("desc",couponDO.getDesc());
+                    map.put("tag",couponDO.getTag());
+                    map.put("min",couponDO.getMin());
+                    map.put("discount",couponDO.getDiscount());
+                    map.put("startTime",couponUserDO.getStartTime());
+                    map.put("endTime",couponUserDO.getEndTime());
+                    mapArrayList.add(map);
+                }
+            }
+        }
+
+        return mapArrayList;
+    }
 }

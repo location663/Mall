@@ -5,11 +5,11 @@
  * Time:20:43
  **/
 package com.wangdao.mall.controller.wx;
-
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.CheckoutDataBean;
 import com.wangdao.mall.bean.ReceiveCartDo;
 import com.wangdao.mall.bean.UserDO;
+import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.service.wx.WxCartService;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.subject.Subject;
@@ -29,7 +29,7 @@ public class CartController {
     @Autowired
     WxCartService cartService;
     @RequestMapping("add")
-    public BaseReqVo add(@RequestBody Map map){
+    public BaseReqVo add(@RequestBody Map map) throws WxException {
         Integer goodsId = (Integer)map.get("goodsId");
         Integer number=(Integer)map.get("number");
         Integer productId=(Integer)map.get("productId");
@@ -46,7 +46,7 @@ public class CartController {
         return new BaseReqVo<>(map,"成功",0);
     }
     @RequestMapping("fastadd")
-    public BaseReqVo fastAdd(@RequestBody Map map){
+    public BaseReqVo fastAdd(@RequestBody Map map) throws WxException {
         Integer goodsId = (Integer)map.get("goodsId");
         Integer number=(Integer)map.get("number");
         Integer productId=(Integer)map.get("productId");
@@ -67,6 +67,7 @@ public class CartController {
         }
         cartService.checked(products,truechecked);
         Map index = cartService.index(userDO);
+
         return new BaseReqVo<>(index,"成功",0);
     }
     @RequestMapping("checkout")
