@@ -9,6 +9,7 @@ package com.wangdao.mall.controller.wx;
 
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.CouponUserDO;
+import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.service.wx.WxCouponService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -49,11 +50,14 @@ public class WxCouponController {
      * @return
      */
     @RequestMapping("coupon/receive")
-    public BaseReqVo couponReceive(@RequestBody CouponUserDO couponUserDO){  //map里有 couponId
+    public BaseReqVo couponReceive(@RequestBody CouponUserDO couponUserDO) throws WxException {  //map里有 couponId
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         Integer couponId = couponUserDO.getCouponId();
         int i=wxCouponService.couponReceive(couponId);
 
+        if (i==0){
+            throw new WxException("领取失败");
+        }
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
         return baseReqVo;
