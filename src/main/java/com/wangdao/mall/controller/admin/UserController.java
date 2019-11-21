@@ -10,6 +10,8 @@ package com.wangdao.mall.controller.admin;
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.service.admin.UserService;
 import com.wangdao.mall.service.util.UserRegExutils;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,6 +34,7 @@ public class UserController {
      * @param order
      * @return
      */
+    @RequiresPermissions(value = {"admin:user:list"})
     @RequestMapping("/user/list")
     public BaseReqVo userList(int page, int limit, String sort, String order, String username, String mobile) {
         if(UserRegExutils.userReg(username)==601||UserRegExutils.userReg(mobile)==602){
@@ -56,6 +59,7 @@ public class UserController {
      * @param userid
      * @return
      */
+    @RequiresPermissions(value = {"admin:address:list"})
     @RequestMapping("/address/list")
     public BaseReqVo addressList(int page, int limit, String sort, String order, String name, String userid) {
         if (UserRegExutils.userReg(name) == 601 || UserRegExutils.userReg(userid) == 602) {
@@ -79,6 +83,7 @@ public class UserController {
      * @param userId
      * @return
      */
+    @RequiresPermissions(value = {"admin:collect:list"})
     @RequestMapping("/collect/list")
     public BaseReqVo collectList(int page, int limit, String sort, String order, String valueId, String userId) {
         if(UserRegExutils.userReg(valueId)==602||UserRegExutils.userReg(userId)==602){
@@ -102,6 +107,7 @@ public class UserController {
      * @param userId
      * @return
      */
+    @RequiresPermissions(value = {"admin:footprint:list"})
     @RequestMapping("/footprint/list")
     public BaseReqVo footprintList(int page, int limit, String sort, String order, String goodsId, String userId) {
         if (UserRegExutils.userReg(goodsId) == 602 || UserRegExutils.userReg(userId) == 602) {
@@ -125,6 +131,7 @@ public class UserController {
      * @param userId
      * @return
      */
+    @RequiresPermissions(value = {"admin:history:list"})
     @RequestMapping("/history/list")
     public BaseReqVo historyList(int page, int limit, String sort, String order, String keyword, String userId) {
         if (UserRegExutils.userReg(keyword) == 601 || UserRegExutils.userReg(userId) == 602) {
@@ -147,6 +154,7 @@ public class UserController {
      * @param id
      * @return
      */
+    @RequiresPermissions(value = {"admin:feedback:list"})
     @RequestMapping("/feedback/list")
     public BaseReqVo feedbackList(int page, int limit, String sort, String order, String username, String id) {
         if(UserRegExutils.userReg(username)==601||UserRegExutils.userReg(id)==602){
