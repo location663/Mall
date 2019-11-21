@@ -1,4 +1,5 @@
 package com.wangdao.mall;
+
 import com.wangdao.mall.component.AliyunComponent;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +15,9 @@ class MallApplicationTests {
     @Autowired
     AliyunComponent aliyunComponent;
 
+
     @Test
-    public void myTest(){
+    public void myTest() {
 //        Calendar ca = Calendar.getInstance();
 //        ca.setTime(new Date());
 //        System.out.println("ca初始化：" + ca.getTime());

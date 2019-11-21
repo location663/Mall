@@ -29,7 +29,6 @@ public class WxTopicController {
         return new BaseReqVo(map,"成功",0);
     }
 
-
     @RequestMapping("topic/list")
     public BaseReqVo topicList(String page,String size){
         Map map=topicService.topicList(page,size);
