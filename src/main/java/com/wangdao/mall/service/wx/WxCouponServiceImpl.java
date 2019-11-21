@@ -31,6 +31,7 @@ public class WxCouponServiceImpl implements WxCouponService {
 
     /**
      * 优惠券列表  (每页只显示10张优惠券)(有desc关键字)(endTime对比new Date，过期了则不显示)
+     * (total 优惠券数量 如果优惠券数量小于0则不显示)
      * @param page
      * @param size
      * @return
@@ -45,12 +46,14 @@ public class WxCouponServiceImpl implements WxCouponService {
         List<CouponDO> couponDOList = couponDOMapper.selectByExample(couponDOExample);
         if (couponDOList.size()>0) {
             for (CouponDO couponDO : couponDOList) {
-                if (couponDO.getEndTime()!=null) {    //有设置优惠券有效时间应该检查是否过期
-                    if (!(new Date().after(couponDO.getEndTime()))) {  //没过期
+                if (couponDO.getTotal()>=0) {  //如果total大于0,表示还有优惠券可以被领取
+                    if (couponDO.getEndTime() != null) {    //有设置优惠券有效时间应该检查是否过期
+                        if (!(new Date().after(couponDO.getEndTime()))) {  //没过期
+                            data.add(couponDO);
+                        }
+                    } else {  //没有设置优惠券有效时间，直接显示
                         data.add(couponDO);
                     }
-                }else {  //没有设置优惠券有效时间，直接显示
-                    data.add(couponDO);
                 }
             }
         }
@@ -69,7 +72,9 @@ public class WxCouponServiceImpl implements WxCouponService {
      * (used_time和order_id只在已经使用的优惠券中显示，新领取优惠券时此两个属性应该为null,改变使用状态应该在下单操作里)
      * (add_time和update_time应该及时更新，add_time在领取时创建，update_time在优惠券删除，过期，或者使用后更新)
      *
-     * (limit 用户领券限制数量，如果是0，则是不限制；默认是1，限领一张(通过coupon_id查询用户有次优惠券的数量，以便于限制领取次数))
+     * (limit 用户领券限制数量，如果是0，则是不限制；默认是n，限领n张(通过coupon_id查询用户有次优惠券的数量，以便于限制领取次数))
+     *
+     * (total 优惠券数量 如果优惠券可被领取数量为0可以无限制领取，否则每领取一张，需要减少一张可领取数量)
      *
      * (type 优惠券赠送类型，如果是0则通用券，用户领取；如果是1，则是注册赠券；如果是2，则是优惠券码兑换)
      *
@@ -102,12 +107,12 @@ public class WxCouponServiceImpl implements WxCouponService {
             }
         }
 
-        if (couponDO.getLimit()==1){  //限制只能领取一张
+        if (couponDO.getLimit()>0){  //限制领取数量Limit
             //通过coupon_id查询用户有效 CouponUserDO 优惠券的数量，以便于限制领取limit数量
             CouponUserDOExample couponUserDOExample1 = new CouponUserDOExample();
             couponUserDOExample1.createCriteria().andDeletedEqualTo(false).andCouponIdEqualTo(couponId).andUserIdEqualTo(userDO.getId()).andStatusEqualTo(Short.valueOf(String.valueOf(0)));
             List<CouponUserDO> couponUserDOList1 = couponUserDOMapper.selectByExample(couponUserDOExample1);
-            if (couponUserDOList1.size()>0){  //用户已经有了这张券，不能再次领取
+            if (couponUserDOList1.size()>=couponDO.getLimit()){  //用户最大化领取够了这张券，不能再领取了
                 return 0;
             }
         }
@@ -134,6 +139,13 @@ public class WxCouponServiceImpl implements WxCouponService {
 
         //使用 Selective 插入，对象某属性没赋值或者为null时，不会把这个属性插入
         i=couponUserDOMapper.insertSelective(couponUserDO);
+        if (couponDO.getTotal()!=0 && i==1){  //领取成功，原优惠券可被领取数量减1
+            couponDO.setTotal(couponDO.getTotal()-1);
+            if (couponDO.getTotal()==0){   //先减少优惠券数量，如果减到最后为0，需要赋值为-1
+                couponDO.setTotal(-1);
+            }
+            int j = couponDOMapper.updateByPrimaryKey(couponDO); //更新优惠券可领取数量状态
+        }
         return i;
     }
 
