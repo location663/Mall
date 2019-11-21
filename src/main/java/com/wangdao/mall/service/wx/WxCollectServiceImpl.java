@@ -1,5 +1,5 @@
 /**
- * Created by IntelliJ IDEA.
+ * WX收藏模块
  * User: Jql
  * Date  2019/11/20
  * Time  下午 3:14

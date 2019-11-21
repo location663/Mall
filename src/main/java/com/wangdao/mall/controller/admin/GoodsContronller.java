@@ -9,6 +9,8 @@ package com.wangdao.mall.controller.admin;
 
 import com.wangdao.mall.bean.*;
 import com.wangdao.mall.service.admin.GoodsService;
+import org.apache.shiro.authz.annotation.Logical;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +35,7 @@ public class GoodsContronller {
      * @return
      */
     @RequestMapping("goods/list")
+    @RequiresPermissions(value = {"admin:goods:list","admin:goods:read","admin:goods:create","admin:goods:delete"},logical = Logical.OR)
     public BaseReqVo goodsList(Integer page,Integer limit,String goodsSn,String name,String sort,String order) {
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         //先判断goodsSn是数字还是字符串
@@ -65,11 +68,12 @@ public class GoodsContronller {
         return baseReqVo;
     }
 
-    /**
+    /**   //@RequiresPermissions(value = {"admin:goods:read"})
      * 商品编辑页的商品介绍
      * @return
      */
     @RequestMapping("goods/detail")
+    @RequiresPermissions(value = {"admin:goods:read","admin:goods:update"},logical = Logical.OR)
     public BaseReqVo goodsDetail(Integer id){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
 
@@ -105,6 +109,7 @@ public class GoodsContronller {
      * @return
      */
     @RequestMapping("comment/list")
+    @RequiresPermissions(value = {"admin:comment:list","admin:comment:delete"},logical = Logical.OR)
     public BaseReqVo commentList(Integer page, Integer limit, String userId, String valueId, String sort, String order){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
 
@@ -150,6 +155,7 @@ public class GoodsContronller {
      * 删除单个商品评论
      */
     @RequestMapping("comment/delete")
+    @RequiresPermissions(value = {"admin:comment:delete"},logical = Logical.OR)
     public BaseReqVo commentDelete(@RequestBody CommentDO commentDO){
         BaseReqVo baseReqVo = goodsService.deleteComment(commentDO);
         return baseReqVo;
@@ -161,6 +167,7 @@ public class GoodsContronller {
      * @return
      */
     @RequestMapping("goods/delete")
+    @RequiresPermissions(value = {"admin:goods:delete"},logical = Logical.OR)
     public BaseReqVo goodsDelete(@RequestBody GoodsDO goodsDO){
 
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
@@ -180,6 +187,7 @@ public class GoodsContronller {
      * @return
      */
     @RequestMapping("goods/create")
+    @RequiresPermissions(value = {"admin:goods:create"},logical = Logical.OR)
     public BaseReqVo goodsCreate(@RequestBody GoodsCreateRequest goodsCreateRequest){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
 
@@ -198,6 +206,7 @@ public class GoodsContronller {
      * @return
      */
     @RequestMapping("goods/update")
+    @RequiresPermissions(value = {"admin:goods:update"},logical = Logical.OR)
     public BaseReqVo goodsUpdate(@RequestBody GoodsCreateRequest goodsCreateRequest){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
 
