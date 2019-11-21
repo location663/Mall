@@ -377,5 +377,18 @@ public class WxCouponServiceImpl implements WxCouponService {
     }
 
 
-
+    /**
+     * 当前订单可用优惠券列表
+     * goods_type  商品限制类型，如果0则全商品，如果是1则是类目限制，如果是2则是商品限制。
+     * goods_value 商品限制值，goods_type如果是0则空集合，如果是1则是类目集合，如果是2则是商品集合。
+     * 找出符合 goods_type 的 status是0 的 delete为false 的 car总金额达到满减条件的 优惠券
+     *
+     * @param cartId
+     * @param grouponRulesId
+     * @return
+     */
+    @Override
+    public List<Map> couponSelectlist(Integer cartId, Integer grouponRulesId) {
+        return null;
+    }
 }
