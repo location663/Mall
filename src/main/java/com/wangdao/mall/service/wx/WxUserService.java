@@ -15,4 +15,6 @@ public interface WxUserService {
     Map userRegister(UserDO userDO) throws Exception;
 
     int resetPassword(String mobile, String code, String password) throws WxException;
+
+    void loginnByWeixin(Map userInfoMap, String code);
 }

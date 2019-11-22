@@ -12,39 +12,42 @@ import com.wangdao.mall.mapper.OrderGoodsDOMapper;
 import com.wangdao.mall.mapper.UserDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
 @Service
+@Transactional
 public class StatServiceImpl implements StatService {
     @Autowired
     UserDOMapper userDOMapper;
     @Override
     public Map statUser() {
         String[] strings={"day","users"};
-        UserDOExample userDOExample = new UserDOExample();
-        List<UserDO> userDOS = userDOMapper.selectByExample(userDOExample);
-        /**
-         * 按登录时间去重，并依次按登录时间搜索并统计
-         */
-        Set<Date> dateSet=new HashSet();
-        //将时分秒归0
-        for (UserDO userDO : userDOS) {
-            Date lastLoginTime = userDO.getLastLoginTime();
-            lastLoginTime.setHours(0);
-            lastLoginTime.setMinutes(0);
-            lastLoginTime.setSeconds(0);
-            dateSet.add(lastLoginTime);
-        }
+//        UserDOExample userDOExample = new UserDOExample();
+//        List<UserDO> userDOS = userDOMapper.selectByExample(userDOExample);
+//        /**
+//         * 按登录时间去重，并依次按登录时间搜索并统计
+//         */
+//        Set<Date> dateSet=new HashSet();
+//        //将时分秒归0
+//        for (UserDO userDO : userDOS) {
+//            Date lastLoginTime = userDO.getLastLoginTime();
+//            lastLoginTime.setHours(0);
+//            lastLoginTime.setMinutes(0);
+//            lastLoginTime.setSeconds(0);
+//            dateSet.add(lastLoginTime);
+//        }
         List<StateDo> stateDos=new ArrayList();
-        for (Date date : dateSet) {
-            userDOExample.createCriteria().andLastLoginTimeEqualTo(date);
-            List<UserDO> userDOS1 = userDOMapper.selectByExample(userDOExample);
-            StateDo stateDo = new StateDo();
-            stateDo.setDay(date);
-            stateDo.setUsers(userDOS1.size());
-            stateDos.add(stateDo);
-        }
+//        for (Date date : dateSet) {
+//            userDOExample.createCriteria().andLastLoginTimeEqualTo(date);
+//            List<UserDO> userDOS1 = userDOMapper.selectByExample(userDOExample);
+//            StateDo stateDo = new StateDo();
+//            stateDo.setDay(date);
+//            stateDo.setUsers(userDOS1.size());
+//            stateDos.add(stateDo);
+//        }
+        stateDos = userDOMapper.countByDate();
         Map<String, Object> returnmap = new HashMap<>();
         returnmap.put("columns",strings);
         returnmap.put("rows",stateDos);

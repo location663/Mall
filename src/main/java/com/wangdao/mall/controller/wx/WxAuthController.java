@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.UserDO;
 import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.service.util.wx.BaseRespVo;
+import com.wangdao.mall.service.util.wx.UserInfo;
 import com.wangdao.mall.service.wx.WxUserService;
 import com.wangdao.mall.shiro.CustomToken;
 import org.apache.shiro.SecurityUtils;
@@ -125,5 +126,18 @@ public class WxAuthController {
     @RequestMapping("filter/redirect")
     public BaseReqVo filterRedirect()  {
         return new BaseReqVo(null, "您还未登陆", 501);
+    }
+
+    @RequestMapping("auth/login_by_weixin")
+    public BaseRespVo loginnByWeixin(@RequestBody Map<String, Object> map){
+        String code = (String) map.get("code");
+        System.out.println(code);
+        Map userInfoMap = (Map) map.get("userInfo");
+        for (Object s : userInfoMap.keySet()) {
+            Object o = userInfoMap.get(s);
+            System.out.println(o);
+        }
+        userService.loginnByWeixin(userInfoMap, code);
+        return BaseRespVo.fail(-1, "错误");
     }
 }

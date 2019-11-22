@@ -99,7 +99,7 @@ public class WxUserServiceImpl implements WxUserService {
                         uncomment--;
                     }
                 }*/
-                uncomment += orderDO.getComments();
+                uncomment++;
             }
         }
         map2.put("uncomment", uncomment);
@@ -164,6 +164,15 @@ public class WxUserServiceImpl implements WxUserService {
         String md5Password = Md5Utils.getMd5(password);
         int update = userDOMapper.updatePasswordByMobile(mobile, md5Password);
         return update;
+    }
+
+    /**没有具体业务逻辑
+     * @param userInfoMap
+     * @param code
+     */
+    @Override
+    public void loginnByWeixin(Map userInfoMap, String code) {
+
     }
 
     /**

@@ -30,6 +30,7 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //认证失败重定向的url
+
 //        shiroFilterFactoryBean.setLoginUrl("/admin/redirect");
         //shiroFilterFactoryBean.setLoginUrl("/auth/login");
         shiroFilterFactoryBean.setLoginUrl("/wx/filter/redirect");

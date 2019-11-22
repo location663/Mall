@@ -395,4 +395,13 @@ public class AdminServiceImpl implements AdminService {
         int i = adminDOMapper.updateByExampleSelective(adminDO1,adminDOExample);
         return i;
     }
+
+    @Override
+    public List<AdminDO> selectAdmin() {
+        AdminDOExample adminDOExample = new AdminDOExample();
+        adminDOExample.createCriteria().andDeletedEqualTo(false);
+        List<AdminDO> adminDOList = adminDOMapper.selectByExample(adminDOExample);
+        return adminDOList;
+    }
+
 }
