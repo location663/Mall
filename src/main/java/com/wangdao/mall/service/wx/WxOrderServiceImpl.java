@@ -124,7 +124,9 @@ public class WxOrderServiceImpl implements WxOrderService {
 //        }
 
         //优惠券信息
-        Integer couponId = (Integer) map.get("couponId");
+        Integer couponUserId = (Integer) map.get("couponId");
+        CouponUserDO couponUserDO1 = couponUserDOMapper.selectByPrimaryKey(couponUserId);
+        Integer couponId = couponUserDO1.getCouponId();
         CouponDO couponDO = couponDOMapper.selectByPrimaryKey(couponId);
         if (couponDO != null) {
             if (orderDO.getGoodsPrice().doubleValue() - couponDO.getMin().doubleValue() >= 0) {
@@ -211,15 +213,20 @@ public class WxOrderServiceImpl implements WxOrderService {
 
         //修改优惠券信息
         if (orderDO.getCouponPrice() != BigDecimal.valueOf(0)) {
+            couponUserDO1.setStatus((short)1);
+            couponUserDO1.setUsedTime(new Date());
+            couponUserDO1.setOrderId(i);
+            couponUserDO1.setUpdateTime(new Date());
+
             Integer id = userDO.getId();
             CouponUserDOExample couponUserDOExample = new CouponUserDOExample();
             couponUserDOExample.createCriteria().andUserIdEqualTo(id).andCouponIdEqualTo(couponId).andDeletedEqualTo(false);
-            CouponUserDO couponUserDO = new CouponUserDO();
-            couponUserDO.setStatus((short) 1);
-            couponUserDO.setUsedTime(new Date());
-            couponUserDO.setOrderId(i);
-            couponUserDO.setUpdateTime(new Date());
-            couponUserDOMapper.updateByExampleSelective(couponUserDO, couponUserDOExample);
+//            CouponUserDO couponUserDO = new CouponUserDO();
+//            couponUserDO.setStatus((short) 1);
+//            couponUserDO.setUsedTime(new Date());
+//            couponUserDO.setOrderId(i);
+//            couponUserDO.setUpdateTime(new Date());
+            couponUserDOMapper.updateByExampleSelective(couponUserDO1, couponUserDOExample);
         }
 
         //order_goods表对象
@@ -650,8 +657,14 @@ public class WxOrderServiceImpl implements WxOrderService {
         orderGoodsDOExample.createCriteria().andOrderIdEqualTo(orderId).andDeletedEqualTo(false);
         List<OrderGoodsDO> orderGoodsDOList = orderGoodsDOMapper.selectByExample(orderGoodsDOExample);
 
+        //物流信息
+        Map<String, Object> expressInfo = new HashMap<>();
+        expressInfo.put("logisticCode",orderDO.getShipSn());
+        expressInfo.put("shipperName",orderDO.getShipChannel());
+
         map.put("orderInfo",orderInfoVO);
         map.put("orderGoods",orderGoodsDOList);
+        map.put("expressInfo",expressInfo);
 
         return new BaseReqVo(map,"成功",0);
     }

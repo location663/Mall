@@ -66,7 +66,8 @@ public class StorageUtils {
         storageDO.setUpdateTime(new Date(System.currentTimeMillis()));
         storageDO.setType(file.getContentType());
         storageDO.setName(file.getOriginalFilename());
-        String url = "http://localhost:8080/" + s2 + originalFilename;
+//        String url = "http://localhost:8080/" + s2 + originalFilename;
+        String url = "http://192.168.4.27:8080/" + s2 + originalFilename;
         storageDO.setUrl(url);
         storageDO.setKey(s2 + originalFilename);
 
