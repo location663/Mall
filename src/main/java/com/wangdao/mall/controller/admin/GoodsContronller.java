@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 /**
@@ -190,7 +192,24 @@ public class GoodsContronller {
     @RequiresPermissions(value = {"admin:goods:create"},logical = Logical.OR)
     public BaseReqVo goodsCreate(@RequestBody GoodsCreateRequest goodsCreateRequest){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        List<GoodsSpecificationDO> specifications = goodsCreateRequest.getSpecifications();
+        GoodsDO goods = goodsCreateRequest.getGoods();
+        //如果goods_sn和name 是null或者是空格串，直接报异常
+        if (goods.getGoodsSn()==null || "".equals(goods.getGoodsSn().trim()) || goods.getName()==null || "".equals(goods.getName().trim()) ){
+            baseReqVo.setErrmsg("失败");
+            baseReqVo.setErrno(601);
+            return baseReqVo;
+        }
 
+        Set<String> strings = new HashSet<>();
+        for (GoodsSpecificationDO specification : specifications) {
+
+            if ( !(strings.add(specification.getSpecification()) ) ){
+                baseReqVo.setErrmsg("失败");
+                baseReqVo.setErrno(601);
+                return baseReqVo;
+            }
+        }
         Integer i=0;
         i=goodsService.goodsCreate(goodsCreateRequest);
 
@@ -209,6 +228,24 @@ public class GoodsContronller {
     @RequiresPermissions(value = {"admin:goods:update"},logical = Logical.OR)
     public BaseReqVo goodsUpdate(@RequestBody GoodsCreateRequest goodsCreateRequest){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
+        List<GoodsSpecificationDO> specifications = goodsCreateRequest.getSpecifications();
+        GoodsDO goods = goodsCreateRequest.getGoods();
+
+        //如果goods_sn和name 是null或者是空格串，直接报异常
+        if (goods.getGoodsSn()==null || "".equals(goods.getGoodsSn().trim()) || goods.getName()==null || "".equals(goods.getName().trim()) ){
+            baseReqVo.setErrmsg("失败");
+            baseReqVo.setErrno(601);
+            return baseReqVo;
+        }
+
+        Set<String> strings = new HashSet<>();
+        for (GoodsSpecificationDO specification : specifications) {
+           if ( !(strings.add(specification.getSpecification()) ) ){
+               baseReqVo.setErrmsg("失败");
+               baseReqVo.setErrno(601);
+               return baseReqVo;
+           }
+        }
 
         Integer i=0;
         i=goodsService.goodsUpdate(goodsCreateRequest);

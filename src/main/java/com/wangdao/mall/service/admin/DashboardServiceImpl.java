@@ -6,24 +6,23 @@
  **/
 package com.wangdao.mall.service.admin;
 
-import com.wangdao.mall.bean.GoodsDOExample;
-import com.wangdao.mall.bean.GoodsProductDOExample;
-import com.wangdao.mall.bean.OrderDOExample;
-import com.wangdao.mall.bean.UserDOExample;
-import com.wangdao.mall.mapper.GoodsDOMapper;
-import com.wangdao.mall.mapper.GoodsProductDOMapper;
-import com.wangdao.mall.mapper.OrderDOMapper;
-import com.wangdao.mall.mapper.UserDOMapper;
+import com.wangdao.mall.bean.*;
+import com.wangdao.mall.mapper.*;
+import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
 @Transactional
 public class DashboardServiceImpl implements DashboardService {
+    @Autowired
+    AdminDOMapper adminDOMapper;
     @Autowired
     UserDOMapper userDOMapper;
     @Autowired
@@ -44,5 +43,24 @@ public class DashboardServiceImpl implements DashboardService {
         returnmap.put("productTotal",product);
         returnmap.put("userTotal",user);
         return returnmap;
+    }
+
+    /**
+     * 修改管理员密码
+     * @param map
+     */
+    @Override
+    public BaseReqVo profilePassword(Map map) {
+        AdminDOExample adminDOExample = new AdminDOExample();
+        adminDOExample.createCriteria().andUsernameEqualTo((String) map.get("username"));
+        AdminDO adminDO = adminDOMapper.selectByExample(adminDOExample).get(0);
+//        String password = adminDOMapper.selectByPrimaryKey(adminDO.getId()).getPassword();
+        if (!map.get("oldPassword").equals(adminDO.getPassword())){
+            return new BaseReqVo(null,"账号密码不对",605);
+        }
+        adminDO.setPassword((String) map.get("newPassword"));
+        adminDO.setUpdateTime(new Date());
+        adminDOMapper.updateByPrimaryKeySelective(adminDO);
+        return new BaseReqVo(null,"成功",0);
     }
 }
