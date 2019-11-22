@@ -38,14 +38,15 @@ public class UserServiceImpl implements UserService{
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         UserDOExample userDOExample = new UserDOExample();
+        UserDOExample.Criteria criteria = userDOExample.createCriteria();
         if(mobile!=null){
-            userDOExample.createCriteria().andMobileLike("%"+mobile+"%");
+            criteria.andMobileLike("%"+mobile+"%");
         }
         if(username!=null){
-            userDOExample.createCriteria().andUsernameLike("%"+username+"%");
+            criteria.andUsernameLike("%"+username+"%");
         }
         userDOExample.setOrderByClause(sort+" "+order);
-        userDOExample.createCriteria().andDeletedEqualTo(false);
+        criteria.andDeletedEqualTo(false);
         List<UserDO> userDOS = userDOMapper.selectByExample(userDOExample);
         long l = userDOMapper.countByExample(userDOExample);
         map.put("items",userDOS);
