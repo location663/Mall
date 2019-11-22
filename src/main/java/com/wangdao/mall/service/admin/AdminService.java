@@ -43,5 +43,8 @@ public interface AdminService {
 
      String selectRoleName(Integer roleId);
 
-    int updateLoginTimeAndIp(AdminDO adminDO,String remoteIp);
+     int updateLoginTimeAndIp(AdminDO adminDO,String remoteIp);
+
+     List<AdminDO> selectAdmin();
+
 }

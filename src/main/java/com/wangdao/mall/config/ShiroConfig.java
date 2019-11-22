@@ -33,7 +33,6 @@ public class ShiroConfig {
         shiroFilterFactoryBean.setLoginUrl("/admin/redirect");
 
         //shiroFilterFactoryBean.setLoginUrl("/auth/login");
-
         shiroFilterFactoryBean.setLoginUrl("/wx/filter/redirect");
 
         //配置的是拦截器 shiro提供的filter
