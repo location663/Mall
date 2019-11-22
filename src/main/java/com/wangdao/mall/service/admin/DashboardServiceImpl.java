@@ -16,11 +16,13 @@ import com.wangdao.mall.mapper.OrderDOMapper;
 import com.wangdao.mall.mapper.UserDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Transactional
 public class DashboardServiceImpl implements DashboardService {
     @Autowired
     UserDOMapper userDOMapper;

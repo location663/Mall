@@ -252,7 +252,8 @@ public class AdminAdministerController {
      * @return
      */
     @RequestMapping("/role/list")
-    @RequiresPermissions(value = {"admin:role:list","admin:role:update","admin:role:read","admin:role:delete","admin:role:permission:get","admin:role:create","admin:role:permission:update"},logical = Logical.OR)
+    @RequiresPermissions(value = {"admin:role:list","admin:role:update","admin:role:read","admin:role:delete",
+            "admin:role:permission:get","admin:role:create","admin:role:permission:update"},logical = Logical.OR)
     public BaseReqVo selectAllRoleList(String name,Integer page,Integer limit,String sort,String order){
         Map<String,Object> map = adminService.selectAllRoleList(name,page,limit,sort,order);
         BaseReqVo<Map<String, Object>> baseReqVo = new BaseReqVo<>(map, "成功", 0);
@@ -351,6 +352,16 @@ public class AdminAdministerController {
     @RequestMapping("/role/delete")
     @RequiresPermissions(value = {"admin:role:delete"})
     public BaseReqVo deleteRole(@RequestBody RoleDO roleDO){
+        List<AdminDO> adminList = adminService.selectAdmin();
+        for (AdminDO admin : adminList) {
+            Integer[] roleIds = admin.getRoleIds();
+            for (Integer roleId : roleIds) {
+                if (roleDO.getId().equals(roleId)){
+                    BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "当前角色存在管理员，不能删除", 642);
+                    return baseReqVo;
+                }
+            }
+        }
         int result = adminService.deleteRole(roleDO);
         if (result != 0){
             BaseReqVo<Object> baseReqVo = new BaseReqVo<>(null, "成功", 0);

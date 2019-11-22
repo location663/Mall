@@ -7,6 +7,7 @@ import com.wangdao.mall.bean.AdDOExample;
 import com.wangdao.mall.mapper.AdDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.Map;
  * @date : 2019-11-15 17:51
  **/
 @Service
+@Transactional
 public class AdServiceImpl implements AdService {
     @Autowired
     AdDOMapper adDOMapper;
