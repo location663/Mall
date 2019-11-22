@@ -154,14 +154,6 @@ public class AdminAspect {
             return "查询小程序配置";
         }else if (requestURI.contains("config/wx") && request.getMethod().equals("POST")){
             return "编辑小程序配置";
-        }else if (requestURI.contains("create")) {
-            return "创建";
-        }else if (requestURI.contains("logout")) {
-            return "退出";
-        }else if (requestURI.contains("update")) {
-            return "编辑";
-        }else if (requestURI.contains("delete")) {
-            return "删除";
         }else if (requestURI.contains("read")) {
             return "查看详情";
         }else if (requestURI.contains("/user/list")){
@@ -220,6 +212,18 @@ public class AdminAspect {
             return "浏览商品统计";
         }else if (requestURI.contains("/admin/dashboard")){
             return "进入后台首页";
+        }else if (requestURI.contains("permissions") && request.getMethod().equals("GET")){
+            return "查看角色授权";
+        }else if (requestURI.contains("permissions") && request.getMethod().equals("POST")){
+            return "进行角色授权";
+        }else if (requestURI.contains("create")) {
+            return "创建";
+        }else if (requestURI.contains("logout")) {
+            return "退出";
+        }else if (requestURI.contains("update")) {
+            return "编辑";
+        }else if (requestURI.contains("delete")) {
+            return "删除";
         }else {
             return "浏览管理界面";
         }
