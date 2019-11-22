@@ -37,7 +37,7 @@ public class UserController {
     @RequiresPermissions(value = {"admin:user:list"})
     @RequestMapping("/user/list")
     public BaseReqVo userList(int page, int limit, String sort, String order, String username, String mobile) {
-        if(UserRegExutils.userReg(username)==601||UserRegExutils.userReg(mobile)==602){
+        if(UserRegExutils.userReg(mobile)==602){
             BaseReqVo baseReqVo=new BaseReqVo(null,null,601);
             return baseReqVo;
         }
@@ -56,17 +56,17 @@ public class UserController {
      * @param sort
      * @param order
      * @param name
-     * @param userid
+     * @param
      * @return
      */
     @RequiresPermissions(value = {"admin:address:list"})
     @RequestMapping("/address/list")
-    public BaseReqVo addressList(int page, int limit, String sort, String order, String name, String userid) {
-        if (UserRegExutils.userReg(name) == 601 || UserRegExutils.userReg(userid) == 602) {
+    public BaseReqVo addressList(int page, int limit, String sort, String order, String name, String userId) {
+        if (UserRegExutils.userReg(name) == 601 || UserRegExutils.userReg(userId) == 602) {
             BaseReqVo baseReqVo = new BaseReqVo(null, null, 601);
             return baseReqVo;
         } else {
-            Map map = userService.listByAddressCondition(page, limit, sort, order, name, userid);
+            Map map = userService.listByAddressCondition(page, limit, sort, order, name, userId);
             BaseReqVo baseReqVo = new BaseReqVo(map, "成功", 0);
             return baseReqVo;
         }

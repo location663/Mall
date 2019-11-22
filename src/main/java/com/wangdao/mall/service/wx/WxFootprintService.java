@@ -1,5 +1,7 @@
 package com.wangdao.mall.service.wx;
 
+import com.wangdao.mall.exception.WxException;
+
 import java.util.Map;
 
 /**
@@ -11,7 +13,7 @@ import java.util.Map;
  **/
 public interface WxFootprintService {
 
-    Map<String, Object> listFootprint(Integer page, Integer size);
+    Map<String, Object> listFootprint(Integer page, Integer size) throws WxException;
 
     int deleteFootprint(Integer id);
 }

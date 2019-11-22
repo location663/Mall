@@ -6,7 +6,7 @@ import com.wangdao.mall.bean.UserDO;
 import java.util.Map;
 
 public interface WxCommentService {
-    TopicListDoBean commentList(String valueId, String type, String showType, String page, String size);
+    TopicListDoBean commentList(Integer valueId, Integer type, Integer showType, Integer page, Integer size);
     CommentDO post(CommentDO commentDO, UserDO userDO);
     Map count(Integer valueId, Integer type);
 }

@@ -320,14 +320,14 @@
   </resultMap>
     <select id="selectGoods" resultMap="StatGoodsMap">
         SELECT
-        DATE(a.pay_time) as 'day',
+        DATE(a.add_time) as 'day',
         COUNT(a.id) as 'orders',
         count(b.number) as 'products',
         SUM(b.number * b.price) as 'amount'
         FROM `cskaoyan_mall_order` as a
         left join `cskaoyan_mall_order_goods` as b
         on a.id=b.order_id
-        GROUP BY DATE(a.pay_time)
+        GROUP BY DATE(a.add_time)
     </select>
     <update id="updateByExampleSelective" parameterType="map">
     update cskaoyan_mall_order

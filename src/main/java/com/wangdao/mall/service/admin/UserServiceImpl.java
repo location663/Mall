@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService{
         if(mobile!=null){
             userDOExample.createCriteria().andMobileLike("%"+mobile+"%");
         }
-        else if(username!=null){
+        if(username!=null){
             userDOExample.createCriteria().andUsernameLike("%"+username+"%");
         }
         userDOExample.setOrderByClause(sort+" "+order);
@@ -59,15 +59,15 @@ public class UserServiceImpl implements UserService{
     @Autowired
     AddressDOMapper addressDOMapper;
     @Override
-    public Map listByAddressCondition(int page, int limit, String sort, String order, String name, String userid) {
+    public Map listByAddressCondition(int page, int limit, String sort, String order, String name, String userId) {
         Map<String,Object> map=new HashMap<>();
         PageHelper.startPage(page,limit);
         AddressDOExample addressDOExample= new AddressDOExample();
         addressDOExample.createCriteria().andDeletedEqualTo(false);
-        if(userid!=null){
-            addressDOExample.createCriteria().andUserIdEqualTo(Integer.parseInt(userid));
+        if(userId!=null){
+            addressDOExample.createCriteria().andUserIdEqualTo(Integer.parseInt(userId));
         }
-        else if(name!=null){
+        if(name!=null){
             addressDOExample.createCriteria().andNameLike("%"+name+"%");
         }
         addressDOExample.setOrderByClause(sort+" "+order);
