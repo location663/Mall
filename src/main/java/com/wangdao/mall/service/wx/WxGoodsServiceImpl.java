@@ -62,6 +62,9 @@ public class WxGoodsServiceImpl implements WxGoodsService {
     @Autowired
     UserDOMapper userDOMapper;
 
+    @Autowired
+    FootprintDOMapper footprintDOMapper;
+
 
     /**
      * //WX统计商品总数
@@ -313,6 +316,29 @@ public class WxGoodsServiceImpl implements WxGoodsService {
         GoodsDO goodsDO = goodsDOMapper.selectByPrimaryKey(id);
         map.put("info",goodsDO);
 
+        //把浏览足迹添加或者更新至足迹数据表
+        if (userDO!=null){
+            FootprintDOExample footprintDOExample = new FootprintDOExample();
+            footprintDOExample.createCriteria().andGoodsIdEqualTo(id).andUserIdEqualTo(userDO.getId());
+            List<FootprintDO> footprintDOS = footprintDOMapper.selectByExample(footprintDOExample);
+            if (footprintDOS.size()>0) {   //有则修改最后浏览时间
+                for (FootprintDO footprintDO : footprintDOS) {
+                    footprintDO.setUpdateTime(new Date());
+                    footprintDO.setDeleted(false);
+                    footprintDOMapper.updateByPrimaryKeySelective(footprintDO);
+                }
+            }else {   //没有则新建足迹对象
+                FootprintDO footprintDO = new FootprintDO();
+                footprintDO.setUserId(userDO.getId());
+                footprintDO.setGoodsId(id);
+                footprintDO.setAddTime(new Date());
+                footprintDO.setUpdateTime(new Date());
+                footprintDO.setDeleted(false);
+                int insertSelectiveNum2 = footprintDOMapper.insertSelective(footprintDO);
+            }
+        }
+
+
         //封装groupon[] 当前商品的团购规则表 注意团购过期时间 和delete
         ArrayList<GrouponRulesDO> grouponRulesDOS = new ArrayList<>();
 
@@ -357,24 +383,24 @@ public class WxGoodsServiceImpl implements WxGoodsService {
 
         //封装"comment"商品评论,详情页只显示两条评论，但是不知道这两条以什么顺序显示,我这里只显示List里前两条
         HashMap<String, Object> commentMap = new HashMap<>();
-        List<Map> data = new ArrayList<>();
+        List<GoodsDetailResponseComment> data = new ArrayList<>();
         CommentDOExample commentDOExample = new CommentDOExample();
         commentDOExample.createCriteria().andDeletedEqualTo(false).andValueIdEqualTo(id);
         List<CommentDO> commentDOS = commentDOMapper.selectByExample(commentDOExample);
         int i=0;
         for (CommentDO commentDO : commentDOS) {
-            HashMap<String, Object> hashMap = new HashMap<>();
             if (i >= 2){
                 break;
             }
             UserDO userDO1 = userDOMapper.selectByPrimaryKey(commentDO.getUserId());
-            hashMap.put("addTime",commentDO.getAddTime());
-            hashMap.put("picList",commentDO.getPicUrls());
-            hashMap.put("nickname",userDO1.getUsername());
-            hashMap.put("id",commentDO.getId());
-            hashMap.put("avatar","");   //不知道是啥玩意，暂时返回空字符串
-            hashMap.put("content",commentDO.getContent());
-            data.add(hashMap);
+            GoodsDetailResponseComment goodsDetailResponseComment = new GoodsDetailResponseComment();
+            goodsDetailResponseComment.setAddTime(commentDO.getAddTime());
+            goodsDetailResponseComment.setPicList(commentDO.getPicUrls());
+            goodsDetailResponseComment.setNickname(userDO1.getUsername());
+            goodsDetailResponseComment.setId(commentDO.getId());
+            goodsDetailResponseComment.setAvatar(userDO1.getAvatar()); //用户头像
+            goodsDetailResponseComment.setContent(commentDO.getContent());
+            data.add(goodsDetailResponseComment);
             i++;
         }
         PageInfo<CommentDO> userPageInfo = new PageInfo<>(commentDOS);
