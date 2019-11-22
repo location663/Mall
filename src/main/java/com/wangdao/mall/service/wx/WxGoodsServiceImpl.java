@@ -59,6 +59,9 @@ public class WxGoodsServiceImpl implements WxGoodsService {
     @Autowired
     GrouponRulesDOMapper grouponRulesDOMapper;
 
+    @Autowired
+    UserDOMapper userDOMapper;
+
 
     /**
      * //WX统计商品总数
@@ -354,16 +357,24 @@ public class WxGoodsServiceImpl implements WxGoodsService {
 
         //封装"comment"商品评论,详情页只显示两条评论，但是不知道这两条以什么顺序显示,我这里只显示List里前两条
         HashMap<String, Object> commentMap = new HashMap<>();
-        List<CommentDO> data = new ArrayList<>();
+        List<Map> data = new ArrayList<>();
         CommentDOExample commentDOExample = new CommentDOExample();
         commentDOExample.createCriteria().andDeletedEqualTo(false).andValueIdEqualTo(id);
         List<CommentDO> commentDOS = commentDOMapper.selectByExample(commentDOExample);
         int i=0;
         for (CommentDO commentDO : commentDOS) {
+            HashMap<String, Object> hashMap = new HashMap<>();
             if (i >= 2){
                 break;
             }
-            data.add(commentDO);
+            UserDO userDO1 = userDOMapper.selectByPrimaryKey(commentDO.getUserId());
+            hashMap.put("addTime",commentDO.getAddTime());
+            hashMap.put("picList",commentDO.getPicUrls());
+            hashMap.put("nickname",userDO1.getUsername());
+            hashMap.put("id",commentDO.getId());
+            hashMap.put("avatar","");   //不知道是啥玩意，暂时返回空字符串
+            hashMap.put("content",commentDO.getContent());
+            data.add(hashMap);
             i++;
         }
         PageInfo<CommentDO> userPageInfo = new PageInfo<>(commentDOS);
