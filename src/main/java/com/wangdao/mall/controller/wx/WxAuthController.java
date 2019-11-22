@@ -128,6 +128,7 @@ public class WxAuthController {
         return new BaseReqVo(null, "您还未登陆", 501);
     }
 
+
     @RequestMapping("auth/login_by_weixin")
     public BaseRespVo loginnByWeixin(@RequestBody Map<String, Object> map){
         String code = (String) map.get("code");
