@@ -33,7 +33,8 @@ public class GrouponController {
 //        return baseReqVo;
 //    }
     @RequestMapping("groupon/listRecord")
-    @RequiresPermissions("admin:groupon:read")
+    @RequiresPermissions(value = {"admin:groupon:list","admin:groupon:update","admin:groupon:delete",
+            "admin:groupon:create","admin:groupon:read"},logical = Logical.OR)
     public BaseReqVo queryGrouponList(Integer page, Integer limit, Integer goodsId){
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         Map<String, Object> map = grouponService.queryGrouponList(page, limit, goodsId);
