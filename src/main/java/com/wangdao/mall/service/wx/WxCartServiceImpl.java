@@ -181,8 +181,9 @@ public class WxCartServiceImpl implements WxCartService {
         }
         //查询邮费
         SystemDO systemDO = systemDOMapper.selectByPrimaryKey(5);
+        SystemDO systemDO1 = systemDOMapper.selectByPrimaryKey(7);
         if(dataBean.getGoodsTotalPrice()<= Double.valueOf(systemDO.getKeyValue())){
-            dataBean.setFreightPrice(8);
+            dataBean.setFreightPrice(Integer.parseInt(systemDO1.getKeyValue()));
         }else {
             dataBean.setFreightPrice(0);
         }
