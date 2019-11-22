@@ -1,5 +1,6 @@
 package com.wangdao.mall.mapper;
 
+import com.wangdao.mall.bean.StateDo;
 import com.wangdao.mall.bean.UserDO;
 import com.wangdao.mall.bean.UserDOExample;
 import java.util.List;
@@ -37,4 +38,7 @@ public interface UserDOMapper {
 
     @Update("update cskaoyan_mall_user set password = #{param2} where mobile = #{param1}")
     int updatePasswordByMobile(String mobile, String md5Password);
+
+    @Select("select count(0) as 'users', DATE(add_time) as 'day' from cskaoyan_mall_user group by DATE(add_time)")
+    List<StateDo> countByDate();
 }
