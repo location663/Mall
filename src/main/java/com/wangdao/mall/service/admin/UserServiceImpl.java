@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService{
         if(userid!=null){
             addressDOExample.createCriteria().andUserIdEqualTo(Integer.parseInt(userid));
         }
-        else if(name!=null){
+        if(name!=null){
             addressDOExample.createCriteria().andNameLike("%"+name+"%");
         }
         addressDOExample.setOrderByClause(sort+" "+order);
