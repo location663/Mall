@@ -213,20 +213,22 @@ public class WxOrderServiceImpl implements WxOrderService {
 
         //修改优惠券信息
         if (orderDO.getCouponPrice() != BigDecimal.valueOf(0)) {
+            couponUserDO1.setId(couponUserId);
             couponUserDO1.setStatus((short)1);
             couponUserDO1.setUsedTime(new Date());
             couponUserDO1.setOrderId(i);
             couponUserDO1.setUpdateTime(new Date());
 
-            Integer id = userDO.getId();
-            CouponUserDOExample couponUserDOExample = new CouponUserDOExample();
-            couponUserDOExample.createCriteria().andUserIdEqualTo(id).andCouponIdEqualTo(couponId).andDeletedEqualTo(false);
+//            Integer id = userDO.getId();
+//            CouponUserDOExample couponUserDOExample = new CouponUserDOExample();
+//            couponUserDOExample.createCriteria().andUserIdEqualTo(id).andCouponIdEqualTo(couponId).andDeletedEqualTo(false);
 //            CouponUserDO couponUserDO = new CouponUserDO();
 //            couponUserDO.setStatus((short) 1);
 //            couponUserDO.setUsedTime(new Date());
 //            couponUserDO.setOrderId(i);
 //            couponUserDO.setUpdateTime(new Date());
-            couponUserDOMapper.updateByExampleSelective(couponUserDO1, couponUserDOExample);
+            couponUserDOMapper.updateByPrimaryKeySelective(couponUserDO1);
+//            couponUserDOMapper.updateByExampleSelective(couponUserDO1, couponUserDOExample);
         }
 
         //order_goods表对象

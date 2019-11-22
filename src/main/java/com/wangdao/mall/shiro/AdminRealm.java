@@ -51,8 +51,6 @@ public class AdminRealm extends AuthorizingRealm {
         for (PermissionDO permissionDO : permissionDOList) {
             permissions.add(permissionDO.getPermission());
         }
-        SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        simpleAuthorizationInfo.addStringPermissions(permissions);
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
         authorizationInfo.addStringPermissions(permissions);
         return authorizationInfo;
