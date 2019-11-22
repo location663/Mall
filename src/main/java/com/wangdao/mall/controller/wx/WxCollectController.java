@@ -9,6 +9,7 @@ package com.wangdao.mall.controller.wx;
 
 import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.CollectDO;
+import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.service.wx.WxCollectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,10 +34,14 @@ public class WxCollectController {
      * @return
      */
     @RequestMapping("collect/list")
-    public BaseReqVo collectList(Integer type,Integer page,Integer size){
+    public BaseReqVo collectList(Integer type,Integer page,Integer size) throws WxException {
         BaseReqVo<Object> baseReqVo = new BaseReqVo<>();
         HashMap<String, Object> map = wxCollectService.queryCollectList(type,page,size);
-        baseReqVo.setData(map);
+        if (map.size()>0) {
+            baseReqVo.setData(map);
+        }else {
+            throw new WxException("您还没有收藏任何商品");
+        }
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
         return baseReqVo;

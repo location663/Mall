@@ -14,6 +14,7 @@ import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.mapper.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional
 public class WxCartServiceImpl implements WxCartService {
     CartDOExample cartDOExample=new CartDOExample();
     @Autowired
@@ -159,11 +161,11 @@ public class WxCartServiceImpl implements WxCartService {
         if(cartId==0) {
             Map index = index(userDO);
             Map cartTotal = (Map) index.get("cartTotal");
-            totalPrice = (Integer) cartTotal.get("checkedGoodsCount");
+            totalPrice = (Integer) cartTotal.get("checkedGoodsAmount");
             dataBean.setGoodsTotalPrice(totalPrice);
             //查询checkedgoodslist
             cartDOExample.clear();
-            cartDOExample.createCriteria().andCheckedEqualTo(true).andDeletedEqualTo(true).andUserIdEqualTo(userDO.getId());
+            cartDOExample.createCriteria().andCheckedEqualTo(true).andDeletedEqualTo(false).andUserIdEqualTo(userDO.getId());
             List<CartDO> cartDOS = cartDOMapper.selectByExample(cartDOExample);
             dataBean.setCheckedGoodsList(cartDOS);
         }

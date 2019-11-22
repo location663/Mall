@@ -4,6 +4,7 @@ import com.wangdao.mall.bean.BaseReqVo;
 import com.wangdao.mall.bean.StorageDO;
 import com.wangdao.mall.service.admin.AdService;
 import com.wangdao.mall.service.util.StorageUtils;
+import org.apache.shiro.authz.annotation.Logical;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +39,8 @@ public class AdController {
      * @return
      */
     @RequestMapping("ad/list")
+    @RequiresPermissions(value = {"admin:ad:list","admin:ad:update","admin:ad:delete",
+            "admin:ad:create"},logical = Logical.OR)
 //    @RequiresPermissions(value = {"admin:ad:list"})
     public BaseReqVo getAdList(Integer page, Integer limit, String name, String content){
         Map<String, Object> map = adDOService.queryAdDOs(page, limit, name, content);
@@ -54,6 +57,7 @@ public class AdController {
      * @return
      */
     @RequestMapping("ad/update")
+    @RequiresPermissions(value = {"admin:ad:update"})
     public BaseReqVo getAdList(@RequestBody AdDO adDO){
         BaseReqVo<Object> baseReqVo = new BaseReqVo();
         //这是import java.sql.Date;不是java.util22222222.Date!!!
@@ -85,6 +89,7 @@ public class AdController {
      * @return
      */
     @RequestMapping("ad/delete")
+    @RequiresPermissions(value = {"admin:ad:delete"})
     public BaseReqVo deleteAdDO(@RequestBody AdDO adDO){
         int delete = adDOService.deleteAdDOById(adDO.getId());
         BaseReqVo<Object> baseReqVo = new BaseReqVo();
@@ -96,11 +101,12 @@ public class AdController {
     }
 
     /**
-     * 新建广告，图片上传还未实现
+     * 新建广告
      * @param adDO
      * @return
      */
     @RequestMapping("ad/create")
+    @RequiresPermissions(value = {"admin:ad:create"})
     public BaseReqVo<Object> createAdDO(@RequestBody AdDO adDO){
         BaseReqVo<Object> baseReqVo = new BaseReqVo();
         int id = adDOService.createAdDO(adDO);

@@ -6,11 +6,13 @@ import com.wangdao.mall.mapper.RegionDOMapper;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
 
 @Service
+@Transactional
 public class WxAddressServiceImpl implements WxAddressService {
 
     @Autowired

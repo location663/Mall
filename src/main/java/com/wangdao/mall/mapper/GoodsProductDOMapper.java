@@ -3,6 +3,7 @@ package com.wangdao.mall.mapper;
 import com.wangdao.mall.bean.GoodsProductDO;
 import com.wangdao.mall.bean.GoodsProductDOExample;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -28,4 +29,7 @@ public interface GoodsProductDOMapper {
     int updateByPrimaryKeySelective(GoodsProductDO record);
 
     int updateByPrimaryKey(GoodsProductDO record);
+
+    @Update("update cskaoyan_mall_goods_product set `number` = `number` + #{number} where id = #{productId}")
+    int updateNumberByProductId(@Param("productId") Integer productId, @Param("number") Short number);
 }
