@@ -29,30 +29,31 @@ public class WxCommentServiceImpl implements WxCommentService {
     @Autowired
     UserDOMapper userDOMapper;
     @Override
-    public TopicListDoBean commentList(String valueId, String type, String showType, String page, String size) {
+    public TopicListDoBean commentList(Integer valueId, Integer type, Integer showType, Integer page, Integer size) {
+        boolean trueShowType=false;
+        if(showType==1){
+            trueShowType=true;
+        }
         TopicListDoBean topicListDoBean = new TopicListDoBean();
         List<TopicListDoBean.DataBean> dataBeanList=new ArrayList();
         CommentDOExample commentDOExample = new CommentDOExample();
         CommentDOExample.Criteria criteria = commentDOExample.createCriteria();
-        criteria.andTypeEqualTo(Byte.parseByte(type)).andValueIdEqualTo(Integer.parseInt(valueId)).andDeletedEqualTo(false);
-        PageHelper.startPage(Integer.parseInt(page),Integer.parseInt(size));
+        criteria.andTypeEqualTo(type.byteValue()).andValueIdEqualTo(valueId).andDeletedEqualTo(false).andHasPictureEqualTo(trueShowType);
+        PageHelper.startPage(page,size);
         List<CommentDO> commentDOS = commentDOMapper.selectByExample(commentDOExample);
         for (CommentDO commentDO : commentDOS) {
             Integer userId = commentDO.getUserId();
             String[] picUrls = commentDO.getPicUrls();
             Date addTime = commentDO.getAddTime();
-            addTime.setMinutes(0);
-            addTime.setHours(0);
-            addTime.setSeconds(0);
             String content = commentDO.getContent();
             UserDO userDO = userDOMapper.selectByPrimaryKey(userId);
             TopicListDoBean.DataBean.UserInfoBean userInfoBean = new TopicListDoBean.DataBean.UserInfoBean(userDO.getNickname(), userDO.getAvatar());
-            TopicListDoBean.DataBean dataBean = new TopicListDoBean.DataBean(userInfoBean,addTime.toString(),content, Arrays.asList(picUrls));
+            TopicListDoBean.DataBean dataBean = new TopicListDoBean.DataBean(userInfoBean,addTime,content, Arrays.asList(picUrls));
             dataBeanList.add(dataBean);
         }
         topicListDoBean.setData(dataBeanList);
         topicListDoBean.setCount(commentDOS.size());
-        topicListDoBean.setCurrentPage(Integer.parseInt(page));
+        topicListDoBean.setCurrentPage(page);
         return topicListDoBean;
     }
     @Override
@@ -69,9 +70,11 @@ public class WxCommentServiceImpl implements WxCommentService {
     public Map count(Integer valueId, Integer type) {
         Map<String,Object> map=new HashMap<>();
         CommentDOExample commentDOExample = new CommentDOExample();
-        commentDOExample.createCriteria().andValueIdEqualTo(valueId).andDeletedEqualTo(false).andTypeEqualTo(type.byteValue());
+        CommentDOExample.Criteria criteria = commentDOExample.createCriteria();
+        criteria.andValueIdEqualTo(valueId).andDeletedEqualTo(false).andTypeEqualTo(type.byteValue());
         long l = commentDOMapper.countByExample(commentDOExample);
-        commentDOExample.createCriteria().andHasPictureEqualTo(true);
+        commentDOExample.clear();
+        commentDOExample.createCriteria().andValueIdEqualTo(valueId).andDeletedEqualTo(false).andTypeEqualTo(type.byteValue()).andHasPictureEqualTo(true);
         long l1 = commentDOMapper.countByExample(commentDOExample);
         map.put("allCount",l);
         map.put("hasPicCount",l1);

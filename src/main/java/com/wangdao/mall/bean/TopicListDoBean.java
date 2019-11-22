@@ -6,6 +6,9 @@
  **/
 package com.wangdao.mall.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
 import java.util.List;
 
 public class TopicListDoBean {
@@ -45,11 +48,12 @@ public class TopicListDoBean {
              */
 
             private UserInfoBean userInfo;
-            private String addTime;
+            @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
+            private Date addTime;
             private String content;
             private List<String> picList;
 
-            public DataBean(UserInfoBean userInfo, String addTime, String content, List<String> picList) {
+            public DataBean(UserInfoBean userInfo, Date addTime, String content, List<String> picList) {
                 this.userInfo = userInfo;
                 this.addTime = addTime;
                 this.content = content;
@@ -64,11 +68,11 @@ public class TopicListDoBean {
                 this.userInfo = userInfo;
             }
 
-            public String getAddTime() {
+            public Date getAddTime() {
                 return addTime;
             }
 
-            public void setAddTime(String addTime) {
+            public void setAddTime(Date addTime) {
                 this.addTime = addTime;
             }
 
