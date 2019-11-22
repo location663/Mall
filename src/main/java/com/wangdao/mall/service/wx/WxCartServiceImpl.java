@@ -129,9 +129,11 @@ public class WxCartServiceImpl implements WxCartService {
         for (Integer product : products) {
             cartDOExample.clear();
             cartDOExample.createCriteria().andProductIdEqualTo(product);
-            CartDO cartDO = new CartDO();
-            cartDO.setChecked(checked);
-            int i = cartDOMapper.updateByExampleSelective(cartDO, cartDOExample);
+            List<CartDO> cartDOS = cartDOMapper.selectByExample(cartDOExample);
+            for (CartDO cartDO : cartDOS) {
+                cartDO.setChecked(checked);
+                int i = cartDOMapper.updateByExampleSelective(cartDO, cartDOExample);
+            }
         }
     }
 
