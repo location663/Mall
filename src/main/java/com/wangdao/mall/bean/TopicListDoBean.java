@@ -52,7 +52,13 @@ public class TopicListDoBean {
             private Date addTime;
             private String content;
             private List<String> picList;
-
+//            private String addTime;
+//            public DataBean(UserInfoBean userInfo, String addTime, String content, List<String> picList) {
+//                this.userInfo = userInfo;
+//                this.addTime = addTime;
+//                this.content = content;
+//                this.picList = picList;
+//            }
             public DataBean(UserInfoBean userInfo, Date addTime, String content, List<String> picList) {
                 this.userInfo = userInfo;
                 this.addTime = addTime;
@@ -68,10 +74,17 @@ public class TopicListDoBean {
                 this.userInfo = userInfo;
             }
 
+
+//            public String getAddTime() {
+//                return addTime;
+//            }
             public Date getAddTime() {
                 return addTime;
             }
 
+//            public void setAddTime(String addTime) {
+//                this.addTime = addTime;
+//            }
             public void setAddTime(Date addTime) {
                 this.addTime = addTime;
             }

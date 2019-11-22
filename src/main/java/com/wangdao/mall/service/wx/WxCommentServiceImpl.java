@@ -32,16 +32,14 @@ public class WxCommentServiceImpl implements WxCommentService {
     UserDOMapper userDOMapper;
     @Override
     public TopicListDoBean commentList(Integer valueId, Integer type, Integer showType, Integer page, Integer size) {
-        boolean trueShowType=false;
-        if(showType==1){
-            trueShowType=true;
-        }
         TopicListDoBean topicListDoBean = new TopicListDoBean();
         List<TopicListDoBean.DataBean> dataBeanList=new ArrayList();
         CommentDOExample commentDOExample = new CommentDOExample();
         CommentDOExample.Criteria criteria = commentDOExample.createCriteria();
-        criteria.andTypeEqualTo(type.byteValue()).andValueIdEqualTo(valueId).andDeletedEqualTo(false).andHasPictureEqualTo(trueShowType);
         PageHelper.startPage(page,size);
+        if (showType != null && showType.equals("1")){
+            criteria.andHasPictureEqualTo(true);
+        }
         List<CommentDO> commentDOS = commentDOMapper.selectByExample(commentDOExample);
         for (CommentDO commentDO : commentDOS) {
             Integer userId = commentDO.getUserId();
@@ -50,6 +48,7 @@ public class WxCommentServiceImpl implements WxCommentService {
             String content = commentDO.getContent();
             UserDO userDO = userDOMapper.selectByPrimaryKey(userId);
             TopicListDoBean.DataBean.UserInfoBean userInfoBean = new TopicListDoBean.DataBean.UserInfoBean(userDO.getNickname(), userDO.getAvatar());
+//            TopicListDoBean.DataBean dataBean = new TopicListDoBean.DataBean(userInfoBean,addTime.toString(),content, Arrays.asList(picUrls));
             TopicListDoBean.DataBean dataBean = new TopicListDoBean.DataBean(userInfoBean,addTime,content, Arrays.asList(picUrls));
             dataBeanList.add(dataBean);
         }
