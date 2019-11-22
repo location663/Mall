@@ -42,7 +42,7 @@ public interface OrderDOMapper {
     int selectLastInsertId();
 
 
-    @Update("update cskaoyan_mall_order set order_status = #{status}, comments = (comments - 1) where id = #{orderId} ")
+    @Update("update cskaoyan_mall_order set order_status = #{status}, comments = (comments - 1) where id = (select order_id from cskaoyan_mall_order_goods where id = #{orderId}) ")
     int updateStatusAndCommentsByOrderId(@Param("orderId") Integer orderGoodsId, @Param("status") int i);
 
     @Select("select order_status from cskaoyan_mall_order where id = #{orderId}")
