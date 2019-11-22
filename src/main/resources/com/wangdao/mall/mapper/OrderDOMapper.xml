@@ -565,13 +565,13 @@
     </resultMap>
     <select id="selectForStatistics" resultMap="order_statistics">
       SELECT
-      DATE(pay_time) as 'day',
+      DATE(add_time) as 'day',
       COUNT(DISTINCT user_id) AS 'customers',
       SUM(order_price) as 'amount',
       COUNT(0) as 'orders'
       FROM `cskaoyan_mall_order`
       where deleted = false
-      GROUP BY DATE(pay_time)
+      GROUP BY DATE(add_time)
 
     </select>
 </mapper>

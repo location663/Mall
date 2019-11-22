@@ -36,20 +36,25 @@ public class WxCommentServiceImpl implements WxCommentService {
         List<TopicListDoBean.DataBean> dataBeanList=new ArrayList();
         CommentDOExample commentDOExample = new CommentDOExample();
         CommentDOExample.Criteria criteria = commentDOExample.createCriteria();
-        criteria.andTypeEqualTo(Byte.parseByte(type)).andValueIdEqualTo(Integer.parseInt(valueId)).andDeletedEqualTo(false);
+        criteria.andTypeEqualTo(Byte.parseByte(type)).andValueIdEqualTo(Integer.parseInt(valueId))
+                .andDeletedEqualTo(false);
+        if (showType != null && showType.equals("1")){
+            criteria.andHasPictureEqualTo(true);
+        }
         PageHelper.startPage(Integer.parseInt(page),Integer.parseInt(size));
         List<CommentDO> commentDOS = commentDOMapper.selectByExample(commentDOExample);
         for (CommentDO commentDO : commentDOS) {
             Integer userId = commentDO.getUserId();
             String[] picUrls = commentDO.getPicUrls();
             Date addTime = commentDO.getAddTime();
-            addTime.setMinutes(0);
-            addTime.setHours(0);
-            addTime.setSeconds(0);
+//            addTime.setMinutes(0);
+//            addTime.setHours(0);
+//            addTime.setSeconds(0);
             String content = commentDO.getContent();
             UserDO userDO = userDOMapper.selectByPrimaryKey(userId);
             TopicListDoBean.DataBean.UserInfoBean userInfoBean = new TopicListDoBean.DataBean.UserInfoBean(userDO.getNickname(), userDO.getAvatar());
-            TopicListDoBean.DataBean dataBean = new TopicListDoBean.DataBean(userInfoBean,addTime.toString(),content, Arrays.asList(picUrls));
+//            TopicListDoBean.DataBean dataBean = new TopicListDoBean.DataBean(userInfoBean,addTime.toString(),content, Arrays.asList(picUrls));
+            TopicListDoBean.DataBean dataBean = new TopicListDoBean.DataBean(userInfoBean,addTime,content, Arrays.asList(picUrls));
             dataBeanList.add(dataBean);
         }
         topicListDoBean.setData(dataBeanList);

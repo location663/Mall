@@ -72,6 +72,12 @@ public class WxAuthController {
      */
     @RequestMapping("auth/register")
     public BaseReqVo userRegister(@RequestBody UserDO userDO, HttpServletRequest request) throws Exception {
+        if (userDO.getUsername().length() < 7 || userDO.getUsername().length() > 16) {
+            throw new WxException("用户名长度7位到16位，请重新输入");
+        }
+        if (userDO.getPassword().length() < 7 || userDO.getPassword().length() > 16) {
+            throw new WxException("密码长度7位到16位，请重新输入");
+        }
         Map map = userService.userRegister(userDO);
         Subject subject = SecurityUtils.getSubject();
 //        CustomToken token = new CustomToken(userDO.getUsername(), Md5Utils.getMultiMd5(userDO.getPassword()), "wx");
@@ -123,12 +129,20 @@ public class WxAuthController {
         return BaseRespVo.ok("重置密码成功");
     }
 
+    /**
+     * 被拦截以后返回json错误码
+     * @return
+     */
     @RequestMapping("filter/redirect")
     public BaseReqVo filterRedirect()  {
         return new BaseReqVo(null, "您还未登陆", 501);
     }
 
-
+    /**
+     * 微信登录
+     * @param map
+     * @return
+     */
     @RequestMapping("auth/login_by_weixin")
     public BaseRespVo loginnByWeixin(@RequestBody Map<String, Object> map){
         String code = (String) map.get("code");

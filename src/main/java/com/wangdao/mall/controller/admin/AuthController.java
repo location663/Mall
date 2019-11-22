@@ -10,6 +10,7 @@ import com.wangdao.mall.shiro.CustomToken;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
@@ -21,6 +22,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.Serializable;
 import java.util.*;
 
@@ -138,6 +140,14 @@ public class AuthController {
         baseReqVo.setErrmsg("成功");
         baseReqVo.setErrno(0);
         baseReqVo.setData(dashboardService.countAll());
+        return baseReqVo;
+    }
+
+    @RequestMapping("profile/password")
+    public BaseReqVo profilePassword(@RequestBody Map map, HttpSession session){
+        String username = (String) session.getAttribute("admin");
+        map.put("username",username);
+        BaseReqVo baseReqVo = dashboardService.profilePassword(map);
         return baseReqVo;
     }
 }
