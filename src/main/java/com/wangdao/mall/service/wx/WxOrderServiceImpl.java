@@ -385,14 +385,16 @@ public class WxOrderServiceImpl implements WxOrderService {
         switch (showType){
             case 1:
                 statuList.add((short)101);
-                statuList.add((short)102);
-                statuList.add((short)103);
+                //订单取消后不显示在未付款栏中
+//                statuList.add((short)102);
+//                statuList.add((short)103);
 //                statuInt = 101;
                 break;
             case 2:
                 statuList.add((short)201);
                 statuList.add((short)202);
-                statuList.add((short)203);
+                //订单成功退款后不显示在待发货栏中
+//                statuList.add((short)203);
 //                statuInt = 201;
                 break;
             case 3:
