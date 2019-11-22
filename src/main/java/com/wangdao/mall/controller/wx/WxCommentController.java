@@ -27,7 +27,7 @@ public class WxCommentController {
     @Autowired
     WxCommentService commentService;
     @RequestMapping("list")
-    public BaseReqVo list(String valueId, String type, String showType, String page, String size){
+    public BaseReqVo list(Integer valueId, Integer type, Integer showType, Integer page, Integer size){
         TopicListDoBean topicListDoBean =commentService.commentList(valueId, type, showType, page, size);
         return new BaseReqVo(topicListDoBean,"成功",0);
     }
