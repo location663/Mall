@@ -5,6 +5,7 @@ import com.github.pagehelper.PageInfo;
 import com.wangdao.mall.bean.FootprintDO;
 import com.wangdao.mall.bean.FootprintDOExample;
 import com.wangdao.mall.bean.FootprintVO;
+import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.mapper.FootprintDOMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,10 +45,13 @@ public class WxFootprintServiceImpl implements WxFootprintService{
      * @return
      */
     @Override
-    public Map<String, Object> listFootprint(Integer page, Integer size) {
+    public Map<String, Object> listFootprint(Integer page, Integer size) throws WxException {
         PageHelper pageHelper = new PageHelper();
         pageHelper.startPage(page, size);
         List<FootprintVO> footprintVOList = footprintDOMapper.selectFootprintVOs();
+        if(footprintVOList == null){
+            throw new WxException("你还没浏览过商品呢");
+        }
         PageInfo<FootprintVO> footprintDOPageInfo = new PageInfo<>(footprintVOList);
         long total = footprintDOPageInfo.getTotal();
         int totalPages = (int) Math.ceil(total * 1.0 / size);
