@@ -29,7 +29,7 @@ public class MallExceptionHandler {
 
     @ExceptionHandler(AuthorizationException.class)
     public BaseReqVo authors(AuthorizationException e){
-        return new BaseReqVo(null, "", 506);
+        return new BaseReqVo(null, "你没有经过认证", 506);
     }
 
     @ExceptionHandler(IllegalStateException.class)
