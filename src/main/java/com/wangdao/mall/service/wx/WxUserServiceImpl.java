@@ -166,6 +166,15 @@ public class WxUserServiceImpl implements WxUserService {
         return update;
     }
 
+    /**没有具体业务逻辑
+     * @param userInfoMap
+     * @param code
+     */
+    @Override
+    public void loginnByWeixin(Map userInfoMap, String code) {
+
+    }
+
     /**
      * 用户注册
      * @param userDO
