@@ -98,34 +98,22 @@ public class AuthController {
      */
     @RequestMapping("/auth/info")
     public BaseReqVo info(String token){
-        ArrayList<String> permsList = new ArrayList<>();
-        ArrayList<String> roleList = new ArrayList<>();
         Subject subject = SecurityUtils.getSubject();
         AdminDO principal = (AdminDO) subject.getPrincipal();
         InfoData infoData = new InfoData();
         infoData.setAvatar(principal.getAvatar());
         infoData.setName(principal.getUsername());
         Integer[] roleIds = principal.getRoleIds();
-        boolean b = false;
+        ArrayList<String> permsList = new ArrayList<>();
+        ArrayList<String> roleList = new ArrayList<>();
         for (Integer roleId : roleIds) {
-            if (roleId.equals(1)){
-                b = true;
-                break;
-            }
-        }
-        if (b) {
-            for (Integer roleId : roleIds) {
-                List<String> perms = adminService.selectPermsLeft(roleId);
-                permsList.addAll(perms);
-                String roleName = adminService.selectRoleName(roleId);
-                roleList.add(roleName);
-            }
-            if (permsList.size() == 0){
-                permsList.add("*");
-            }
+            List<String> perms = adminService.selectPermsLeft(roleId);
+            permsList.addAll(perms);
+            String roleName = adminService.selectRoleName(roleId);
+            roleList.add(roleName);
         }
         if (permsList.size() == 0){
-            permsList.add("");
+            permsList.add("*");
         }
         infoData.setRoles(roleList);
         infoData.setPerms(permsList);

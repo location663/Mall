@@ -1,6 +1,7 @@
 package com.wangdao.mall.controller.wx;
 
 import com.wangdao.mall.bean.FootprintDO;
+import com.wangdao.mall.exception.WxException;
 import com.wangdao.mall.service.util.wx.BaseRespVo;
 import com.wangdao.mall.service.wx.WxFootprintService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +25,8 @@ public class WxFootprintController {
     WxFootprintService footprintService;
 
     @RequestMapping("footprint/list")
-    public BaseRespVo listFootprint(Integer page, Integer size){
+    public BaseRespVo listFootprint(Integer page, Integer size) throws WxException {
         Map<String, Object> map = footprintService.listFootprint(page, size);
-//        BaseRespVo baseRespVo = new BaseRespVo();
-//        baseRespVo.setData(map);
-//        baseRespVo.setErrmsg("成功");
-//        baseRespVo.setErrno(0);
-//        return baseRespVo;
         return BaseRespVo.ok(map);
     }
 

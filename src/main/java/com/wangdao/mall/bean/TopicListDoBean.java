@@ -50,17 +50,15 @@ public class TopicListDoBean {
             private UserInfoBean userInfo;
             @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss",timezone="GMT+8")
             private Date addTime;
-//            private String addTime;
             private String content;
             private List<String> picList;
-
+//            private String addTime;
 //            public DataBean(UserInfoBean userInfo, String addTime, String content, List<String> picList) {
 //                this.userInfo = userInfo;
 //                this.addTime = addTime;
 //                this.content = content;
 //                this.picList = picList;
 //            }
-
             public DataBean(UserInfoBean userInfo, Date addTime, String content, List<String> picList) {
                 this.userInfo = userInfo;
                 this.addTime = addTime;
@@ -75,6 +73,7 @@ public class TopicListDoBean {
             public void setUserInfo(UserInfoBean userInfo) {
                 this.userInfo = userInfo;
             }
+
 
 //            public String getAddTime() {
 //                return addTime;

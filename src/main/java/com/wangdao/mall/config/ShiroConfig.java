@@ -30,8 +30,8 @@ public class ShiroConfig {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         //认证失败重定向的url
-        shiroFilterFactoryBean.setLoginUrl("/admin/redirect");
 
+//        shiroFilterFactoryBean.setLoginUrl("/admin/redirect");
         //shiroFilterFactoryBean.setLoginUrl("/auth/login");
         shiroFilterFactoryBean.setLoginUrl("/wx/filter/redirect");
 
@@ -40,9 +40,12 @@ public class ShiroConfig {
         LinkedHashMap<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         //第一个参数是请求url 第二个参数是过滤器  “anon” 就是这边可以匿名
         filterChainDefinitionMap.put("/admin/auth/login","anon");
+        filterChainDefinitionMap.put("/admin/auth/info","anon");
         filterChainDefinitionMap.put("/wx/auth/login","anon");
 
 //        filterChainDefinitionMap.put("/wx/cart/**", "user");
+
+        filterChainDefinitionMap.put("/admin/**", "user");
         filterChainDefinitionMap.put("/wx/collect/**", "user");
         filterChainDefinitionMap.put("/wx/comment/post", "user");
         filterChainDefinitionMap.put("/wx/search/clearhistory", "user");

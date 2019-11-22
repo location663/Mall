@@ -229,7 +229,7 @@
 
 
   <select id="selectFootprintVOs" resultType="com.wangdao.mall.bean.FootprintVO">
-      select f.add_time, f.goods_id as goodsId, f.id, g.brief, g.name, g.pic_url as picUrl, g.retail_price as retailPrice
+      select f.add_time as addTime, f.goods_id as goodsId, f.id, g.brief, g.name, g.pic_url as picUrl, g.retail_price as retailPrice
       from cskaoyan_mall_footprint f
       left join cskaoyan_mall_goods g
       on f.goods_id = g.id
