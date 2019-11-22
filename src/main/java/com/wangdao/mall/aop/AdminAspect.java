@@ -218,8 +218,10 @@ public class AdminAspect {
             return "浏览订单统计";
         }else if (requestURI.contains("/stat/goods")){
             return "浏览商品统计";
+        }else if (requestURI.contains("/admin/dashboard")){
+            return "进入后台首页";
         }else {
-            return "进入管理界面";
+            return "浏览管理界面";
         }
     }
 
