@@ -126,9 +126,10 @@ public class WxOrderServiceImpl implements WxOrderService {
         //优惠券信息
         Integer couponUserId = (Integer) map.get("couponId");
         CouponUserDO couponUserDO1 = couponUserDOMapper.selectByPrimaryKey(couponUserId);
+        if (couponUserDO1 != null) {
         Integer couponId = couponUserDO1.getCouponId();
         CouponDO couponDO = couponDOMapper.selectByPrimaryKey(couponId);
-        if (couponDO != null) {
+
             if (orderDO.getGoodsPrice().doubleValue() - couponDO.getMin().doubleValue() >= 0) {
                 //优惠券优惠价格
                 orderDO.setCouponPrice(couponDO.getDiscount());

@@ -140,13 +140,6 @@ public class WxCartServiceImpl implements WxCartService {
     @Override
     public CheckoutDataBean checkout(Integer cartId, Integer addressId, Integer couponId, Integer grouponRulesId,UserDO userDO) {
         CheckoutDataBean dataBean = new CheckoutDataBean();
-        //查询邮费
-        SystemDO systemDO = systemDOMapper.selectByPrimaryKey(5);
-        if(dataBean.getActualPrice()<= Double.valueOf(systemDO.getKeyValue())){
-            dataBean.setFreightPrice(8);
-        }else {
-            dataBean.setFreightPrice(0);
-        }
         //查询地址
         AddressDO addressDO = addressDOMapper.selectByPrimaryKey(addressId);
         dataBean.setCheckedAddress(addressDO);
@@ -185,6 +178,14 @@ public class WxCartServiceImpl implements WxCartService {
             List<CartDO> list=new ArrayList<>();
             list.add(cartDO);
             dataBean.setCheckedGoodsList(list);
+        }
+        //查询邮费
+        SystemDO systemDO = systemDOMapper.selectByPrimaryKey(5);
+        SystemDO systemDO1 = systemDOMapper.selectByPrimaryKey(7);
+        if(dataBean.getGoodsTotalPrice()<= Double.valueOf(systemDO.getKeyValue())){
+            dataBean.setFreightPrice(Integer.parseInt(systemDO1.getKeyValue()));
+        }else {
+            dataBean.setFreightPrice(0);
         }
         dataBean.setActualPrice(totalPrice - dataBean.getGrouponPrice() - dataBean.getCouponPrice()+dataBean.getFreightPrice());
         dataBean.setOrderTotalPrice(dataBean.getActualPrice()+dataBean.getFreightPrice());
