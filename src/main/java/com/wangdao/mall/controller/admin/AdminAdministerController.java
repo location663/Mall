@@ -266,7 +266,7 @@ public class AdminAdministerController {
      * {
      * 	"name": "test01",
      * 	"desc": "第一次测试添加"
-     * }
+     * }fffffffffffffffffffffffffffffffffff
      * response:
      * {
      * 	"errno": 0,               重名校验：
