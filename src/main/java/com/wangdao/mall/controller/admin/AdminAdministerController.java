@@ -332,6 +332,7 @@ public class AdminAdministerController {
 
 
     /**
+     * 主线crs/sprint10/report/daibin测试
      * request:
      * {
      * 	"id": 104,
