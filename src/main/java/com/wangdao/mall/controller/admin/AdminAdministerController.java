@@ -343,6 +343,7 @@ public class AdminAdministerController {
      * 	"updateTime": "2019-11-16 22:57:27",
      * 	"deleted": false
      * }
+     * report分支推送到远程后测试字段
      * response:
      * {
      * 	"errno": 0,
