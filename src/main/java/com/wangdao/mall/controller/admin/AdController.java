@@ -31,7 +31,7 @@ public class AdController {
     @Autowired
     StorageUtils storageUtils;
     /**
-     * 获取根据条件查询广告，默认不输入条件时该条件的值是null
+     * 获取根据条件查询广告，默认不输入条件时该条件的值是null aaa
      * @param page
      * @param limit
      * @param name
